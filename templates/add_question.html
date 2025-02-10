@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>【管理者モード】Python 問題集</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/dracula.min.css">
+    
+
+</head>
+<body>
+    <header>
+        <h1>【管理者モード】Python 問題集</h1>
+        <h3>python問題　数をこなせ！</h3>
+
+    </header>
+    
+    <div class="container">
+        <aside>
+            <p> 問題を登録する</p>
+            <button id="registerButton" type="submit">登録</button>
+            <p> 問題を削除する</p>
+            <button id="deleteButton">削除</button>
+
+
+        </aside>
+
+        <main>
+            <h2>問題を登録</h2>
+            <form method="POST" action="/admin/add">
+                <!-- 問題入力 -->
+                <div class="question-box">
+                    <label for="register_question" class="boxtitle">問題:</label>
+                    <textarea id="register_question" name="register_question" rows="4"></textarea>
+                </div>
+
+                <!-- 期待される出力 -->
+                <div class="expected-output">
+                    <label for="register_expected_output" class="boxtitle">期待される出力:</label>
+                    <textarea id="register_expected_output" name="register_expected_output" rows="2"></textarea>
+                </div>
+        
+                <!-- 解答入力 -->
+                <div class="answer-box">
+                    <label for="register_answer" class="boxtitle">答え:</label>
+                    <textarea id="register_answer" name="register_answer" rows="2"></textarea>
+                </div>
+        
+                <!-- 解説入力 -->
+                <div class="description-box">
+                    <label for="register_description" class="boxtitle">解説:</label>
+                    <textarea id="register_description" name="register_description" rows="4"></textarea>
+                </div>
+        
+
+        
+                <!-- カテゴリ選択 -->
+                <div class="category-container">
+                    <label for="category_id">カテゴリを選択:</label>
+                    <select name="category_id" id="category_id" required>
+                        <option value="" disabled selected>カテゴリを選んでください</option>
+                        {% for category in categories %}
+                            <option value="{{ category['id'] }}">{{ category['name'] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+        
+                <!-- 難易度選択 -->
+                <div class="difficulty-container">
+                    <label for="difficulty_id">難易度を選択:</label>
+                    <select name="difficulty_id" id="difficulty_id" required>
+                        <option value="" disabled selected>難易度を選んでください</option>
+                        {% for level in difficulty_levels %}
+                            <option value="{{ level['id'] }}">{{ level['name'] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+        
+                <!-- 登録ボタン -->
+                <button type="submit">登録</button>
+            </form>
+            <a href="/admin/manage" class="link-button">登録済みの問題一覧</a>
+        </main>
+        
+        
+    </div>
+
+    <footer>
+        <p>&copy; 2025 python問題集</p>
+        <a href="#top">トップに戻る</a>
+
+    </footer>
+</body>
+
+
+
