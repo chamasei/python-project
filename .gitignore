@@ -1,0 +1,20 @@
+# システム関連の不要ファイル
+*.log
+*.ini
+*.DAT
+*.blf
+*.regtrans-ms
+.DS_Store
+Thumbs.db
+ntuser.*
+
+# ユーザーフォルダの個人データ除外
+AppData/
+OneDrive/
+Desktop/
+Downloads/
+Documents/
+Videos/
+Music/
+Pictures/
+.vscode/

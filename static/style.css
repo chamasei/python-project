@@ -1,0 +1,466 @@
+* リセット */
+* {
+    box-sizing: border-box;
+}
+
+
+@media (max-width: 600px) {
+    body {
+        width: 100%;
+        font-size: 18px;
+        flex-direction: column; /* 縦並びに変更 */
+    }
+    .custom-table {
+        font-size: 14px !important ; /* ✅ `body` の影響を受けつつ、相対サイズで調整 */
+    }
+
+}
+
+@media (max-width: 768px) {
+    header,footer {
+        width: 100%;
+        overflow: hidden;
+    }
+}
+
+/* ✅ 日本語（コメントや説明部分）は `Noto Sans JP` */
+.cm-s-dracula span[cm-text], 
+.cm-s-dracula .cm-comment {
+    font-family: "Noto Sans JP", sans-serif;
+}
+
+/* ✅ キーワード・変数・文字列は `Consolas`（コードっぽいフォント） */
+.cm-s-dracula .cm-keyword, 
+.cm-s-dracula .cm-variable, 
+.cm-s-dracula .cm-string {
+    font-family: "Consolas", "Menlo", monospace;
+}
+
+html:lang(ja) {
+    font-family: 'Noto Sans JP', 'Meiryo', sans-serif;
+}
+
+h1{
+    font-family: "Murecho",sans-serif;
+    font-size: 38px;
+}      
+
+h2{
+
+    font-size: 26px;
+}  
+
+p{
+    font-size:14px;
+}
+
+a {
+    color: #4CAF50;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #c6acd7;
+    text-decoration: underline;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%; /* 画面幅を100%に設定 */
+}
+        
+body {
+    width: 100%;
+    display: flex;
+    flex-direction:column;
+    align-items: center;
+    font-family: "Consolas", "Menlo", monospace, "Noto Sans JP", sans-serif;
+    line-height: 26px;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+.container{
+    display: flex;
+    flex-direction:row;
+    justify-content: center;
+    width: 1200px;
+    padding: 00px ;
+
+}
+
+header {
+    width: 100%;
+    background-color: #142d49;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    margin: 0;
+} 
+
+aside{
+    display: flex;
+    flex-direction:column;
+    align-items:center;
+    width: 20%;
+    background-color: #f0fafe;
+    margin: 0;
+    padding: 50px;  
+}
+
+.search{
+    display: flex;
+    flex-direction:column;
+    align-items:left;
+    line-height: 50px;
+}
+
+input{
+    padding: 8px;
+}
+
+#category_id{
+    padding:  8px;
+}
+
+#difficulty_level_id{
+    padding: 8px;
+}
+    
+main{
+    display: flex;
+    flex-direction:column;
+    align-items:center;
+    width: 80%;
+    padding: 10px;
+    background-color: #fafdff;
+    margin-top: 0px;
+
+}
+
+/* 各問題のボックス */
+.question-container {
+    display: flex;
+    flex-direction:column;
+    align-items:left;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 700px; /* ボックス全体の最大幅 */
+    
+}
+
+
+.question-card {
+    background-color: #f9f9f9;
+    gap: 40px; /* 各問題間のスペース */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+}
+
+.question-text {
+    font-size: 14px;
+    font-weight: normal;
+    margin-bottom: 10px;
+
+}
+
+.answer-box {
+    margin-top: 10px;
+    background-color: #f4f4f4;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    display: none; /* 解答は初期状態で非表示 */
+
+}
+
+.button-group {
+    display: flex; /* ボタンを横並びに配置 */
+    gap: 10px; /* ボタン間のスペース */
+    margin-top: 5px; /* 上下の余白を調整 */
+}
+
+.delete-button, .edit-button {
+    background-color: #d9534f; /* 初期状態の色 */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.edit-button {
+    background-color: #5bc0de; /* 編集ボタン用の色 */
+}
+
+.delete-button:hover {
+    background-color: #c9302c;
+}
+
+.edit-button:hover {
+    background-color: #31b0d5;
+}
+
+pre {
+    font-size: 14px;
+    color: #82829c;
+    line-height:26px ;
+    background-color: #e3f2fd;
+    padding: 10px;
+    border-radius: 5px;
+    overflow-x: auto;
+
+}
+
+#register_question, #edit_question{
+    width: 700px;
+    height: 200px;
+    margin: 20px;
+    padding: 20px;
+    margin-left: 0;
+    border: none;
+    font-family: Consolas;
+    font-size: 14px;
+    line-height: 26px
+}
+
+#register_expected_output,#edit_expected_output{
+    background-color: #e3f2fd;
+    width: 700px;
+    height: 130px;
+    margin: 20px;
+    padding: 20px;
+    margin-left: 0;
+    border: none;
+    font-family: Consolas;
+    font-size: 14px;
+    line-height: 26px
+}
+
+#pythonCode{
+    width: 600px;
+    height: 250px;
+    margin: 20px;
+    padding: 20px;
+    margin-left: 0;
+
+}
+
+.answer-container {
+    display: flex;
+    flex-direction:column;
+    align-items:left;
+    margin: 20px 0 atuo; /* 上下に余白を追加 */
+    width: 100%;
+    max-width: 700px; /* ボックス全体の最大幅 */
+}
+
+#register_answer ,#edit_answer ,#edit_description {
+    width: 700px;
+    height: 250px;
+    margin: 20px;
+    padding: 20px;
+    margin-left: 0;
+    border: none;
+    font-family: Consolas;
+    font-size: 14px;
+    line-height: 26px
+}
+
+.description-container{
+    display: flex;
+    flex-direction:column;
+    align-items:left;
+    margin: 20px 0 atuo; /* 上下に余白を追加 */
+    width: 100%;
+    max-width: 700px; /* ボックス全体の最大幅 */
+
+}
+
+
+#register_description{
+    width: 700px;
+    height: 250px;
+    margin: 20px;
+    padding: 20px;
+    margin-left: 0;
+    border: none;
+    font-family: Consolas;
+    font-size: 14px;
+    line-height: 26px
+}
+
+#saveButton{
+    display: block;
+    margin: 20px auto; /* 上下: 20px, 左右: autoで中央寄せ */
+    background-color: #30165a;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+
+}
+
+#answer-button{
+    display: block;
+    margin: 20px auto; /* 上下: 20px, 左右: autoで中央寄せ */
+    background-color: #53abee;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+}
+#saveButton:hover {
+    background-color: #45a049; /* ホバー時の背景色 */
+}
+
+aside button, #saveButton {
+    background-color: #30165a;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 20px auto; /* 上下: 10px, 左右: autoで中央寄せ */
+    display: block;
+    text-align: center;
+}
+
+aside button:hover, #saveButton:hover {
+    background-color: #45a049; /* ホバー時の背景色 */
+}
+
+
+footer {
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+    background-color: #142d49;
+    color: white;
+    margin: 0;
+}
+
+.success {
+    color: green;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.error {
+    color: red;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+#question-list{
+    border:solid #333;
+}
+
+.navigation-buttons {
+    display: flex;
+    flex-direction: row;  /* ✅ 横並びにする */
+    justify-content: center; /* ✅ 中央配置 */
+    align-items: center; /* ✅ 子要素の高さを均等にする */
+    gap: 10px; /* ✅ ボタン間の余白を設定 */
+}
+
+.prev-button, .next-button{
+    display: inline-block;
+    padding: 10px 20px;
+    text-align: center;
+    background-color:  #007BFF;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.prev-button:hover, .next-button:hover {
+    background-color: #765fc2;
+}
+
+.question-box {
+    background-color: #f9f9f9;
+    border-left: 5px solid #4CAF50;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.expected-output {
+    display: flex;
+    flex-direction:column;
+    align-items:left;
+    padding: 10px;
+    border-left: 5px solid #FF9800;
+    background-color: #e3f2fd;
+    margin-top: 10px;
+    border-radius: 5px;
+
+}
+
+.code-container {
+    margin-top: 15px;
+}
+
+.answer-box, .description-box {
+    background-color: #e3f2fd;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+}
+
+.question-box, .answer-box, .description-box {
+    display: flex;
+    flex-direction:column;
+    align-items:left;
+    background-color: #f9f9f9;
+    border-left: 5px solid #4CAF50;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.boxtitle{
+    color: #57576e;
+}
+
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+    font-size: 14px;
+    text-align: left;
+    color: #333;
+}
+
+.custom-table, .custom-table th, .custom-table td {
+    border: 1px solid #ddd;
+    font-size: 14px !important;
+    font-size: inherit !important;
+    font-family: "Noto Sans JP", sans-serif !important;
+
+}
+
+.custom-table th, .custom-table td {
+    padding: 10px;
+    font-size: 14px;
+    font-family: "Noto Sans JP";
+}
+
+.custom-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+    text-align: center;
+}
+
+.custom-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
