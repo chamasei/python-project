@@ -173,7 +173,8 @@ def format_description(description):
                 formatted_parts.append("<table class='custom-table'>")
                 in_table = True
 
-            formatted_parts.append(f"<tr><td>{clean_line.replace('\t', '</td><td>')}</td></tr>")  # ✅ `<td>` に変換
+            formatted_line = clean_line.replace('\t', '</td><td>')
+            formatted_parts.append(f"<tr><td>{formatted_line}</td></tr>")
             continue
 
         else:  # ✅ **通常のテキスト処理**
