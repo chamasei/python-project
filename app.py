@@ -8,6 +8,7 @@ import re
 from dotenv import load_dotenv
 import os
 from functools import wraps  # ✅ これを追加！
+from flask_sqlalchemy import SQLAlchemy
 
 load_dotenv()
 
@@ -22,7 +23,7 @@ app = Flask(__name__)
 
 #管理者用
 # ✅ 環境変数から secret_key を取得（設定がなければ "your_secret_key_here" を使う）
-app.secret_key = os.getenv("FLASK_SECRET_KEY", "your_secret_key_here") 
+app.secret_key = os.getenv("FLASK_SECRET_KEY") 
 ADMIN_PASSWORD = os.getenv("PYTHON_ADMIN_PASSWORD")
 
 #それぞれのページで管理者ログインを要求する
@@ -88,15 +89,17 @@ def admin_logout():
     return redirect(url_for('admin_login'))
 
 
-# データベース接続
+
+# ✅ PostgreSQL の接続情報を環境変数から取得
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")  # Render の `DATABASE_URL` を使用
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+# ✅ SQLAlchemy を初期化
+db = SQLAlchemy(app)
+
+
 def get_db_connection():
-    conn = sqlite3.connect('questions.db')
-    conn.row_factory = sqlite3.Row
-    return conn
-
-
-
-
+    return db.session
 
 
 
