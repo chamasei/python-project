@@ -1,0 +1,636 @@
+/* リセット */
+* {
+    box-sizing: border-box;
+}
+
+
+
+/* ✅ 日本語（コメントや説明部分）は `Noto Sans JP` */
+.cm-s-dracula span[cm-text], 
+.cm-s-dracula .cm-comment {
+    font-family: "Noto Sans JP", sans-serif;
+}
+
+/* ✅ キーワード・変数・文字列は `Consolas`（コードっぽいフォント） */
+.cm-s-dracula .cm-keyword, 
+.cm-s-dracula .cm-variable, 
+.cm-s-dracula .cm-string {
+    font-family: "Consolas", "Menlo", monospace;
+}
+
+
+h1{
+    font-family: M PLUS 1p,Bebas Neue,sans-serif;
+    font-size: 32px ;
+    text-shadow: 1px 1px 2px rgb(78, 78, 78);
+    
+}      
+
+h1 .python{
+    font-family: 'Bebas Neue', sans-serif ;
+    font-size: 42px; /* ✅ 日本語より大きめに */
+    position: relative;
+    display: inline-block;
+    color: #ffffff;
+    
+
+}
+
+h2{
+
+    font-size: 26px;
+}  
+
+h3{
+    color: rgb(255, 255, 0);
+}
+p{
+    font-size:14px;
+    line-height: 26px;
+    margin:0px !important;
+    min-height: 1.8em; /* 最低限の高さを確保 */
+}
+
+a {
+    color: #4CAF50;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #c6acd7;
+    text-decoration: underline;
+}
+
+html, body {
+
+    width: 100%; /* 画面幅を100%に設定 */
+}
+        
+body {
+    width: 100%;
+    display: flex;
+    flex-direction:column;
+    align-items: center ;
+    font-family: "Consolas", "Menlo", monospace, "Noto Sans JP", sans-serif;
+    line-height: 26px;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+.container{
+    padding-top: 135px ;
+    display: flex;
+    flex-direction:row;
+    justify-content: center;
+    width: 75%;
+
+    margin: 0%;
+}
+
+header {
+    position: fixed;
+    z-index: 1000;  /* 他の要素より前面に表示 */
+    width: 100%;
+    background-color: #777781;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    margin: 0px;
+} 
+
+aside{
+    display: flex;
+    flex-direction:column;
+    align-items:center;
+    width: 20%;
+    min-width: 190px; 
+    background-color: #e5e5e5;
+    margin: 0;
+    padding: 50px;  
+}
+
+.search{
+    display: flex;
+    flex-direction:column;
+    align-items:center;
+    padding: 20px;
+}
+
+
+.input-box{
+    width: 180px;
+    height: 35px;
+    margin: 5px 10px 30px 10px;
+}
+
+#category_id{
+    padding:  8px;
+}
+
+#difficulty_level_id{
+    padding: 8px;
+}
+    
+main{
+    display: flex;
+    flex-direction:column;
+    align-items:center;
+    width: 80%;
+    padding: 15px 10px;
+    background-color: #fafdff;
+    margin-top: 0px;
+
+}
+
+/* 各問題のボックス */
+.question-container {
+    display: flex;
+    flex-direction:column;
+    align-items:left;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 700px; /* ボックス全体の最大幅 */
+    
+}
+
+
+.question-card {
+    background-color: #f9f9f9;
+    gap: 40px; /* 各問題間のスペース */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+}
+
+.question-text {
+    font-size: 14px;
+    font-weight: normal;
+    margin-bottom: 10px;
+
+}
+
+#question_info{
+    display: flex;
+    flex-direction:column;
+    align-items:end;
+    padding:0px;
+    margin:0px;
+}
+
+.answer-box {
+    background-color: #f4f4f4;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    display: none; /* 解答は初期状態で非表示 */
+
+}
+
+.button-group {
+    display: flex; /* ボタンを横並びに配置 */
+    gap: 10px; /* ボタン間のスペース */
+    margin-top: 5px; /* 上下の余白を調整 */
+}
+
+.delete-button, .edit-button {
+    background-color: #d9534f; /* 初期状態の色 */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.edit-button {
+    background-color: #5bc0de; /* 編集ボタン用の色 */
+}
+
+.delete-button:hover {
+    background-color: #c9302c;
+}
+
+.edit-button:hover {
+    background-color: #31b0d5;
+}
+
+pre {
+    font-size: 14px;
+    color: #474753;
+    line-height:26px ;
+    background-color: #acb5bc;
+    padding: 10px;
+    border-radius: 5px;
+    overflow-x: auto;
+    margin: 25px 0px;
+
+}
+
+#register_question, #edit_question{
+    width: 700px;
+    height: 200px;
+    margin: 20px;
+    padding: 20px;
+    margin-left: 0;
+    border: none;
+    font-family: Consolas;
+    font-size: 14px;
+    line-height: 26px
+}
+
+#register_expected_output,#edit_expected_output{
+    background-color: #e3f2fd;
+    width: 700px;
+    height: 130px;
+    margin: 20px;
+    padding: 20px;
+    margin-left: 0;
+    border: none;
+    font-family: Consolas;
+    font-size: 14px;
+    line-height: 26px
+}
+
+#pythonCode{
+    width: 600px;
+    height: 250px;
+    margin: 20px;
+    padding: 20px;
+    margin-left: 0;
+
+}
+
+.answer-container {
+    display: flex;
+    flex-direction:column;
+    align-items:left;
+    margin: 20px 0 atuo; /* 上下に余白を追加 */
+    width: 100%;
+    max-width: 700px; /* ボックス全体の最大幅 */
+}
+
+#register_answer ,#edit_answer ,#edit_description {
+    width: 700px;
+    height: 250px;
+    margin: 20px;
+    padding: 20px;
+    margin-left: 0;
+    border: none;
+    font-family: Consolas;
+    font-size: 14px;
+    line-height: 26px
+}
+
+.description-container{
+    display: flex;
+    flex-direction:column;
+    align-items:left;
+    margin: 20px 0 atuo; /* 上下に余白を追加 */
+    width: 100%;
+    max-width: 700px; /* ボックス全体の最大幅 */
+
+}
+
+
+#register_description{
+    width: 700px;
+    height: 250px;
+    margin: 20px;
+    padding: 20px;
+    margin-left: 0;
+    border: none;
+    font-family: Consolas;
+    font-size: 14px;
+    line-height: 26px
+}
+
+#saveButton{
+    display: block;
+    margin: 20px auto; /* 上下: 20px, 左右: autoで中央寄せ */
+    background-color: #30165a;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+
+}
+
+#answer-button{
+    display: block;
+    margin: 20px auto; /* 上下: 20px, 左右: autoで中央寄せ */
+    background-color: #989898;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+}
+#saveButton:hover {
+    background-color: #c1dfc2; /* ホバー時の背景色 */
+}
+
+aside button, #saveButton .clear-button {
+    background-color: #72b5a5;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 20px auto; /* 上下: 10px, 左右: autoで中央寄せ */
+    display: block;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+
+}
+
+aside button:hover, #saveButton:hover {
+    background-color: #afd0b0; /* ホバー時の背景色 */
+}
+
+
+footer {
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+    background-color: #777781;
+    color: white;
+    margin: 0;
+}
+
+.success {
+    color: green;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.error {
+    color: red;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+
+.navigation-buttons {
+    display: flex;
+    flex-direction: row;  /* ✅ 横並びにする */
+    justify-content: center; /* ✅ 中央配置 */
+    align-items: center; /* ✅ 子要素の高さを均等にする */
+    gap: 10px; /* ✅ ボタン間の余白を設定 */
+}
+
+.prev-button, .next-button{
+    display: inline-block;
+    padding: 10px 20px;
+    text-align: center;
+    background-color:  #7f0a1b;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+}
+
+.prev-button:hover, .next-button:hover {
+    background-color: #b7ca2b;
+}
+
+.question-box {
+    border-left: 5px solid #4CAF50;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+
+.answer-box, .description-box {
+
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+    line-height: px;
+}
+
+
+.description-box p {
+    margin-bottom: 0px;
+}
+
+.description-box p:last-child {
+    margin-bottom: 0; /* ✅ 最後の `<p>` には余白をつけない */
+}
+
+
+.question-box, .answer-box, .description-box,.expected-output {
+    background-color: #f0f1f4;
+    display: flex;
+    flex-direction:column;
+    align-items:left;
+    border-left: 5px solid #c20817;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+}
+
+.expected-output {
+    margin-bottom: 20px;
+}
+#code_input_area{
+    display: flex;
+    flex-direction:column;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+    margin: 20px 0px 0px 0px;
+}
+
+#code_enter_button{
+    background-color: #72b5a5;
+    color: white;
+    
+}
+#output{
+    height: 200px;
+    background-color: #282a36;
+    color:white;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+}
+
+
+.boxtitle{
+    color: #57576e;
+}
+
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+    font-size: 14px;
+    text-align: left;
+    color: #333;
+}
+
+.custom-table, .custom-table th, .custom-table td {
+    border: 1px solid #ddd;
+    font-size: 14px !important;
+    font-size: inherit !important;
+    font-family: "Noto Sans JP", sans-serif !important;
+
+}
+
+.custom-table th, .custom-table td {
+    padding: 10px;
+    font-size: 14px !important;
+    font-family: "Noto Sans JP" !important;
+}
+
+.custom-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+    text-align: center;
+}
+
+.custom-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.flash-messages {
+    background-color: #ffeeba;
+    color: #856404;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+
+       
+/* ✅ タブレット用（435px 〜 899px） */
+@media (min-width: 435px) and (max-width: 899px) {
+    header {
+        width: 100% !important;
+
+    }
+
+    h1{
+        font-size: 30px;      
+    }
+    h2{
+        font-size: 22px !important;   
+    }
+  
+    h3{
+        font-size: 20px;
+    }
+
+
+    .search{
+
+        font-size: 14px;
+    }
+
+    .input-box{
+        width:140px;
+    }
+
+    .container {
+        width: 100%;
+        padding: 0px;
+    }
+
+    main{
+        width:75%;
+    }
+
+    aside{
+        width:25%;
+    }
+    aside button, #saveButton   button {
+        width:75%;
+    }
+ 
+}
+
+
+@media (max-width: 432px) {
+    body {
+
+        font-size: 18px;
+    }
+    .custom-table {
+        font-size: 14px !important ; /* ✅ `body` の影響を受けつつ、相対サイズで調整 */
+    }
+
+    html, body {
+        
+        margin: 0;
+        padding: 0;
+        width: 100vw;  /* ✅ 画面幅いっぱいに */
+        max-width: 100vw; /* ✅ 余計なスクロールを防ぐ */
+        overflow-x: hidden;  /* ✅ 横スクロールを無効化 */
+        
+    }
+
+    .container{
+        width: 100%;
+        background-color: #777781;
+        display: flex;
+        flex-direction:column !important;
+        align-items: center ;
+        padding: 0px;
+    }
+    header,footer{
+        width: 100% !important;
+        max-width: 100vw !important;  /* 画面幅いっぱいにする */
+    } 
+
+    aside{
+        width: 100% ; /* 各カラムを幅100%に設定 */   
+        float: none; 
+        margin: 0 auto ;  /* ✅ 左右の余白を削除 */ 
+        padding: 10px;   
+    }
+
+    main{
+        float: none;
+        width: 100% !important; /* 各カラムを幅100%に設定 */
+        max-width: 100vw !important;  /* ✅ ビューポート幅に合わせる */
+        margin: 0 auto !important;  /* ✅ 左右の余白を削除 */
+        padding: 10px;  /* ✅ 余白を調整 */
+    }
+
+    h1{
+        font-size: 28px !important;      
+    }
+    h2{
+        font-size: 20px !important;   
+    }
+  
+    h3{
+        font-size: 18px;
+    }
+    .prev-button, .next-button{
+        margin: 5px;
+        height: 40px;
+        font-size: 14px;
+        padding:3px;
+        width: 100px;
+    }
+
+    header {
+        width: 100% !important;
+        position: relative; 
+        margin: 0%;
+    }
+ 
+    #answer-button{
+        margin: 5px;
+    }
+
+    strong{
+        font-size: 16px;
+    }
+
+
+    }
+

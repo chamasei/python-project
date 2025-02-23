@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python 問題集</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&display=swap" rel="stylesheet">
+    <link href="../static/style.css" rel = "stylesheet" /> 
+    <!-- CodeMirror の基本スタイル -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css">
+    <!-- CodeMirror のテーマ（VSCode 風） -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/dracula.min.css">
+
+    <!-- CodeMirror の JavaScript 本体 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
+    <!-- CodeMirror の Python 用モード -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/python/python.min.js"></script>
+    <!-- 括弧の自動補完 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/edit/matchbrackets.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+    <header>
+        <h1>
+            <span class="python">Python</span>で遊ぼう
+        </h1>
+        
+        <h3>手を動かして学ぶ Python問題集</h3>
+
+    </header>
+
+    <!-- 🔹 ここにフラッシュメッセージを追加 -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <p class="flash {{ category }}">{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    
+    <div class="container">
+        <aside>
+            <h2>検索</h2>
+            <form method="GET" class = "search" id = "search-form" action="/">
+                <label for="q">キーワードを入力:</label>
+                <input type="text" class="input-box" name="q" id ="q" placeholder="キーワードを入力" value="{{ query if query else '' }}" >
+
+                <label for="category_id">カテゴリを選択:</label>
+                <select name="category_id" class="input-box"id="category_id" >
+                    <option value="">すべてのカテゴリ</option>
+                    {% if categories %}
+                        {% for category in categories %}
+                            <option value="{{ category['id'] }}" 
+                                {% if category_id and category_id|string == category['id']|string %}selected{% endif %}>
+                                {{ category['name'] }}
+                            </option>                    
+                        {% endfor %}
+                    {% else %}
+                        <option value="">カテゴリがありません</option>
+                    {% endif %}
+
+                </select>
+
+                <label for="difficulty_level_id">難易度を選択:</label>
+                <select name="difficulty_level_id" class="input-box" id="difficulty_level_id">
+                    <option value="">すべての難易度</option>
+                    {% if  difficulty_levels %}
+                        {% for  difficulty_level in  difficulty_levels %}
+                            <option value="{{ difficulty_level['id'] }}" 
+                            {% if difficulty_level_id is not none and difficulty_level_id|string == difficulty_level['id']|string %}selected{% endif %}>
+                                {{  difficulty_level['name'] }}
+                            </option>                    
+                        {% endfor %}
+                    {% else %}
+                        <option value="">カテゴリがありません</option>
+                    {% endif %}
+                </select>
+
+                <!-- 絞込み検索ボタン -->
+                <button type="submit">絞込み検索</button>
+                <button type="reset" name = "clear-search" onclick="resetSearch()" class="clear-button">クリア</button>
+            </form>
+
+            
+        </aside>
+        
+
+        <main >
+            <!-- ナビゲーションボタン -->
+            <div class="navigation-buttons"id="question-start">
+                {% if prev_index is not none %}
+                <a href="{{ url_for('view_questions', id=prev_id, category_id=category_id, difficulty_level_id=difficulty_level_id, q=query) }}#question-start" class="prev-button"><i class="fa-solid fa-circle-arrow-left"></i></a>
+                {% else %}
+                    <span class="disabled-button">前の問題</span>
+                {% endif %}
+
+                <h2><p>{{ question_number }}/{{ total_questions }}</p></h2>
+                      
+                {% if next_index is not none %}
+                <a href="{{ url_for('view_questions', id=next_id, category_id=category_id, difficulty_level_id=difficulty_level_id,q=query) }}#question-start" class="next-button"><i class="fa-solid fa-circle-arrow-right"></i></a>
+
+                {% else %}
+                    <span class="disabled-button">次の問題</span>
+                {% endif %}
+            </div>
+
+            
+
+            <!-- 問題表示 -->
+            {% if question %}
+                <div class="question-container" >
+                    <div id = "question_info">
+                        <p class ="question_info">ID:{{ question['id']}}</p>
+                        <p class ="question_info">カテゴリ:{{ question['category_name']}}</p>
+                    </div>
+                    <div class="question-box">
+                        <p class="description-text">問題: {{ question['question'] | safe }}</p>
+                    </div>
+
+                    
+                    <!-- 期待される出力がある場合 -->
+                    {% if questions[0]['expected_output'] %}
+                    <div class="expected-output">
+                        <strong>期待される出力:</strong>
+                        <pre>{{ questions[0]['expected_output'] | default('出力例なし', true) }}</pre>
+                    </div>
+                    {% else %}
+                        <p>出力例なし</p>
+                    {% endif %}
+                
+
+
+        
+                    <!-- コード実行エリア -->
+                    <strong>コードを書いて試してみよう:</strong>
+                    <div id = "code_input_area">
+                        <textarea id="code-editor"></textarea>
+                        <button id = "code_enter_button"onclick="runPythonCode()">実行</button>
+                    </div> 
+                    
+                    <pre id="output"></pre> <!-- 出力を表示するエリア -->
+            
+                        <!-- 解答ボタン -->
+                    <button id="answer-button" onclick="showAnswerAndDescription('answer{{ question['id'] }}', 'description{{ question['id'] }}')">
+                        解答を見る
+                    </button>
+                                
+                    <!-- 解答 -->
+                    <div id="answer{{ question['id'] }}" class="answer-box" style="display: none;">
+                        <p class="description-text">解答: {{ question['answer'] | safe }}</p>
+                    </div>
+                    
+                    <div id="description{{ question['id'] }}" class="description-box" style="display: none;">
+                        <p class="description-text">解説: {{ question['description'] | safe }}</p>
+                    </div>
+                </div>
+            {% else %}
+                <p>該当する問題がありません。</p>
+            {% endif %}
+                
+
+        
+            <!-- ナビゲーションボタン -->
+            <div class="navigation-buttons">
+                {% if prev_index is not none %}
+                <a href="{{ url_for('view_questions', id=prev_id, category_id=category_id, difficulty_level_id=difficulty_level_id, q=query) }}#question-start" class="prev-button"><i class="fa-solid fa-circle-arrow-left"></i></a>
+                {% else %}
+                    <span class="disabled-button">前の問題</span>
+                {% endif %}
+
+                <h2><p>{{ question_number }}/{{ total_questions }}</p></h2>
+                      
+                {% if next_index is not none %}
+                <a href="{{ url_for('view_questions', id=next_id, category_id=category_id, difficulty_level_id=difficulty_level_id,q=query) }}#question-start" class="next-button"><i class="fa-solid fa-circle-arrow-right"></i></a>
+                {% else %}
+                    <span class="disabled-button">次の問題</span>
+                {% endif %}
+            </div>
+        </main>
+
+                
+        
+    </div>
+
+<footer>
+    <p>&copy; 2025 python問題集</p>
+    <a href="#top">トップに戻る</a>
+
+</footer>
+</body>
+<script>
+function showAnswerAndDescription(answerId, descriptionId) {
+    // 解答を表示
+    document.getElementById(answerId).style.display = "block";
+    // 解説を表示
+    document.getElementById(descriptionId).style.display = "block";
+}
+
+<!-- コード入力用スクリプト -->
+
+
+<!-- CodeMirror を適用するスクリプト -->
+    // CodeMirror を適用
+    var editor = CodeMirror.fromTextArea(document.getElementById("code-editor"), {
+        mode: "python",
+        theme: "dracula",
+        lineNumbers: true,
+        indentUnit: 4,
+        tabSize: 4,
+        smartIndent: true,
+        matchBrackets: true
+    });
+
+    function runPythonCode() {
+        var code = editor.getValue(); // CodeMirror の内容を取得
+        fetch('/run', {  // Flask のエンドポイント "/run" にコードを送信
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ code: code })  // JSON でコードを送る
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("output").textContent = data.result; // 結果を表示
+        })
+        .catch(error => {
+            console.error("エラー:", error);
+            document.getElementById("output").textContent = "実行エラー";
+        });
+    }
+
+    function handleCategorySubmit() {
+        const form = document.querySelector("form");
+        form.submit();
+        return false; // ✅ 二重送信を防ぐ！
+    }
+    
+    document.addEventListener("DOMContentLoaded", function() {
+        let nextButton = document.getElementById("nextButton");
+        if (nextButton) {
+            console.log("次の問題ボタンの href (更新前):", nextButton.href);
+            nextButton.href = "{{ url_for('view_questions', id=next_id, category_id=category_id, q=query) }}";
+            console.log("次の問題ボタンの href (更新後):", nextButton.href);
+        }
+    });
+
+    // ✅ URL から `q=` を削除する関数
+    window.onload = function() {
+        let url = new URL(window.location);
+        if (url.searchParams.has("q") && url.searchParams.get("q") === "") {
+            url.searchParams.delete("q");
+            window.history.replaceState(null, "", url.toString());
+        }
+    };
+
+    function resetSearch() {
+        let form = document.getElementById("search-form");
+        if (form) {
+            form.reset();  // ✅ 確実にフォームをリセット
+            console.log("フォームがリセットされました！");  // ✅ デバッグ用（開発者ツールで確認）
+        } else {
+            console.error("フォームが見つかりません！");
+        }
+        window.location.href = "{{ url_for('view_questions') }}";  // ✅ URLをリロード
+    }
+
+
+
+</script>
+
+
+
