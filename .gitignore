@@ -1,3 +1,3 @@
 .env
 # SQLite データベースを除外
-database.db
+database.db.env
