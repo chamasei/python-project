@@ -51,29 +51,25 @@
                 <input type="text" class="input-box" name="q" id ="q" placeholder="キーワードを入力" value="{{ query if query else '' }}" >
 
                 <label for="category_id">カテゴリを選択:</label>
-                <select name="category_id" class="input-box"id="category_id" >
+                <select name="category_id" class="input-box" id="category_id">
                     <option value="">すべてのカテゴリ</option>
-                    {% if categories %}
-                        {% for category in categories %}
-                            <option value="{{ category['id'] }}" 
-                                {% if category_id and category_id|string == category['id']|string %}selected{% endif %}>
-                                {{ category['name'] }}
-                            </option>                    
-                        {% endfor %}
-                    {% else %}
-                        <option value="">カテゴリがありません</option>
-                    {% endif %}
-
+                    {% for category in categories %}
+                        <option value="{{ category.id }}"
+                        {% if category_id is not none and category_id|string == category.id|string %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
+                    {% endfor %}
                 </select>
+                
 
                 <label for="difficulty_level_id">難易度を選択:</label>
                 <select name="difficulty_level_id" class="input-box" id="difficulty_level_id">
                     <option value="">すべての難易度</option>
                     {% if  difficulty_levels %}
                         {% for  difficulty_level in  difficulty_levels %}
-                            <option value="{{ difficulty_level['id'] }}" 
-                            {% if difficulty_level_id is not none and difficulty_level_id|string == difficulty_level['id']|string %}selected{% endif %}>
-                                {{  difficulty_level['name'] }}
+                            <option value="{{ difficulty_level.id }}" 
+                            {% if difficulty_level_id is not none and difficulty_level_id|string == difficulty_level.id|string %}selected{% endif %}>
+                                {{  difficulty_level.level }}
                             </option>                    
                         {% endfor %}
                     {% else %}
@@ -115,19 +111,19 @@
             {% if question %}
                 <div class="question-container" >
                     <div id = "question_info">
-                        <p class ="question_info">ID:{{ question['id']}}</p>
-                        <p class ="question_info">カテゴリ:{{ question['category_name']}}</p>
+                        <p class ="question_info">ID:{{ question.id}}</p>
+                        <p class ="question_info">カテゴリ:{{ question.category_name}}</p>
                     </div>
                     <div class="question-box">
-                        <p class="description-text">問題: {{ question['question'] | safe }}</p>
+                        <p class="description-text">問題: {{ question.question | safe }}</p>
                     </div>
 
                     
                     <!-- 期待される出力がある場合 -->
-                    {% if questions[0]['expected_output'] %}
+                    {% if questions[0].expected_output %}
                     <div class="expected-output">
                         <strong>期待される出力:</strong>
-                        <pre>{{ questions[0]['expected_output'] | default('出力例なし', true) }}</pre>
+                        <pre>{{ questions[0].expected_output | default('出力例なし', true) }}</pre>
                     </div>
                     {% else %}
                         <p>出力例なし</p>
@@ -146,17 +142,17 @@
                     <pre id="output"></pre> <!-- 出力を表示するエリア -->
             
                         <!-- 解答ボタン -->
-                    <button id="answer-button" onclick="showAnswerAndDescription('answer{{ question['id'] }}', 'description{{ question['id'] }}')">
+                    <button id="answer-button" onclick="showAnswerAndDescription('answer{{ question.id }}', 'description{{ question.id }}')">
                         解答を見る
                     </button>
                                 
                     <!-- 解答 -->
                     <div id="answer{{ question['id'] }}" class="answer-box" style="display: none;">
-                        <p class="description-text">解答: {{ question['answer'] | safe }}</p>
+                        <p class="description-text">解答: {{ question.answer | safe }}</p>
                     </div>
                     
                     <div id="description{{ question['id'] }}" class="description-box" style="display: none;">
-                        <p class="description-text">解説: {{ question['description'] | safe }}</p>
+                        <p class="description-text">解説: {{ question.description | safe }}</p>
                     </div>
                 </div>
             {% else %}
@@ -192,7 +188,9 @@
     <a href="#top">トップに戻る</a>
 
 </footer>
+
 </body>
+
 <script>
 function showAnswerAndDescription(answerId, descriptionId) {
     // 解答を表示
