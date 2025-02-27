@@ -31,21 +31,12 @@
 
     </header>
 
-    <!-- 🔹 ここにフラッシュメッセージを追加 -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <div class="flash-messages">
-                {% for category, message in messages %}
-                    <p class="flash {{ category }}">{{ message }}</p>
-                {% endfor %}
-            </div>
-        {% endif %}
-    {% endwith %}
+
 
     
     <div class="container">
         <aside>
-            <h2>検索</h2>
+            <h3 id = "search-title">検索</h3>
             <form method="GET" class = "search" id = "search-form" action="/">
                 <label for="q">キーワードを入力:</label>
                 <input type="text" class="input-box" name="q" id ="q" placeholder="キーワードを入力" value="{{ query if query else '' }}" >
@@ -87,10 +78,21 @@
         
 
         <main >
+            <!-- 🔹 ここにフラッシュメッセージを追加 -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <p class="flash {{ category }}">{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% endwith %}
+
             <!-- ナビゲーションボタン -->
             <div class="navigation-buttons"id="question-start">
                 {% if prev_index is not none %}
-                <a href="{{ url_for('view_questions', id=prev_id, category_id=category_id, difficulty_level_id=difficulty_level_id, q=query) }}#question-start" class="prev-button"><i class="fa-solid fa-circle-arrow-left"></i></a>
+                <a href="{{ url_for('view_questions', id=prev_id, category_id=category_id, difficulty_level_id=difficulty_level_id, q=query) }}" class="prev-button"><i class="fa-solid fa-circle-arrow-left"></i></a>
                 {% else %}
                     <span class="disabled-button">前の問題</span>
                 {% endif %}
@@ -98,7 +100,7 @@
                 <h2><p>{{ question_number }}/{{ total_questions }}</p></h2>
                       
                 {% if next_index is not none %}
-                <a href="{{ url_for('view_questions', id=next_id, category_id=category_id, difficulty_level_id=difficulty_level_id,q=query) }}#question-start" class="next-button"><i class="fa-solid fa-circle-arrow-right"></i></a>
+                <a href="{{ url_for('view_questions', id=next_id, category_id=category_id, difficulty_level_id=difficulty_level_id,q=query) }}" class="next-button"><i class="fa-solid fa-circle-arrow-right"></i></a>
 
                 {% else %}
                     <span class="disabled-button">次の問題</span>
@@ -164,7 +166,7 @@
             <!-- ナビゲーションボタン -->
             <div class="navigation-buttons">
                 {% if prev_index is not none %}
-                <a href="{{ url_for('view_questions', id=prev_id, category_id=category_id, difficulty_level_id=difficulty_level_id, q=query) }}#question-start" class="prev-button"><i class="fa-solid fa-circle-arrow-left"></i></a>
+                <a href="{{ url_for('view_questions', id=prev_id, category_id=category_id, difficulty_level_id=difficulty_level_id, q=query) }}" class="prev-button"><i class="fa-solid fa-circle-arrow-left"></i></a>
                 {% else %}
                     <span class="disabled-button">前の問題</span>
                 {% endif %}
@@ -172,7 +174,7 @@
                 <h2><p>{{ question_number }}/{{ total_questions }}</p></h2>
                       
                 {% if next_index is not none %}
-                <a href="{{ url_for('view_questions', id=next_id, category_id=category_id, difficulty_level_id=difficulty_level_id,q=query) }}#question-start" class="next-button"><i class="fa-solid fa-circle-arrow-right"></i></a>
+                <a href="{{ url_for('view_questions', id=next_id, category_id=category_id, difficulty_level_id=difficulty_level_id,q=query) }}" class="next-button"><i class="fa-solid fa-circle-arrow-right"></i></a>
                 {% else %}
                     <span class="disabled-button">次の問題</span>
                 {% endif %}
@@ -239,14 +241,7 @@ function showAnswerAndDescription(answerId, descriptionId) {
         return false; // ✅ 二重送信を防ぐ！
     }
     
-    document.addEventListener("DOMContentLoaded", function() {
-        let nextButton = document.getElementById("nextButton");
-        if (nextButton) {
-            console.log("次の問題ボタンの href (更新前):", nextButton.href);
-            nextButton.href = "{{ url_for('view_questions', id=next_id, category_id=category_id, q=query) }}";
-            console.log("次の問題ボタンの href (更新後):", nextButton.href);
-        }
-    });
+
 
     // ✅ URL から `q=` を削除する関数
     window.onload = function() {
@@ -267,8 +262,23 @@ function showAnswerAndDescription(answerId, descriptionId) {
         }
         window.location.href = "{{ url_for('view_questions') }}";  // ✅ URLをリロード
     }
+    
 
+    document.addEventListener("DOMContentLoaded", function() {
+    const targetElement = document.getElementById("question-start");
 
+    if (targetElement) {
+        let offset = window.innerWidth <= 768 ? 0 : 500;  // ✅ スマホとPCでオフセット変更
+        let targetPosition = targetElement.getBoundingClientRect().top + window.scrollY - offset;
+
+        console.log(`📍 スクロール位置: ${targetPosition} (オフセット: ${offset})`);
+
+        window.scrollTo({
+            top: targetPosition,
+            behavior: "smooth"
+        });
+    }
+});
 
 </script>
 

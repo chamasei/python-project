@@ -294,6 +294,15 @@ def view_questions():
         question_data.question = detect_code_blocks(question_data.question)
         question_data.question = format_description(question_data.question)
 
+    if hasattr(question_data, "expected_output") and question_data.expected_output is not None:
+        question_data.expected_output = detect_code_blocks(question_data.expected_output)
+        question_data.expected_output = format_description(question_data.expected_output)
+
+    if hasattr(question_data, "answer") and question_data.answer is not None:
+        question_data.answer = detect_code_blocks(question_data.answer)
+        question_data.answer = format_description(question_data.answer)
+
+
     if hasattr(question_data, "description") and question_data.description is not None:
         question_data.description = detect_code_blocks(question_data.description)
         question_data.description = format_description(question_data.description)
@@ -384,14 +393,19 @@ def add_question():
 @app.route('/admin/manage', methods=['GET', 'POST'])
 @admin_required 
 def manage_questions():
-    questions = db.session.query(
-        Question.id,
-        Question.question,
-        Category.name.label("category_name"),
-        DifficultyLevel.level.label("difficulty_name")
-    ).outerjoin(Category, Question.category_id == Category.id
-    ).outerjoin(DifficultyLevel, Question.difficulty_id == DifficultyLevel.id
-    ).all()
+    questions = (
+        db.session.query(
+            Question.id,
+            Question.question,
+            Category.name.label("category_name"),
+            DifficultyLevel.level.label("difficulty_name"),
+        )
+        .outerjoin(Category, Question.category_id == Category.id)
+        .outerjoin(DifficultyLevel, Question.difficulty_id == DifficultyLevel.id)
+        .order_by(Question.id.asc())  # ✅ `.order_by()` を適切な位置に
+        .all()  # ✅ `.all()` も正しく適用
+    )
+
     
     return render_template('manage_questions.html', questions=questions)
 
@@ -433,10 +447,10 @@ def edit_question(id):
 
         flash('問題を更新しました！', 'success')
         return redirect(url_for('manage_questions'))
-
+    
     categories = db.session.query(Category).all()
     difficulty_levels = db.session.query(DifficultyLevel).all()
-
+    
     return render_template('edit_question.html', question=question, categories=categories, difficulty_levels=difficulty_levels)
 
 
