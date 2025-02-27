@@ -1,3 +1,5 @@
 .env
 # SQLite データベースを除外
 database.db.env
+*.log
+logs/
