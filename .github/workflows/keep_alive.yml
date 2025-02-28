@@ -3,7 +3,8 @@ name: Keep Render App Alive
 on:
   schedule:
     - cron: "*/1 * * * *"  # 1分ごとに実行
-
+  workflow_dispatch:  # これを追加（手動実行を可能にする）
+  
 jobs:
   keep_alive:
     runs-on: ubuntu-latest
