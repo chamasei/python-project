@@ -36,6 +36,10 @@ else:
 # PostgreSQL の場合、接続URLの「postgres://」を「postgresql://」に変換
 if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+    
+if "sslmode" not in DATABASE_URL:
+    DATABASE_URL += "?sslmode=require"
+
 
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
