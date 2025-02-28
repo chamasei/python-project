@@ -1,7 +1,6 @@
 from flask import Flask, request, session,render_template, redirect, url_for, flash,jsonify
 from markupsafe import Markup
 import subprocess
-import sqlite3
 import logging
 import sys
 import re
@@ -12,6 +11,7 @@ from functools import wraps  # ✅ これを追加！
 from sqlalchemy import func
 from sqlalchemy.engine.row import Row
 import markdown
+import psycopg2
 
 load_dotenv()
 
@@ -24,7 +24,13 @@ logging.basicConfig(
 
 app = Flask(__name__)  # ✅ ここで `Flask` を作成！
 
-app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL", "postgresql://localhost:5432/default_db")
+load_dotenv()
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if not DATABASE_URL:
+    raise ValueError("DATABASE_URL is not set in environment variables")
+
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)  # ✅ `app` に `db` をバインド！
@@ -38,6 +44,16 @@ with app.app_context():
 # ✅ 環境変数から secret_key を取得（設定がなければ "your_secret_key_here" を使う）
 app.secret_key = os.getenv("FLASK_SECRET_KEY") 
 ADMIN_PASSWORD = os.getenv("PYTHON_ADMIN_PASSWORD")
+
+def get_db_connection():
+    DATABASE_URL = os.getenv("DATABASE_URL")  # 環境変数から取得
+
+    if not DATABASE_URL:
+        raise ValueError("DATABASE_URL is not set in environment variables")
+
+    conn = psycopg2.connect(DATABASE_URL)  # PostgreSQL に接続
+    return conn
+
 
 #それぞれのページで管理者ログインを要求する
 def admin_required(f):
@@ -84,14 +100,19 @@ def admin_login():
 
 @admin_required
 def manage_questions():
-    conn = get_db_connection()
-    questions = conn.execute('''
+    conn = get_db_connection()  # PostgreSQL に接続
+    cur = conn.cursor()
+
+    cur.execute('''
         SELECT questions.id, questions.question, categories.name AS category_name, difficulty_levels.name AS difficulty_name
         FROM questions
         LEFT JOIN categories ON questions.category_id = categories.id
         LEFT JOIN difficulty_levels ON questions.difficulty_id = difficulty_levels.id
-    ''').fetchall()
+    ''')
+    questions = cur.fetchall()  # 変更: fetchall() をカーソルで取得
+    cur.close()
     conn.close()
+
     return render_template('manage_questions.html', questions=questions)
 
 
