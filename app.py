@@ -28,7 +28,14 @@ load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 if not DATABASE_URL:
+    print("❌ DATABASE_URL is NOT set")
     raise ValueError("DATABASE_URL is not set in environment variables")
+else:
+    print(f"✅ DATABASE_URL: {DATABASE_URL}")
+
+# PostgreSQL の場合、接続URLの「postgres://」を「postgresql://」に変換
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
