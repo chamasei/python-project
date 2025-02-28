@@ -10,4 +10,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Send request to Render
-        run: curl -s https://your-app.onrender.com > /dev/null
+        run: curl -s https://python-project-inzf.onrender.com > /dev/null
