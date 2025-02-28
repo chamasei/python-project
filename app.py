@@ -11,6 +11,7 @@ import os
 from functools import wraps  # ✅ これを追加！
 from sqlalchemy import func
 from sqlalchemy.engine.row import Row
+import markdown
 
 load_dotenv()
 
@@ -500,6 +501,16 @@ def run_code():
 
     return jsonify({"result": output})
 
+@app.route('/disclaimer')
+def disclaimer():
+    # Markdownファイルを読み込む
+    with open("disclaimer.md", "r", encoding="utf-8") as f:
+        md_content = f.read()
+
+    # MarkdownをHTMLに変換
+    html_content = markdown.markdown(md_content)
+
+    return render_template("disclaimer.html", content=Markup(html_content))
 
 
 

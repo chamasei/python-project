@@ -1,0 +1,12 @@
+name: Keep Render App Alive
+
+on:
+  schedule:
+    - cron: "*/1 * * * *"  # 1分ごとに実行
+
+jobs:
+  keep_alive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send request to Render
+        run: curl -s https://your-app.onrender.com > /dev/null
