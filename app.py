@@ -484,6 +484,18 @@ def delete_question(id):
 def edit_question(id):
     question = db.session.query(Question).filter_by(id=id).first()
 
+    print(f"📥 リクエストの `Content-Type`: {request.content_type}", file=sys.stderr)
+
+    try:
+        data = request.get_json(force=True)  # ✅ `force=True` を試してみる！
+        print(f"📥 受け取った JSON データ: {data}", file=sys.stderr)
+    except Exception as e:
+        print(f"🚨 JSON のパースエラー: {e}", file=sys.stderr)
+        return jsonify({"error": f"エラー: {e}"}), 400
+
+    if not data:
+        return jsonify({"error": "リクエストボディが JSON 形式ではありません！"}), 400
+
     if request.method == 'POST':
         data = request.get_json()  # ✅ ここを request.form ではなく request.get_json() にする！
 
