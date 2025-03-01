@@ -27,12 +27,6 @@ app = Flask(__name__)  # ✅ ここで `Flask` を作成！
 load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
 
-if not DATABASE_URL:
-    print("❌ DATABASE_URL is NOT set")
-    raise ValueError("DATABASE_URL is not set in environment variables")
-else:
-    print(f"✅ DATABASE_URL: {DATABASE_URL}")
-
 # PostgreSQL の場合、接続URLの「postgres://」を「postgresql://」に変換
 if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
@@ -368,25 +362,10 @@ def view_question(id=None):
         .order_by(Question.id.desc())
         .first()
     )
-    print(f"🌟 デバッグ: current_id = {current_id}", file=sys.stderr)
-    print(f"🌟 デバッグ: next_question = {next_question}", file=sys.stderr)
-    print(f"🌟 デバッグ: prev_question = {prev_question}", file=sys.stderr)
-
-    if next_question:
-        print(f"✅ 次の問題 ID: {next_question.Question.id}", file=sys.stderr)
-    else:
-        print("⚠️ 次の問題が見つかりません", file=sys.stderr)
-
-    if prev_question:
-        print(f"✅ 前の問題 ID: {prev_question.Question.id}", file=sys.stderr)
-    else:
-        print("⚠️ 前の問題が見つかりません", file=sys.stderr)
-
 
     next_id = next_question.Question.id if next_question else None
     prev_id = prev_question.Question.id if prev_question else None
-    print(f"✅ 現在の ID: {id}, 次の問題 ID: {next_id}, 前の問題 ID: {prev_id}", file=sys.stderr)
-
+    
     # ✅ `next_id` が `None` の場合は最初の問題に戻す
     if next_id is None:
         flash("🚀 次の問題はありません。最初の問題に戻ります。", "info")
@@ -495,29 +474,36 @@ def delete_question(id):
 @app.route('/admin/edit/<int:id>', methods=['GET', 'POST'])
 @admin_required 
 def edit_question(id):
-    question = db.session.get(Question, id)  # ✅ `id` に該当するデータを取得
+    question = db.session.query(Question).filter_by(id=id).first()  # ✅ `get()` が動かない場合はこれ！
 
     if not question:
         flash('編集する問題が見つかりません！', 'error')
         return redirect(url_for('manage_questions'))
 
     if request.method == 'POST':
-        question.question = request.form['question']
-        question.answer = request.form['answer']
-        question.description = request.form.get('description', '')
-        question.category_id = request.form.get('category_id', None)
-        question.difficulty_id = request.form.get('difficulty_id', None)
+        try:
+            question.question = request.form['question']
+            question.answer = request.form['answer']
+            question.description = request.form.get('description', '')
 
-        db.session.commit()  # ✅ 更新を確定
+            # ✅ `category_id` と `difficulty_id` を `int` に変換
+            question.category_id = int(request.form.get('category_id', 0)) or None
+            question.difficulty_id = int(request.form.get('difficulty_id', 0)) or None
 
-        flash('問題を更新しました！', 'success')
-        return redirect(url_for('manage_questions'))
-    
+            db.session.commit()  # ✅ 更新を確定
+            flash('問題を更新しました！', 'success')
+            return redirect(url_for('manage_questions'))
+        
+        except Exception as e:
+            db.session.rollback()  # ✅ エラー時にロールバック
+            flash(f"エラーが発生しました: {e}", "error")
+            print(f"🚨 データベースエラー: {e}", file=sys.stderr)
+            return redirect(url_for('edit_question', id=id))
+
     categories = db.session.query(Category).all()
     difficulty_levels = db.session.query(DifficultyLevel).all()
-    
-    return render_template('edit_question.html', question=question, categories=categories, difficulty_levels=difficulty_levels)
 
+    return render_template('edit_question.html', question=question, categories=categories, difficulty_levels=difficulty_levels)
 
 
 if sys.platform != "win32":
