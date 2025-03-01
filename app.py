@@ -504,8 +504,8 @@ def edit_question(id):
     categories = db.session.query(Category).all() or []
     difficulty_levels = db.session.query(DifficultyLevel).all() or []
 
-    print(f"✅ `edit.html` を表示します！", file=sys.stderr)
-    return render_template('edit.html', question=question, categories=categories, difficulty_levels=difficulty_levels)
+    print(f"✅ `edit_question.html` を表示します！", file=sys.stderr)
+    return render_template('edit_question.html', question=question, categories=categories, difficulty_levels=difficulty_levels)
 
 
 if sys.platform != "win32":
