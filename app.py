@@ -485,7 +485,7 @@ def edit_question(id):
     question = db.session.query(Question).filter_by(id=id).first()
 
     print(f"📥 リクエストの `Content-Type`: {request.content_type}", file=sys.stderr)
-
+    print(f"📥 受け取ったリクエスト: {request.method}")
     try:
         data = request.get_json(force=True)  # ✅ `force=True` を試してみる！
         print(f"📥 受け取った JSON データ: {data}", file=sys.stderr)
