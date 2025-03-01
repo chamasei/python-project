@@ -108,8 +108,12 @@
         })
         .then(response => response.json())
         .then(data => {
-            alert(data.message);  // ✅ 「更新成功」のメッセージを表示
-            window.location.href = '/admin/manage'; // ✅ 更新後に管理ページへリダイレクト
+            if (data.message) {
+            alert("✅ " + data.message);  // ✅ 成功メッセージを表示
+            window.location.href = `/question/${questionId}`;
+        } else {
+            alert("⚠️ エラー: " + data.error);  // ✅ エラーメッセージを表示
+        }     
         })
         .catch(error => {
             console.error('エラー:', error);

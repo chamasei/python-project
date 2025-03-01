@@ -493,13 +493,13 @@ def edit_question(id):
 
             db.session.commit()  # ✅ 更新を確定
             flash('問題を更新しました！', 'success')
-            return redirect(url_for('manage_questions'))
+            return jsonify({"message": "問題を更新しました！"}), 200 
         
         except Exception as e:
             db.session.rollback()  # ✅ エラー時にロールバック
             flash(f"エラーが発生しました: {e}", "error")
             print(f"🚨 データベースエラー: {e}", file=sys.stderr)
-            return redirect(url_for('edit_question', id=id))
+            return jsonify({"error": f"エラー: {e}"}), 500
 
     categories = db.session.query(Category).all()
     difficulty_levels = db.session.query(DifficultyLevel).all()
