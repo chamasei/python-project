@@ -30,7 +30,7 @@
         </aside>
 
         <main>
-            <form method="POST" action="{{ url_for('edit_question', id=question.id) }}">
+            <form method="POST" action="{{ url_for('edit_question', id=question.id) }}"enctype="application/x-www-form-urlencoded">
                 <!-- 問題編集 -->
                 <div class="question-box">
                     <textarea id="edit_question" name="edit_question">{{ question.question }}</textarea>
@@ -46,7 +46,7 @@
                 </div>
                 <!-- 解説編集 -->
                 <div class="description-box">
-                    <label for="register_description">解説:</label>
+                    <label for="edit_description">解説:</label>
                     <textarea id="edit_description" name="edit_description">{{ question.description}}</textarea>
                 </div>
                 <button type="button" onclick="saveQuestion({{ question.id }})" class="save-button">保存</button>
@@ -87,42 +87,42 @@
 
     <script>
         function saveQuestion(id) {
-        const question = document.getElementById('edit_question').value;
-        const answer = document.getElementById('edit_answer').value;
-        const description = document.getElementById('edit_description').value;
-        const category_id = document.querySelector('[name="category_id"]').value;
-        const difficulty_level_id = document.querySelector('[name="difficulty_level_id"]').value;
+            const question = document.getElementById('edit_question').value;
+            const answer = document.getElementById('edit_answer').value;
+            const description = document.getElementById('edit_description').value;
+            const category_id = document.querySelector('[name="category_id"]').value;
+            const difficulty_level_id = document.querySelector('[name="difficulty_level_id"]').value;
+        
+            fetch(`/admin/edit/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json', // ✅ JSON で送信する！
+                },
+                body: JSON.stringify({
+                    question: question,
+                    answer: answer,
+                    description: description,
+                    category_id: category_id,
+                    difficulty_level_id: difficulty_level_id,
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    alert("✅ " + data.message);  // ✅ 成功メッセージを表示
+                    window.location.href = `/question/${id}`;  // ✅ 変数名を `id` に修正！
+                } else {
+                    alert("⚠️ エラー: " + data.error);  // ✅ エラーメッセージを表示
+                }     
+            })
+            .catch(error => {
+                console.error('🚨 エラー:', error);
+            });
+        }
+        </script>
+        
 
-        fetch(`/admin/edit/${id}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json', // ✅ JSON で送信する！
-            },
-            body: JSON.stringify({
-                question: question,
-                answer: answer,
-                description: description,
-                category_id: category_id,
-                difficulty_level_id: difficulty_level_id,
-            }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.message) {
-            alert("✅ " + data.message);  // ✅ 成功メッセージを表示
-            window.location.href = `/question/${questionId}`;
-        } else {
-            alert("⚠️ エラー: " + data.error);  // ✅ エラーメッセージを表示
-        }     
-        })
-        .catch(error => {
-            console.error('エラー:', error);
-        });
-    }
 
-
-
-    </script>
     
 </body>
 

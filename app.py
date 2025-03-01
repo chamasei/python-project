@@ -471,41 +471,32 @@ def delete_question(id):
 
 
 # 問題編集用ルート
-@app.route('/admin/edit/<int:id>', methods=['GET', 'POST'])
+@app.route('/admin/edit/<int:id>', methods=['POST'])
 @admin_required 
 def edit_question(id):
-    question = db.session.query(Question).filter_by(id=id).first()  # ✅ `get()` が動かない場合はこれ！
+    question = db.session.query(Question).filter_by(id=id).first()
 
     if not question:
-        flash('編集する問題が見つかりません！', 'error')
-        return redirect(url_for('manage_questions'))
+        return jsonify({"error": "編集する問題が見つかりません！"}), 404  # ✅ JSON でエラーを返す
 
-    if request.method == 'POST':
-        print(f"📥 フォームデータ: {request.form}", file=sys.stderr) 
-        try:
-            question.question = request.form['question']
-            question.answer = request.form['answer']
-            question.description = request.form.get('description', '')
+    try:
+        data = request.get_json()  # ✅ JSON データを取得！
+        print(f"📥 受け取ったデータ: {data}", file=sys.stderr)
 
-            # ✅ `category_id` と `difficulty_id` を `int` に変換
-            question.category_id = int(request.form.get('category_id', 0)) or None
-            question.difficulty_id = int(request.form.get('difficulty_id', 0)) or None
+        question.question = data.get("question")
+        question.answer = data.get("answer")
+        question.description = data.get("description", "")
+        question.category_id = int(data.get("category_id", 0)) or None
+        question.difficulty_level_id = int(data.get("difficulty_level_id", 0)) or None
 
-            db.session.commit()  # ✅ 更新を確定
-            flash('問題を更新しました！', 'success')
-            return jsonify({"message": "問題を更新しました！"}), 200 
-        
-        except Exception as e:
-            db.session.rollback()  # ✅ エラー時にロールバック
-            flash(f"エラーが発生しました: {e}", "error")
-            print(f"🚨 データベースエラー: {e}", file=sys.stderr)
-            return jsonify({"error": f"エラー: {e}"}), 500
+        db.session.commit()
+        return jsonify({"message": "問題を更新しました！"}), 200  # ✅ 成功レスポンス！
 
-    categories = db.session.query(Category).all()
-    difficulty_levels = db.session.query(DifficultyLevel).all()
-
-    return render_template('edit_question.html', question=question, categories=categories, difficulty_levels=difficulty_levels)
-
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"エラー: {e}"}), 500
+    
+    
 
 if sys.platform != "win32":
     import resource
