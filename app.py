@@ -479,59 +479,50 @@ def delete_question(id):
 
 
 # 問題編集用ルート
-@app.route('/admin/edit/<int:id>', methods=['POST','GET'])
-@admin_required 
+@app.route('/admin/edit/<int:id>', methods=['GET', 'POST'])
+@admin_required
 def edit_question(id):
-    question = db.session.query(Question).filter_by(id=id).first()
-
+    print(f"📥 受け取ったリクエスト: {request.method}, ID={id}", file=sys.stderr)
     print(f"📥 リクエストの `Content-Type`: {request.content_type}", file=sys.stderr)
-    print(f"📥 受け取ったリクエスト: {request.method}")
-    try:
-        data = request.get_json(force=True)  # ✅ `force=True` を試してみる！
-        print(f"📥 受け取った JSON データ: {data}", file=sys.stderr)
-    except Exception as e:
-        print(f"🚨 JSON のパースエラー: {e}", file=sys.stderr)
-        return jsonify({"error": f"エラー: {e}"}), 400
 
-    if not data:
-        return jsonify({"error": "リクエストボディが JSON 形式ではありません！"}), 400
+    if request.method == 'GET':
+        print(f"✅ `GET` リクエストです！ `edit.html` を表示します！", file=sys.stderr)
 
-    if request.method == 'POST':
-        data = request.get_json()  # ✅ ここを request.form ではなく request.get_json() にする！
+        question = db.session.query(Question).filter_by(id=id).first()
+        if not question:
+            print(f"🚨 問題が見つかりません！ ID={id}", file=sys.stderr)
+            return jsonify({"error": "編集する問題が見つかりません！"}), 400
 
-        question.question = data.get("question")
-        question.answer = data.get("answer")
-        question.description = data.get("description", "")
-        question.category_id = int(data.get("category_id", 0)) or None
-        question.difficulty_level_id = int(data.get("difficulty_level_id", 0)) or None
+        categories = db.session.query(Category).all()
+        difficulty_levels = db.session.query(DifficultyLevel).all()
+        
+        return render_template('edit.html', question=question, categories=categories, difficulty_levels=difficulty_levels)
 
-        db.session.commit()
-        db.session.remove()
+    elif request.method == 'POST':
+        print(f"✅ `POST` リクエストです！データを更新します！", file=sys.stderr)
 
-        return jsonify({"message": "問題を更新しました！"}), 200
-    
-    if not question:
-        return jsonify({"error": "編集する問題が見つかりません！"}), 404  # ✅ JSON でエラーを返す
+        try:
+            data = request.get_json()
+            print(f"📥 受け取った JSON データ: {data}", file=sys.stderr)
 
-    try:
-        data = request.get_json()  # ✅ JSON データを取得！
-        print(f"📥 受け取ったデータ: {data}", file=sys.stderr)
+            question = db.session.query(Question).filter_by(id=id).first()
+            if not question:
+                return jsonify({"error": "問題が見つかりません！"}), 404
 
-        question.question = data.get("question")
-        question.answer = data.get("answer")
-        question.description = data.get("description", "")
-        question.category_id = int(data.get("category_id", 0)) or None
-        question.difficulty_level_id = int(data.get("difficulty_level_id", 0)) or None
+            question.question = data.get("question")
+            question.answer = data.get("answer")
+            question.description = data.get("description", "")
+            question.category_id = int(data.get("category_id", 0)) or None
+            question.difficulty_level_id = int(data.get("difficulty_level_id", 0)) or None
 
-        db.session.commit()
-        db.session.remove() 
-        return jsonify({"message": "問題を更新しました！"}), 200  # ✅ 成功レスポンス！
+            db.session.commit()
+            db.session.remove()
 
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({"error": f"エラー: {e}"}), 500
-    
+            return jsonify({"message": "問題を更新しました！"}), 200
 
+        except Exception as e:
+            print(f"🚨 JSON パースエラー: {e}", file=sys.stderr)
+            return jsonify({"error": f"エラー: {e}"}), 400
 
 if sys.platform != "win32":
     import resource
