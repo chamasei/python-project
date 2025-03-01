@@ -481,6 +481,7 @@ def edit_question(id):
         return redirect(url_for('manage_questions'))
 
     if request.method == 'POST':
+        print(f"📥 フォームデータ: {request.form}", file=sys.stderr) 
         try:
             question.question = request.form['question']
             question.answer = request.form['answer']
