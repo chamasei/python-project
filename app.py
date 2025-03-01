@@ -423,7 +423,7 @@ def add_question():
 
         db.session.add(new_question)
         db.session.commit()
-
+        db.session.remove() 
         flash('問題を追加しました！', 'success')
         return redirect(url_for('manage_questions'))
 
@@ -463,6 +463,7 @@ def delete_question(id):
         db.session.delete(question)  # ✅ 削除
         db.session.commit()  # ✅ 確定
         flash('問題を削除しました！', 'success')
+        db.session.remove() 
     else:
         flash('削除する問題が見つかりません！', 'error')
 
@@ -490,13 +491,14 @@ def edit_question(id):
         question.difficulty_level_id = int(data.get("difficulty_level_id", 0)) or None
 
         db.session.commit()
+        db.session.remove() 
         return jsonify({"message": "問題を更新しました！"}), 200  # ✅ 成功レスポンス！
 
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": f"エラー: {e}"}), 500
     
-    
+
 
 if sys.platform != "win32":
     import resource
