@@ -499,13 +499,43 @@ def edit_question(id):
         print(f"🚨 問題が見つかりません！ ID={id}", file=sys.stderr)
         return jsonify({"error": "編集する問題が見つかりません！"}), 400
 
-    print(f"✅ 問題データが見つかりました！", file=sys.stderr)
+    # ✅ `GET` の場合（編集画面を表示）
+    if request.method == 'GET':
+        print(f"✅ `edit_question.html` を表示します！", file=sys.stderr)
+        categories = db.session.query(Category).all() or []
+        difficulty_levels = db.session.query(DifficultyLevel).all() or []
+        return render_template('edit_question.html', question=question, categories=categories, difficulty_levels=difficulty_levels)
 
-    categories = db.session.query(Category).all() or []
-    difficulty_levels = db.session.query(DifficultyLevel).all() or []
+    # ✅ `POST` の場合（データを更新）
+    if request.method == 'POST':
+        print(f"📥 `POST` リクエストを受け取りました！", file=sys.stderr)
 
-    print(f"✅ `edit_question.html` を表示します！", file=sys.stderr)
-    return render_template('edit_question.html', question=question, categories=categories, difficulty_levels=difficulty_levels)
+        try:
+            data = request.get_json()
+            print(f"📥 受け取った JSON データ: {data}", file=sys.stderr)
+
+            if not data:
+                print(f"🚨 受け取ったデータが `None` です！", file=sys.stderr)
+                return jsonify({"error": "リクエストボディが JSON 形式ではありません！"}), 400
+
+            # ✅ データを更新
+            question.question = data.get("question")
+            question.answer = data.get("answer")
+            question.description = data.get("description", "")
+            question.category_id = int(data.get("category_id", 0)) or None
+            question.difficulty_level_id = int(data.get("difficulty_level_id", 0)) or None
+
+            print(f"✅ データを更新します！", file=sys.stderr)
+            db.session.commit()
+            db.session.remove()
+
+            print(f"✅ 「問題を更新しました！」を返します！", file=sys.stderr)
+            return jsonify({"message": "問題を更新しました！"}), 200
+
+        except Exception as e:
+            db.session.rollback()
+            print(f"🚨 データ更新エラー: {e}", file=sys.stderr)
+            return jsonify({"error": f"エラー: {e}"}), 500
 
 
 if sys.platform != "win32":
