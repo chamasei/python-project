@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Pythonの問題を解いて学べる無料のWebアプリ。初心者から上級者まで対応。">
+    <meta name="keywords" content="Python, プログラミング, 学習, 問題集, コーディング">
+    <meta name="author" content="pythonで遊ぼう">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Python問題集 | 無料で学べる">
+    <!-- OGP (SNSシェア対策) -->
+    <meta property="og:description" content="Pythonの問題を解いて学べる無料のWebアプリ。初心者から上級者まで対応。">
+    <meta property="og:image" content="https://python-project-inzf.onrender.com/static/og-image.jpg">
+    <meta property="og:url" content="https://python-project-inzf.onrender.com/">
+    <meta property="og:type" content="website">
+    <!-- Twitter用の設定 -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Python問題集 | 無料で学べる">
+    <meta name="twitter:description" content="Pythonの問題を解いて学べる無料のWebアプリ。">
+    <meta name="twitter:image" content="https://python-project-inzf.onrender.com/static/og-image.png">
+
+    <meta property="twitter:image:src" content="https://python-project-inzf.onrender.com/static/og-image.png">
+    <meta name="twitter:image" content="https://python-project-inzf.onrender.com/static/og-image.png">
+
+    <meta name="description" content="Python初心者向けの練習問題が無料で解ける問題集サイト。基本から応用まで解説付き。">
+
+    <title>Python 問題集</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&display=swap" rel="stylesheet">
+    <link href="../static/style.css" rel = "stylesheet" /> 
+    <!-- CodeMirror の基本スタイル -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css">
+    <!-- CodeMirror のテーマ（VSCode 風） -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/dracula.min.css">
+
+    <!-- CodeMirror の JavaScript 本体 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
+    <!-- CodeMirror の Python 用モード -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/python/python.min.js"></script>
+    <!-- 括弧の自動補完 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/edit/matchbrackets.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+
+    <header>
+        <a href="{{ url_for('home') }}" class = "no-underline">
+        <h1>
+            <span class="python">Python</span>で遊ぼう
+        </h1>
+        </a>       
+        <h2>手を動かして学ぶ Python問題集</h2>
+
+    </header>
+
+
+
+    
+    <div class="container">
+        <aside>
+            <p id = "search-title"><strong>検索</strong></p>
+            <form method="GET" class = "search" id = "search-form" action="{{ url_for('view_question') }}">
+                <label for="q">キーワードを入力:</label>
+                <input type="text" class="input-box" name="q" id ="q" placeholder="キーワードを入力" value="{{ query if query else '' }}" >
+
+                <label for="category_id">カテゴリを選択:</label>
+                <select name="category_id" class="input-box" id="category_id">
+                    <option value="">すべてのカテゴリ</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}"
+                        {% if category_id is not none and category_id|string == category.id|string %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+                
+
+                <label for="difficulty_level_id">難易度を選択:</label>
+                <select name="difficulty_level_id" class="input-box" id="difficulty_level_id">
+                    <option value="">すべての難易度</option>
+                    {% if  difficulty_levels %}
+                        {% for  difficulty_level in  difficulty_levels %}
+                            <option value="{{ difficulty_level.id }}" 
+                            {% if difficulty_level_id is not none and difficulty_level_id|string == difficulty_level.id|string %}selected{% endif %}>
+                                {{  difficulty_level.level }}
+                            </option>                    
+                        {% endfor %}
+                    {% else %}
+                        <option value="">カテゴリがありません</option>
+                    {% endif %}
+                </select>
+
+                <!-- 絞込み検索ボタン -->
+                <button type="submit">絞込み検索</button>
+                <button type="reset" name = "clear-search" onclick="resetSearch()" class="clear-button">クリア</button>
+            </form>
+
+            
+        </aside>
+
+
+        <main >
+            {% block content %}
+            {% endblock %}
+        </main>
+
+                
+        
+    </div>
+
+<footer>
+
+    <p>&copy; 2025 pythonで遊ぼう</p>
+    <p><a href="{{ url_for('disclaimer') }}">免責事項</a></p>
+    <a href="#top">トップに戻る</a>
+
+</footer>
+
+</body>
+
+
+

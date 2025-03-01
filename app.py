@@ -36,7 +36,7 @@ else:
 # PostgreSQL の場合、接続URLの「postgres://」を「postgresql://」に変換
 if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
-    
+
 if "sslmode" not in DATABASE_URL:
     DATABASE_URL += "?sslmode=require"
 
@@ -164,6 +164,8 @@ def detect_code_blocks(description):
 
     return final_output
 
+
+
 def format_description(description):
     lines = description.split("\n")
     formatted_parts = []
@@ -232,14 +234,27 @@ def format_description(description):
 
     return Markup("\n".join(formatted_parts))  # ✅ 最後に `Markup` を適用
 
+@app.route('/')
+def home():
+    print("🔥 home() が呼ばれました！", file=sys.stderr)
 
+    # ✅ カテゴリ・難易度のリストを取得
+    categories = db.session.query(Category).all()
+    difficulty_levels = db.session.query(DifficultyLevel).all()
 
-@app.route('/', methods=['GET'])
-def view_questions():
-    print("🔥 view_questions() が呼ばれました！", file=sys.stderr)
+    return render_template(
+        'top.html',
+        categories=categories,
+        difficulty_levels=difficulty_levels
+    )
+
+@app.route('/question/<int:id>', methods=['GET'])
+@app.route('/questions', methods=['GET'])
+def view_question(id=None):
+    print(f"🔥 view_question() が呼ばれました！ ID={id}", file=sys.stderr)
 
     # ✅ リクエストされた `id` を取得（int型）
-    current_id = request.args.get('id', type=int)
+    current_id = id
     
     # ✅ フィルタ条件を取得
     category_id = request.args.get("category_id", default=None, type=int)
@@ -347,14 +362,30 @@ def view_questions():
         .order_by(Question.id.asc())
         .first()
     )
+    
     prev_question = (
         query_filter.filter(Question.id < current_id)
         .order_by(Question.id.desc())
         .first()
     )
-    
+    print(f"🌟 デバッグ: current_id = {current_id}", file=sys.stderr)
+    print(f"🌟 デバッグ: next_question = {next_question}", file=sys.stderr)
+    print(f"🌟 デバッグ: prev_question = {prev_question}", file=sys.stderr)
+
+    if next_question:
+        print(f"✅ 次の問題 ID: {next_question.Question.id}", file=sys.stderr)
+    else:
+        print("⚠️ 次の問題が見つかりません", file=sys.stderr)
+
+    if prev_question:
+        print(f"✅ 前の問題 ID: {prev_question.Question.id}", file=sys.stderr)
+    else:
+        print("⚠️ 前の問題が見つかりません", file=sys.stderr)
+
+
     next_id = next_question.Question.id if next_question else None
     prev_id = prev_question.Question.id if prev_question else None
+    print(f"✅ 現在の ID: {id}, 次の問題 ID: {next_id}, 前の問題 ID: {prev_id}", file=sys.stderr)
 
     # ✅ `next_id` が `None` の場合は最初の問題に戻す
     if next_id is None:
@@ -372,7 +403,7 @@ def view_questions():
 
     # ✅ 取得したデータをテンプレートに渡す
     return render_template(
-        'index.html',
+        'question.html',
         questions=[question_data],
         categories=categories,
         category_id=category_id,
@@ -386,6 +417,7 @@ def view_questions():
         total_questions=total_questions,
         question_number=question_number,
     )
+
 
 
 

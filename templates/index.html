@@ -19,8 +19,10 @@
     <meta name="twitter:description" content="Pythonの問題を解いて学べる無料のWebアプリ。">
     <meta name="twitter:image" content="https://python-project-inzf.onrender.com/static/og-image.png">
 
-    <meta property="og:image" content="https://python-project-inzf.onrender.com/static/og-image.png">
+    <meta property="twitter:image:src" content="https://python-project-inzf.onrender.com/static/og-image.png">
     <meta name="twitter:image" content="https://python-project-inzf.onrender.com/static/og-image.png">
+
+    <meta name="description" content="Python初心者向けの練習問題が無料で解ける問題集サイト。基本から応用まで解説付き。">
 
     <title>Python 問題集</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -41,12 +43,19 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
+
+    {% if request.path.startswith('/question/') %}
+        <h1>問題詳細ページ</h1>
+    {% else %}
+        <h1>問題一覧ページ</h1>
+    {% endif %}
+
     <header>
         <h1>
             <span class="python">Python</span>で遊ぼう
         </h1>
         
-        <h3>手を動かして学ぶ Python問題集</h3>
+        <h2>手を動かして学ぶ Python問題集</h2>
 
     </header>
 
@@ -55,7 +64,7 @@
     
     <div class="container">
         <aside>
-            <h3 id = "search-title">検索</h3>
+            <p id = "search-title"><strong>検索</strong></p>
             <form method="GET" class = "search" id = "search-form" action="/">
                 <label for="q">キーワードを入力:</label>
                 <input type="text" class="input-box" name="q" id ="q" placeholder="キーワードを入力" value="{{ query if query else '' }}" >
@@ -116,7 +125,7 @@
                     <span class="disabled-button">前の問題</span>
                 {% endif %}
 
-                <h2><p>{{ question_number }}/{{ total_questions }}</p></h2>
+                <div  id ="question_number"><p>{{ question_number }}/{{ total_questions }}</p></div>
                       
                 {% if next_index is not none %}
                 <a href="{{ url_for('view_questions', id=next_id, category_id=category_id, difficulty_level_id=difficulty_level_id,q=query) }}" class="next-button"><i class="fa-solid fa-circle-arrow-right"></i></a>
@@ -136,7 +145,7 @@
                         <p class ="question_info">カテゴリ:{{ question.category_name}}</p>
                     </div>
                     <div class="question-box">
-                        <p class="description-text">問題: {{ question.question | safe }}</p>
+                        <p class="contents_text">問題: {{ question.question | safe }}</p>
                     </div>
 
                     
@@ -169,11 +178,11 @@
                                 
                     <!-- 解答 -->
                     <div id="answer{{ question['id'] }}" class="answer-box" style="display: none;">
-                        <p class="description-text">解答: {{ question.answer | safe }}</p>
+                        <p class="contents_text">解答: {{ question.answer | safe }}</p>
                     </div>
                     
                     <div id="description{{ question['id'] }}" class="description-box" style="display: none;">
-                        <p class="description-text">解説: {{ question.description | safe }}</p>
+                        <p class="contents_text">解説: {{ question.description | safe }}</p>
                     </div>
                 </div>
             {% else %}
@@ -190,7 +199,7 @@
                     <span class="disabled-button">前の問題</span>
                 {% endif %}
 
-                <h2><p>{{ question_number }}/{{ total_questions }}</p></h2>
+                <div  id ="question_number"><p>{{ question_number }}/{{ total_questions }}</p></div>
                       
                 {% if next_index is not none %}
                 <a href="{{ url_for('view_questions', id=next_id, category_id=category_id, difficulty_level_id=difficulty_level_id,q=query) }}" class="next-button"><i class="fa-solid fa-circle-arrow-right"></i></a>
