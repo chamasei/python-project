@@ -479,7 +479,7 @@ def delete_question(id):
 
 
 # 問題編集用ルート
-@app.route('/admin/edit/<int:id>', methods=['POST'])
+@app.route('/admin/edit/<int:id>', methods=['POST','GET'])
 @admin_required 
 def edit_question(id):
     question = db.session.query(Question).filter_by(id=id).first()
