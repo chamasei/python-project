@@ -38,6 +38,13 @@ if "sslmode" not in DATABASE_URL:
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
+app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+    "pool_size": 5,         # ✅ 最大5接続まで（増えすぎを防ぐ！）
+    "max_overflow": 2,      # ✅ もし超えても最大2接続まで許可
+    "pool_timeout": 30,     # ✅ 30秒間使われなければ接続を閉じる
+    "pool_recycle": 1800,   # ✅ 30分ごとに接続をリサイクル（アイドル接続を防ぐ）
+}
+
 db = SQLAlchemy(app)  # ✅ `app` に `db` をバインド！
 
 with app.app_context():
