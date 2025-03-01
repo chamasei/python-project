@@ -12,6 +12,7 @@ from sqlalchemy import func
 from sqlalchemy.engine.row import Row
 import markdown
 import psycopg2
+import traceback
 
 load_dotenv()
 
@@ -500,8 +501,8 @@ def edit_question(id):
 
     print(f"✅ 問題データが見つかりました！", file=sys.stderr)
 
-    categories = db.session.query(Category).all()
-    difficulty_levels = db.session.query(DifficultyLevel).all()
+    categories = db.session.query(Category).all() or []
+    difficulty_levels = db.session.query(DifficultyLevel).all() or []
 
     print(f"✅ `edit.html` を表示します！", file=sys.stderr)
     return render_template('edit.html', question=question, categories=categories, difficulty_levels=difficulty_levels)
@@ -565,9 +566,13 @@ def disclaimer():
 
 
 
+
+
 @app.errorhandler(500)
-def internal_server_error(e):
-    return render_template("500.html"), 500
+def internal_error(error):
+    print(f"🚨 500 Internal Server Error: {error}", file=sys.stderr)
+    traceback.print_exc()  # ✅ 詳細なエラーログを表示！
+    return jsonify({"error": "サーバー内部エラーが発生しました！"}), 500
 
 
 # アプリ起動

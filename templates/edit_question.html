@@ -33,21 +33,21 @@
             <form method="POST" action="{{ url_for('edit_question', id=question.id) }}">
                 <!-- 問題編集 -->
                 <div class="question-box">
-                    <textarea id="edit_question" name="edit_question">{{ question.question }}</textarea>
+                    <textarea id="edit_question" name="edit_question">{{ question.question if question.question else '' }}</textarea>
                 </div>
                 <!-- 期待される出力の編集編集 -->
                 <div class="expected-output">
                     <label for="edit_expected_output" class="boxtitle">期待される出力:</label>
-                    <textarea id="edit_expected_output" name="edit_expected_output" rows="2"></textarea>
+                    <textarea id="edit_expected_output" name="edit_expected_output" rows="2">{{ question.expected_output if question.expected_output else '' }}</textarea>
                 </div>
                 <!-- 解答の編集 -->
                 <div class="answer-box">
-                    <textarea id="edit_answer" name="edit_answer">{{ question.answer }}</textarea>
+                    <textarea id="edit_answer" name="edit_answer">{{ question.answer if question.answer else '' }}</textarea>
                 </div>
                 <!-- 解説編集 -->
                 <div class="description-box">
                     <label for="edit_description">解説:</label>
-                    <textarea id="edit_description" name="edit_description">{{ question.description}}</textarea>
+                    <textarea id="edit_description" name="edit_description">{{ question.description if question.description else '' }}</textarea>
                 </div>
                 <button type="button" onclick="saveQuestion({{ question.id }})" class="save-button">保存</button>
 
