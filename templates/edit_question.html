@@ -110,7 +110,7 @@
             .then(data => {
                 if (data.message) {
                     alert("✅ " + data.message);  // ✅ 成功メッセージを表示
-                    window.location.href = `/question/${id}`;  // ✅ 変数名を `id` に修正！
+                    window.location.href = "/admin/manage";  // ✅ 変数名を `id` に修正！
                 } else {
                     alert("⚠️ エラー: " + data.error);  // ✅ エラーメッセージを表示
                 }     
