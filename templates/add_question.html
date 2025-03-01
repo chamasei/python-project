@@ -33,7 +33,7 @@
 
         <main>
             <h2>問題を登録</h2>
-            <form method="POST" action="/admin/add">
+            <form method="POST" action="{{ url_for('add_question') }}">
                 <!-- 問題入力 -->
                 <div class="question-box">
                     <label for="register_question" class="boxtitle">問題:</label>

@@ -30,7 +30,7 @@
         </aside>
 
         <main>
-            <form method="POST" action="/admin/edit/{{ question['id'] }}">
+            <form method="POST" action="{{ url_for('edit_question', id=question.id) }}">
                 <!-- 問題編集 -->
                 <div class="question-box">
                     <textarea id="edit_question" name="edit_question">{{ question.question }}</textarea>
