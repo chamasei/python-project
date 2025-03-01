@@ -484,6 +484,20 @@ def delete_question(id):
 def edit_question(id):
     question = db.session.query(Question).filter_by(id=id).first()
 
+    if request.method == 'POST':
+        data = request.get_json()  # ✅ ここを request.form ではなく request.get_json() にする！
+
+        question.question = data.get("question")
+        question.answer = data.get("answer")
+        question.description = data.get("description", "")
+        question.category_id = int(data.get("category_id", 0)) or None
+        question.difficulty_level_id = int(data.get("difficulty_level_id", 0)) or None
+
+        db.session.commit()
+        db.session.remove()
+
+        return jsonify({"message": "問題を更新しました！"}), 200
+    
     if not question:
         return jsonify({"error": "編集する問題が見つかりません！"}), 404  # ✅ JSON でエラーを返す
 
