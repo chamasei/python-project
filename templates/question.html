@@ -16,11 +16,12 @@
             <!-- ナビゲーションボタン -->
             <div class="navigation-buttons"id="question-start">
                 {% if prev_index is not none %}
-                <a href="{{ url_for('view_question', id=prev_id) }}" class="prev-button">前の問題</a>
-                   class="prev-button"
-                   onclick="showMessage(event, '🚀 前の問題はありません。最後の問題を表示します。', '{{ prev_id }}', '{{ last_question_id }}')">
-                    <i class="fa-solid fa-circle-arrow-left"></i>
+                <a href="{{ url_for('view_question', id=prev_id) }}" 
+                    class="prev-button"
+                    onclick="handleNavigation(event, '{{ prev_id }}', '{{ last_question_id }}')">
+                    前の問題
                 </a>
+             
                 {% else %}
                     <span class="disabled-button">前の問題</span>
                 {% endif %}
@@ -28,11 +29,11 @@
                 <div  id ="question_number"><p>{{ question_number }}/{{ total_questions }}</p></div>
                       
                 {% if next_index is not none %}
-                <a href="{{ url_for('view_question', id=prev_id) }}" class="next-button">次の問題</a>
+                <a href="{{ url_for('view_question', id=next_id) }}" 
                     class="next-button"
-                    onclick="showMessage(event, '🚀 次の問題はありません。最初の問題を表示します。', '{{ next_id }}', '{{ first_question_id }}')">
-                        <i class="fa-solid fa-circle-arrow-right"></i>
-                    </a>
+                    onclick="handleNavigation(event, '{{ next_id }}', '{{ first_question_id }}')">
+                        次の問題
+                </a>
                 {% else %}
                     <span class="disabled-button">次の問題</span>
                 {% endif %}
@@ -90,11 +91,12 @@
             <!-- ナビゲーションボタン -->
             <div class="navigation-buttons"id="question-start">
                 {% if prev_index is not none %}
-                <a href="{{ url_for('view_question', id=prev_id) }}" class="prev-button">前の問題</a>
-                   class="prev-button"
-                   onclick="showMessage(event, '🚀 前の問題はありません。最後の問題を表示します。', '{{ prev_id }}', '{{ last_question_id }}')">
-                    <i class="fa-solid fa-circle-arrow-left"></i>
+                <a href="{{ url_for('view_question', id=prev_id) }}" 
+                    class="prev-button"
+                    onclick="handleNavigation(event, '{{ prev_id }}', '{{ last_question_id }}')">
+                    前の問題
                 </a>
+             
                 {% else %}
                     <span class="disabled-button">前の問題</span>
                 {% endif %}
@@ -102,11 +104,11 @@
                 <div  id ="question_number"><p>{{ question_number }}/{{ total_questions }}</p></div>
                       
                 {% if next_index is not none %}
-                <a href="{{ url_for('view_question', id=prev_id) }}" class="next-button">次の問題</a>
+                <a href="{{ url_for('view_question', id=next_id) }}" 
                     class="next-button"
-                    onclick="showMessage(event, '🚀 次の問題はありません。最初の問題を表示します。', '{{ next_id }}', '{{ first_question_id }}')">
-                        <i class="fa-solid fa-circle-arrow-right"></i>
-                    </a>
+                    onclick="handleNavigation(event, '{{ next_id }}', '{{ first_question_id }}')">
+                        次の問題
+                </a>
                 {% else %}
                     <span class="disabled-button">次の問題</span>
                 {% endif %}
