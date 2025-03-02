@@ -486,20 +486,27 @@ def manage_questions():
     return render_template('manage_questions.html', questions=questions)
 
 # 削除用ルート
-@app.route('/delete/<int:id>', methods=['POST'])
-@admin_required 
-def delete_question(id):
-    question = db.session.get(Question, id)  # ✅ `id` に該当するデータを取得
+@app.route('/admin/delete/<int:question_id>', methods=['POST'])
+@admin_required
+def delete_question(question_id):
+    question = Question.query.get(question_id)
+    
+    if not question:
+        print(f"❌ エラー: ID {question_id} の問題が見つからない！")
+        return jsonify({"error": "編集する問題が見つかりません！"}), 404
+    
+    try:
+        db.session.delete(question)
+        db.session.commit()
+        print(f"✅ ID {question_id} の問題を削除しました！")
 
-    if question:
-        db.session.delete(question)  # ✅ 削除
-        db.session.commit()  # ✅ 確定
-        flash('問題を削除しました！', 'success')
-        db.session.remove() 
-    else:
-        flash('削除する問題が見つかりません！', 'error')
+        # ✅ `redirect()` を使って、最新の管理画面にリダイレクト！
+        return redirect(url_for('manage_questions'))
 
-    return redirect(url_for('manage_questions'))
+    except Exception as e:
+        db.session.rollback()
+        print("🔥 削除時にエラーが発生！", e)
+        return jsonify({"error": "削除に失敗しました！"}), 500
 
 
 
