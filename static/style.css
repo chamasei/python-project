@@ -207,6 +207,17 @@ main{
     display: none;
 }
 
+.loading-spinner {
+    margin-left: 8px;
+    font-size: 16px;
+    animation: spin 1s linear infinite;
+}
+
+/* 🔄 スピナーを回転させるアニメーション */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
 
 ul {
     font-size: 14px;
