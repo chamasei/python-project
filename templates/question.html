@@ -17,8 +17,10 @@
             <div class="navigation-buttons"id="question-start">
                 {% if prev_index is not none %}
                 <a href="{{ url_for('view_question', id=prev_id, category_id=category_id, difficulty_level_id=difficulty_level_id, q=query) }}" 
-                class="prev-button" onclick="showMessage(event, '🚀 前の問題はありません。最後の問題に戻ります。')">
-                <i class="fa-solid fa-circle-arrow-left"></i></a>
+                   class="prev-button"
+                   onclick="showMessage(event, '前の問題はありません', '{{ prev_id }}')">
+                    <i class="fa-solid fa-circle-arrow-left"></i>
+                </a>
                 {% else %}
                     <span class="disabled-button">前の問題</span>
                 {% endif %}
@@ -26,10 +28,11 @@
                 <div  id ="question_number"><p>{{ question_number }}/{{ total_questions }}</p></div>
                       
                 {% if next_index is not none %}
-                <a href="{{ url_for('view_question', id=next_id, category_id=category_id, difficulty_level_id=difficulty_level_id,q=query) }}" 
-                class="next-button" onclick="showMessage(event, '🚀 次の問題はありません。最初の問題に戻ります。')">
-                <i class="fa-solid fa-circle-arrow-right"></i></a>
-
+                    <a href="{{ url_for('view_question', id=next_id, category_id=category_id, difficulty_level_id=difficulty_level_id, q=query) }}" 
+                    class="next-button"
+                    onclick="showMessage(event, '次の問題はありません', '{{ next_id }}')">
+                        <i class="fa-solid fa-circle-arrow-right"></i>
+                    </a>
                 {% else %}
                     <span class="disabled-button">次の問題</span>
                 {% endif %}
@@ -86,8 +89,10 @@
             <div class="navigation-buttons"id="question-start">
                 {% if prev_index is not none %}
                 <a href="{{ url_for('view_question', id=prev_id, category_id=category_id, difficulty_level_id=difficulty_level_id, q=query) }}" 
-                class="prev-button" onclick="showMessage(event, '🚀 前の問題はありません。最後の問題に戻ります。')">
-                <i class="fa-solid fa-circle-arrow-left"></i></a>
+                   class="prev-button"
+                   onclick="showMessage(event, '前の問題はありません', '{{ prev_id }}')">
+                    <i class="fa-solid fa-circle-arrow-left"></i>
+                </a>
                 {% else %}
                     <span class="disabled-button">前の問題</span>
                 {% endif %}
@@ -95,10 +100,11 @@
                 <div  id ="question_number"><p>{{ question_number }}/{{ total_questions }}</p></div>
                       
                 {% if next_index is not none %}
-                <a href="{{ url_for('view_question', id=next_id, category_id=category_id, difficulty_level_id=difficulty_level_id,q=query) }}" 
-                class="next-button" onclick="showMessage(event, '🚀 次の問題はありません。最初の問題に戻ります。')">
-                <i class="fa-solid fa-circle-arrow-right"></i></a>
-
+                    <a href="{{ url_for('view_question', id=next_id, category_id=category_id, difficulty_level_id=difficulty_level_id, q=query) }}" 
+                    class="next-button"
+                    onclick="showMessage(event, '次の問題はありません', '{{ next_id }}')">
+                        <i class="fa-solid fa-circle-arrow-right"></i>
+                    </a>
                 {% else %}
                     <span class="disabled-button">次の問題</span>
                 {% endif %}
@@ -195,17 +201,24 @@ function showAnswerAndDescription(answerId, descriptionId) {
 });
 
 
-    function showMessage(event, text) {
-        event.preventDefault();  // ✅ ボタンのデフォルト動作を防ぐ
+
+    function showMessage(event, text, id) {
+        event.preventDefault();
+
+        if (!id || id === "None" || id === "undefined") {
+            console.log("🚀 ID が無効！自動的に最初/最後の問題にリダイレクト");
+            window.location.href = "/";  // ✅ トップページ（最初の問題）に戻る
+            return;
+        }
 
         const messageElement = document.getElementById("message-box");
-
         messageElement.textContent = text;
-        messageElement.style.display = "block"; // ✅ メッセージを表示
+        messageElement.style.display = "block";
         setTimeout(() => {
-            window.location.href = event.target.href;  // ✅ 1.5秒後にページ遷移
+            window.location.href = event.target.href;
         }, 1500);
     }
+
 
 
 
