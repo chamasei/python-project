@@ -35,11 +35,6 @@
                 <div class="question-box">
                     <textarea id="edit_question" name="edit_question">{{ question.question if question.question else '' }}</textarea>
                 </div>
-                <!-- 期待される出力の編集編集 -->
-                <div class="expected-output">
-                    <label for="edit_expected_output" class="boxtitle">期待される出力:</label>
-                    <textarea id="edit_expected_output" name="edit_expected_output" rows="2">{{ question.expected_output if question.expected_output else '' }}</textarea>
-                </div>
                 <!-- 解答の編集 -->
                 <div class="answer-box">
                     <textarea id="edit_answer" name="edit_answer">{{ question.answer if question.answer else '' }}</textarea>
