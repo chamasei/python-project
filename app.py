@@ -13,6 +13,9 @@ from sqlalchemy.engine.row import Row
 import markdown
 import psycopg2
 import traceback
+from flask_migrate import Migrate
+
+
 
 load_dotenv()
 
@@ -39,6 +42,9 @@ if "sslmode" not in DATABASE_URL:
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+
 app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
     "pool_size": 5,         # ✅ 最大5接続まで（増えすぎを防ぐ！）
     "max_overflow": 2,      # ✅ もし超えても最大2接続まで許可
@@ -46,7 +52,6 @@ app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
     "pool_recycle": 1800,   # ✅ 30分ごとに接続をリサイクル（アイドル接続を防ぐ）
 }
 
-db = SQLAlchemy(app)  # ✅ `app` に `db` をバインド！
 
 with app.app_context():
     from models import Question, Category, DifficultyLevel  # ✅ `app.app_context()` の中で `models.py` を `import`
@@ -344,10 +349,6 @@ def view_question(id=None):
         question_data.question = detect_code_blocks(question_data.question)
         question_data.question = format_description(question_data.question)
 
-    if hasattr(question_data, "expected_output") and question_data.expected_output is not None:
-        question_data.expected_output = detect_code_blocks(question_data.expected_output)
-        question_data.expected_output = format_description(question_data.expected_output)
-
     if hasattr(question_data, "answer") and question_data.answer is not None:
         question_data.answer = detect_code_blocks(question_data.answer)
         question_data.answer = format_description(question_data.answer)
@@ -415,11 +416,20 @@ def view_question(id=None):
 @admin_required  # ✅ これを追加！
 def add_question():
     if request.method == 'POST':
+        print("🚀 POSTリクエストを受信しました！")
+        print("📌 request.form のデータ:", request.form)  # 受け取ったデータを表示
+
         question_text = request.form['question']
         answer = request.form['answer']
         description = request.form.get('description', '')
         category_id = request.form.get('category_id', None)
         difficulty_id = request.form.get('difficulty_id', None)
+
+        print(f"🧐 受け取った値 - question: {question_text}, answer: {answer}, category: {category_id}, difficulty: {difficulty_id}")
+
+        if not question_text or not answer:
+            print("❌ エラー: question または answer が空です！")
+            return "Bad Request: 必須項目が空です", 400  # ここで明示的にエラーを返す
 
         new_question = Question(
             question=question_text,
@@ -431,7 +441,8 @@ def add_question():
 
         db.session.add(new_question)
         db.session.commit()
-        db.session.remove() 
+        db.session.remove()
+
         flash('問題を追加しました！', 'success')
         return redirect(url_for('manage_questions'))
 

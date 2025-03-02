@@ -44,18 +44,6 @@
                         <p class="contents_text">問題: {{ question.question | safe }}</p>
                     </div>
 
-                    
-                    <!-- 期待される出力がある場合 -->
-                    {% if questions[0].expected_output %}
-                    <div class="expected-output">
-                        <strong>期待される出力:</strong>
-                        <pre>{{ questions[0].expected_output | default('出力例なし', true) }}</pre>
-                    </div>
-                    {% else %}
-                        <p>出力例なし</p>
-                    {% endif %}
-                
-
 
         
                     <!-- コード実行エリア -->
