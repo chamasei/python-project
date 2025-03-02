@@ -15,6 +15,7 @@ import psycopg2
 import traceback
 from flask_migrate import Migrate
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.pool import NullPool  # ✅ これを追加！
 
 
 
@@ -27,37 +28,45 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s"  # フォーマット
 )
 
-app = Flask(__name__)  # ✅ ここで `Flask` を作成！
+db = SQLAlchemy()
 
-load_dotenv()
-DATABASE_URL = os.getenv("DATABASE_URL")
+def create_app():
+    app = Flask(__name__)  # ✅ `Flask` インスタンスを関数内で作成
 
-# PostgreSQL の場合、接続URLの「postgres://」を「postgresql://」に変換
-if DATABASE_URL.startswith("postgres://"):
-    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+    # ✅ 環境変数の読み込み
+    load_dotenv()
+    DATABASE_URL = os.getenv("DATABASE_URL")
 
-if "sslmode" not in DATABASE_URL:
-    DATABASE_URL += "?sslmode=require"
+    # ✅ PostgreSQL の場合、接続URLの修正
+    if DATABASE_URL.startswith("postgres://"):
+        DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+    if "sslmode" not in DATABASE_URL:
+        DATABASE_URL += "?sslmode=require"
 
+    # ✅ Flask の設定
+    app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+        "poolclass": NullPool  # ✅ 使い終わった接続をすぐに閉じる！
+    }
 
-app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    # ✅ `SQLAlchemy` と `Flask` の関連付け
+    db.init_app(app)
+    migrate = Migrate(app, db)
 
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
+    # ✅ `app.app_context()` の中で `models.py` を読み込む
+    with app.app_context():
+        from models import Question, Category, DifficultyLevel  
+        db.create_all()  # ✅ テーブルを作成！
 
-from sqlalchemy.pool import NullPool  # ✅ これを追加！
+    @app.teardown_appcontext
+    def shutdown_session(exception=None):
+        db.session.remove()  # ✅ すべてのリクエストが終わったら、確実にセッションを閉じる！
 
-app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
-    "poolclass": NullPool  # ✅ これで「使い終わった接続をすぐに閉じる」！
-}
+    return app
 
+app = create_app()  # ✅ `create_app()` を使って Flask アプリを作成
 
-with app.app_context():
-    from models import Question, Category, DifficultyLevel  # ✅ `app.app_context()` の中で `models.py` を `import`
-    db.create_all()  # ✅ テーブルを作成！
 
 #dbのセッション管理
 @app.teardown_appcontext
