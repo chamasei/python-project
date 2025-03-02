@@ -16,9 +16,9 @@
             <!-- ナビゲーションボタン -->
             <div class="navigation-buttons"id="question-start">
                 {% if prev_index is not none %}
-                <a href="{{ url_for('view_question', id=prev_id, category_id=category_id, difficulty_level_id=difficulty_level_id, q=query) }}" 
+                <a href="{{ url_for('view_question', id=prev_id if prev_id is not none else last_question_id, category_id=category_id, difficulty_level_id=difficulty_level_id, q=query) }}" 
                    class="prev-button"
-                   onclick="showMessage(event, '前の問題はありません', '{{ prev_id }}')">
+                   onclick="showMessage(event, '🚀 前の問題はありません。最後の問題を表示します。', '{{ prev_id }}', '{{ last_question_id }}')">
                     <i class="fa-solid fa-circle-arrow-left"></i>
                 </a>
                 {% else %}
@@ -30,7 +30,7 @@
                 {% if next_index is not none %}
                     <a href="{{ url_for('view_question', id=next_id, category_id=category_id, difficulty_level_id=difficulty_level_id, q=query) }}" 
                     class="next-button"
-                    onclick="showMessage(event, '次の問題はありません', '{{ next_id }}')">
+                    onclick="showMessage(event, '🚀 次の問題はありません。最初の問題を表示します。', '{{ next_id }}', '{{ first_question_id }}')">
                         <i class="fa-solid fa-circle-arrow-right"></i>
                     </a>
                 {% else %}
@@ -38,6 +38,8 @@
                 {% endif %}
 
             </div>
+
+            
                 <!-- ✅ 1つのメッセージエリアだけを作る！ -->
                 <p id="message-box" class="hidden-message"></p>
 
@@ -88,9 +90,9 @@
             <!-- ナビゲーションボタン -->
             <div class="navigation-buttons"id="question-start">
                 {% if prev_index is not none %}
-                <a href="{{ url_for('view_question', id=prev_id, category_id=category_id, difficulty_level_id=difficulty_level_id, q=query) }}" 
+                <a href="{{ url_for('view_question', id=prev_id if prev_id is not none else last_question_id, category_id=category_id, difficulty_level_id=difficulty_level_id, q=query) }}" 
                    class="prev-button"
-                   onclick="showMessage(event, '前の問題はありません', '{{ prev_id }}')">
+                   onclick="showMessage(event, '🚀 前の問題はありません。最後の問題を表示します。', '{{ prev_id }}', '{{ last_question_id }}')">
                     <i class="fa-solid fa-circle-arrow-left"></i>
                 </a>
                 {% else %}
@@ -102,7 +104,7 @@
                 {% if next_index is not none %}
                     <a href="{{ url_for('view_question', id=next_id, category_id=category_id, difficulty_level_id=difficulty_level_id, q=query) }}" 
                     class="next-button"
-                    onclick="showMessage(event, '次の問題はありません', '{{ next_id }}')">
+                    onclick="showMessage(event, '🚀 次の問題はありません。最初の問題を表示します。', '{{ next_id }}', '{{ first_question_id }}')">
                         <i class="fa-solid fa-circle-arrow-right"></i>
                     </a>
                 {% else %}
@@ -203,10 +205,10 @@ function showAnswerAndDescription(answerId, descriptionId) {
 
 
 
-    function showMessage(event, text, id, fallbackId, isNext) {
+    function showMessage(event, text, id, fallbackId) {
         event.preventDefault();
 
-        // ✅ IDが `None` / `undefined` の場合
+        // ✅ `id` が `None` または `undefined` の場合、`fallbackId` を使ってリダイレクト！
         if (!id || id === "None" || id === "undefined") {
             console.log(`🚀 ID が無効！ID: ${id} → 代わりに ${fallbackId} へリダイレクト`);
 
@@ -214,10 +216,10 @@ function showAnswerAndDescription(answerId, descriptionId) {
             messageElement.textContent = text;
             messageElement.style.display = "block";
 
-            // ✅ `次の問題ボタン` の場合はメッセージを 1.5秒表示してから最初の問題へ
+            // ✅ 1.5秒後に `fallbackId` にリダイレクト
             setTimeout(() => {
                 window.location.href = "/view_question?id=" + fallbackId;
-            }, isNext ? 1500 : 0);  // ✅ `isNext` が true のときは遅延
+            }, 1500);
             return;
         }
 
@@ -226,7 +228,6 @@ function showAnswerAndDescription(answerId, descriptionId) {
             window.location.href = event.target.href;
         }, 1500);
     }
-
 
 
 
