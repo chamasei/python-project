@@ -14,6 +14,7 @@ import markdown
 import psycopg2
 import traceback
 from flask_migrate import Migrate
+from sqlalchemy.exc import IntegrityError
 
 
 
@@ -431,20 +432,32 @@ def add_question():
             print("❌ エラー: question または answer が空です！")
             return "Bad Request: 必須項目が空です", 400  # ここで明示的にエラーを返す
 
-        new_question = Question(
-            question=question_text,
-            answer=answer,
-            description=description,
-            category_id=category_id if category_id else None,
-            difficulty_id=difficulty_id if difficulty_id else None
-        )
+        try:
+            new_question = Question(
+                question=question_text,
+                answer=answer,
+                description=description,
+                category_id=int(category_id) if category_id else None,
+                difficulty_id=int(difficulty_id) if difficulty_id else None
+            )
 
-        db.session.add(new_question)
-        db.session.commit()
-        db.session.remove()
+            db.session.add(new_question)
+            db.session.commit()
+            print("✅ データベースに追加成功！")
 
-        flash('問題を追加しました！', 'success')
-        return redirect(url_for('manage_questions'))
+            return redirect(url_for('manage_questions'))
+
+        except IntegrityError as e:
+            db.session.rollback()  # 💡 エラーが起きたらロールバック
+            print("🔥 IntegrityError（データベース制約違反）発生！")
+            print(traceback.format_exc())  # 💡 エラー詳細を出力
+            return jsonify({"error": "データベース制約違反が発生しました！"}), 500
+
+        except Exception as e:
+            db.session.rollback()
+            print("🔥 予期しないエラー発生！")
+            print(traceback.format_exc())  
+            return jsonify({"error": "サーバー内部エラーが発生しました！"}), 500
 
     categories = db.session.query(Category).all()
     difficulty_levels = db.session.query(DifficultyLevel).all()
