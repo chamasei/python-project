@@ -21,12 +21,13 @@
     
     <div class="container">
         <aside>
-            <p> 問題を登録する</p>
-            <button id="registerButton" type="submit">登録</button>
+
             <p> 問題を削除する</p>
-            <button id="deleteButton">削除</button>
 
-
+            <form method="POST" action="{{ url_for('delete_question', question_id=question.id) }}">
+                <button type="submit" class="delete-button">削除</button>
+            </form>
+            
         </aside>
 
         <main>
@@ -114,6 +115,10 @@
                 console.error('🚨 エラー:', error);
             });
         }
+        function confirmDelete() {
+            return confirm("本当に削除しますか？");  // ✅ 削除前に確認を表示！
+        }
+
         </script>
         
 
