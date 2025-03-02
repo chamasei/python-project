@@ -394,17 +394,7 @@ def view_question(id=None):
     next_id = next_question.Question.id if next_question else None
     prev_id = prev_question.Question.id if prev_question else None
     
-    # ✅ `next_id` が `None` の場合は最初の問題に戻す
-    if next_id is None:
-        flash("🚀 次の問題はありません。最初の問題に戻ります。", "info")
-        first_question = query_filter.order_by(Question.id.asc()).first()
-        next_id = first_question.Question.id if first_question else None
 
-    # ✅ `prev_id` が `None` の場合は最後の問題にする
-    if prev_id is None:
-        flash("🚀 前の問題はありません。最後の問題に戻ります。", "info")
-        last_question = query_filter.order_by(Question.id.desc()).first()
-        prev_id = last_question.Question.id if last_question else None
 
     
 
