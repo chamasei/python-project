@@ -506,24 +506,27 @@ def manage_questions():
 @app.route('/admin/delete/<int:question_id>', methods=['POST'])
 @admin_required
 def delete_question(question_id):
-    question = Question.query.get(question_id)
-    
-    if not question:
-        print(f"❌ エラー: ID {question_id} の問題が見つからない！")
-        return jsonify({"error": "編集する問題が見つかりません！"}), 404
-    
     try:
-        db.session.delete(question)
-        db.session.commit()
-        print(f"✅ ID {question_id} の問題を削除しました！")
+        with app.app_context():  # ✅ Flask のアプリコンテキストを設定
+            question = db.session.get(Question, question_id)  # ✅ `query.get()` → `db.session.get()` に変更
+            
+            if not question:
+                print(f"❌ エラー: ID {question_id} の問題が見つからない！")
+                return jsonify({"error": "編集する問題が見つかりません！"}), 404
 
-        # ✅ `redirect()` を使って、最新の管理画面にリダイレクト！
-        return redirect(url_for('manage_questions'))
+            db.session.delete(question)
+            db.session.commit()
+            db.session.remove()  # ✅ セッションを明示的に閉じる
+            print(f"✅ ID {question_id} の問題を削除しました！")
+
+            # ✅ `redirect()` を使って、最新の管理画面にリダイレクト！
+            return redirect(url_for('manage_questions'))
 
     except Exception as e:
         db.session.rollback()
         print("🔥 削除時にエラーが発生！", e)
         return jsonify({"error": "削除に失敗しました！"}), 500
+
 
 
 
