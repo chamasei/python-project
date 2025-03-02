@@ -18,7 +18,7 @@
                 {% if prev_index is not none %}
                 <a href="{{ url_for('view_question', id=prev_id) }}" 
                     class="prev-button"
-                    onclick="handleNavigation(event, '{{ prev_id }}', '{{ last_question_id }}')">
+                    onclick="handleNavigation(event, '{{ prev_id }}', '{{ last_question_id }}', '🚀 前の問題はありません。最後の問題を表示します。')">
                     前の問題
                 </a>
              
@@ -31,7 +31,7 @@
                 {% if next_index is not none %}
                 <a href="{{ url_for('view_question', id=next_id) }}" 
                     class="next-button"
-                    onclick="handleNavigation(event, '{{ next_id }}', '{{ first_question_id }}')">
+                    onclick="handleNavigation(event, '{{ next_id }}', '{{ first_question_id }}', '🚀 次の問題はありません。最初の問題を表示します。')">
                         次の問題
                 </a>
                 {% else %}
@@ -93,7 +93,7 @@
                 {% if prev_index is not none %}
                 <a href="{{ url_for('view_question', id=prev_id) }}" 
                     class="prev-button"
-                    onclick="handleNavigation(event, '{{ prev_id }}', '{{ last_question_id }}')">
+                    onclick="handleNavigation(event, '{{ prev_id }}', '{{ last_question_id }}', '🚀 前の問題はありません。最後の問題を表示します。')">
                     前の問題
                 </a>
              
@@ -106,7 +106,7 @@
                 {% if next_index is not none %}
                 <a href="{{ url_for('view_question', id=next_id) }}" 
                     class="next-button"
-                    onclick="handleNavigation(event, '{{ next_id }}', '{{ first_question_id }}')">
+                    onclick="handleNavigation(event, '{{ next_id }}', '{{ first_question_id }}', '🚀 次の問題はありません。最初の問題を表示します。')">
                         次の問題
                 </a>
                 {% else %}
@@ -205,29 +205,27 @@ function showAnswerAndDescription(answerId, descriptionId) {
 
 
 
-    function showMessage(event, text, id, fallbackId) {
-        event.preventDefault();
+function handleNavigation(event, id, fallbackId, message = "") {
+    event.preventDefault();  // ✅ デフォルトのリンク遷移を防ぐ
+    console.log(`🧐 ボタンがクリックされた！ id=${id}, fallbackId=${fallbackId}`);
 
-        // ✅ `id` が `None` または `undefined` の場合、`fallbackId` を使ってリダイレクト！
-        if (!id || id === "None" || id === "undefined") {
-            console.log(`🚀 ID が無効！ID: ${id} → 代わりに ${fallbackId} へリダイレクト`);
+    if (!id || id === "None" || id === "undefined") {
+        console.log(`🚀 ID が無効！ ID: ${id} → 代わりに ${fallbackId} へリダイレクト`);
 
-            const messageElement = document.getElementById("message-box");
-            messageElement.textContent = text;
-            messageElement.style.display = "block";
-
-            // ✅ 1.5秒後に `fallbackId` にリダイレクト
-            setTimeout(() => {
-                window.location.href = "/view_question?id=" + fallbackId;
-            }, 1500);
-            return;
+        if (message) {
+            alert(message);  // ✅ メッセージを出す
         }
 
-        // ✅ ID がある場合は通常通り遷移
         setTimeout(() => {
-            window.location.href = event.target.href;
+            window.location.href = `/question/${fallbackId}`;
         }, 1500);
+        return;
     }
+
+    console.log(`✅ 正常にリダイレクト: /question/${id}`);
+    window.location.href = `/question/${id}`;
+}
+
 
 
 
