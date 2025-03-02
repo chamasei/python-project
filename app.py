@@ -425,7 +425,7 @@ def view_question(id=None):
 def add_question():
     if request.method == 'POST':
         print("🚀 POSTリクエストを受信しました！")
-        print("📌 request.form のデータ:", request.form)  # 受け取ったデータを表示
+
 
         question_text = request.form['question']
         answer = request.form['answer']
@@ -433,8 +433,7 @@ def add_question():
         category_id = request.form.get('category_id', None)
         difficulty_id = request.form.get('difficulty_id', None)
 
-        print(f"🧐 受け取った値 - question: {question_text}, answer: {answer}, category: {category_id}, difficulty: {difficulty_id}")
-
+ 
         if not question_text or not answer:
             print("❌ エラー: question または answer が空です！")
             return "Bad Request: 必須項目が空です", 400  # ここで明示的にエラーを返す
