@@ -202,18 +202,26 @@ function showAnswerAndDescription(answerId, descriptionId) {
 
 
 
-    function showMessage(event, text, id) {
+
+    function showMessage(event, text, id, fallbackId, isNext) {
         event.preventDefault();
 
+        // ✅ IDが `None` / `undefined` の場合
         if (!id || id === "None" || id === "undefined") {
-            console.log("🚀 ID が無効！自動的に最初/最後の問題にリダイレクト");
-            window.location.href = "/view_question?id="  + fallbackId; // ✅ トップページ（最初の問題）に戻る
+            console.log(`🚀 ID が無効！ID: ${id} → 代わりに ${fallbackId} へリダイレクト`);
+
+            const messageElement = document.getElementById("message-box");
+            messageElement.textContent = text;
+            messageElement.style.display = "block";
+
+            // ✅ `次の問題ボタン` の場合はメッセージを 1.5秒表示してから最初の問題へ
+            setTimeout(() => {
+                window.location.href = "/view_question?id=" + fallbackId;
+            }, isNext ? 1500 : 0);  // ✅ `isNext` が true のときは遅延
             return;
         }
 
-        const messageElement = document.getElementById("message-box");
-        messageElement.textContent = text;
-        messageElement.style.display = "block";
+        // ✅ ID がある場合は通常通り遷移
         setTimeout(() => {
             window.location.href = event.target.href;
         }, 1500);
