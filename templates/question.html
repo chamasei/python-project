@@ -16,7 +16,7 @@
             <!-- ナビゲーションボタン -->
             <div class="navigation-buttons"id="question-start">
                 {% if prev_index is not none %}
-                <a href="{{ url_for('view_question', id=prev_id if prev_id is not none else last_question_id, category_id=category_id, difficulty_level_id=difficulty_level_id, q=query) }}" 
+                <a href="{{ url_for('view_question', id=prev_id) }}" class="prev-button">前の問題</a>
                    class="prev-button"
                    onclick="showMessage(event, '🚀 前の問題はありません。最後の問題を表示します。', '{{ prev_id }}', '{{ last_question_id }}')">
                     <i class="fa-solid fa-circle-arrow-left"></i>
@@ -28,7 +28,7 @@
                 <div  id ="question_number"><p>{{ question_number }}/{{ total_questions }}</p></div>
                       
                 {% if next_index is not none %}
-                    <a href="{{ url_for('view_question', id=next_id, category_id=category_id, difficulty_level_id=difficulty_level_id, q=query) }}" 
+                <a href="{{ url_for('view_question', id=prev_id) }}" class="next-button">次の問題</a>
                     class="next-button"
                     onclick="showMessage(event, '🚀 次の問題はありません。最初の問題を表示します。', '{{ next_id }}', '{{ first_question_id }}')">
                         <i class="fa-solid fa-circle-arrow-right"></i>
@@ -39,7 +39,7 @@
 
             </div>
 
-            
+
                 <!-- ✅ 1つのメッセージエリアだけを作る！ -->
                 <p id="message-box" class="hidden-message"></p>
 
@@ -90,7 +90,7 @@
             <!-- ナビゲーションボタン -->
             <div class="navigation-buttons"id="question-start">
                 {% if prev_index is not none %}
-                <a href="{{ url_for('view_question', id=prev_id if prev_id is not none else last_question_id, category_id=category_id, difficulty_level_id=difficulty_level_id, q=query) }}" 
+                <a href="{{ url_for('view_question', id=prev_id) }}" class="prev-button">前の問題</a>
                    class="prev-button"
                    onclick="showMessage(event, '🚀 前の問題はありません。最後の問題を表示します。', '{{ prev_id }}', '{{ last_question_id }}')">
                     <i class="fa-solid fa-circle-arrow-left"></i>
@@ -102,7 +102,7 @@
                 <div  id ="question_number"><p>{{ question_number }}/{{ total_questions }}</p></div>
                       
                 {% if next_index is not none %}
-                    <a href="{{ url_for('view_question', id=next_id, category_id=category_id, difficulty_level_id=difficulty_level_id, q=query) }}" 
+                <a href="{{ url_for('view_question', id=prev_id) }}" class="next-button">次の問題</a>
                     class="next-button"
                     onclick="showMessage(event, '🚀 次の問題はありません。最初の問題を表示します。', '{{ next_id }}', '{{ first_question_id }}')">
                         <i class="fa-solid fa-circle-arrow-right"></i>
@@ -110,8 +110,6 @@
                 {% else %}
                     <span class="disabled-button">次の問題</span>
                 {% endif %}
-
-
 
             </div>
 

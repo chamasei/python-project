@@ -404,6 +404,7 @@ def view_question(id=None):
 
     # ✅ デバッグ用ログ
     print(f"🔍 first_question_id: {first_question_id}, last_question_id: {last_question_id}")
+    print(f"🔍 prev_id: {prev_id}, next_id: {next_id}, current_id: {current_id}")
 
 
 
