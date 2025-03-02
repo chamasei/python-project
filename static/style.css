@@ -203,6 +203,10 @@ main{
     padding: 0px 20px;
 }
 
+.hidden {
+    display: none;
+}
+
 
 ul {
     font-size: 14px;

@@ -23,7 +23,7 @@
                 </a>
              
                 {% else %}
-                    <span class="disabled-button">前の問題</span>
+                    <span class="loading-spinner hidden">前の問題</span>
                 {% endif %}
 
                 <div  id ="question_number"><p>{{ question_number }}/{{ total_questions }}</p></div>
@@ -35,7 +35,7 @@
                         次の問題
                 </a>
                 {% else %}
-                    <span class="disabled-button">次の問題</span>
+                    <span class="loading-spinner hidden">次の問題</span>
                 {% endif %}
 
             </div>
@@ -98,7 +98,7 @@
                 </a>
              
                 {% else %}
-                    <span class="disabled-button">前の問題</span>
+                    <span class="loading-spinner hidden">前の問題</span>
                 {% endif %}
 
                 <div  id ="question_number"><p>{{ question_number }}/{{ total_questions }}</p></div>
@@ -110,7 +110,7 @@
                         次の問題
                 </a>
                 {% else %}
-                    <span class="disabled-button">次の問題</span>
+                    <span class="loading-spinner hidden">次の問題</span>
                 {% endif %}
 
             </div>
@@ -206,14 +206,25 @@ function showAnswerAndDescription(answerId, descriptionId) {
 
 
 function handleNavigation(event, id, fallbackId, message = "") {
-    event.preventDefault();  // ✅ デフォルトのリンク遷移を防ぐ
+    event.preventDefault();
     console.log(`🧐 ボタンがクリックされた！ id=${id}, fallbackId=${fallbackId}`);
+
+    const button = event.currentTarget;
+    button.disabled = true;  // ✅ ボタンを無効化
+
+    const spinner = button.querySelector(".loading-spinner");
+    const text = button.querySelector(".btn-text");
+
+    if (spinner && text) {
+        spinner.classList.remove("hidden");  // ✅ スピナーを表示
+        text.classList.add("hidden");  // ✅ 文字を非表示
+    }
 
     if (!id || id === "None" || id === "undefined") {
         console.log(`🚀 ID が無効！ ID: ${id} → 代わりに ${fallbackId} へリダイレクト`);
 
         if (message) {
-            alert(message);  // ✅ メッセージを出す
+            alert(message);
         }
 
         setTimeout(() => {
@@ -225,7 +236,6 @@ function handleNavigation(event, id, fallbackId, message = "") {
     console.log(`✅ 正常にリダイレクト: /question/${id}`);
     window.location.href = `/question/${id}`;
 }
-
 
 
 
