@@ -7,7 +7,7 @@ import re
 from dotenv import load_dotenv
 from flask_sqlalchemy import SQLAlchemy
 import os
-from functools import wraps  # ✅ これを追加！
+from functools import wraps  
 from sqlalchemy import func
 from sqlalchemy.engine.row import Row
 import markdown
@@ -15,7 +15,7 @@ import psycopg2
 import traceback
 from flask_migrate import Migrate
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.pool import NullPool  # ✅ これを追加！
+from sqlalchemy.pool import NullPool  
 
 
 
@@ -53,6 +53,8 @@ def create_app():
     # ✅ `SQLAlchemy` と `Flask` の関連付け
     db.init_app(app)
     migrate = Migrate(app, db)
+
+    from models import Question, Category, DifficultyLevel 
 
     # ✅ `app.app_context()` の中で `models.py` を読み込む
     with app.app_context():
