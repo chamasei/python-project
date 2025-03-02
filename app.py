@@ -58,6 +58,12 @@ with app.app_context():
     from models import Question, Category, DifficultyLevel  # ✅ `app.app_context()` の中で `models.py` を `import`
     db.create_all()  # ✅ テーブルを作成！
 
+#dbのセッション管理
+@app.teardown_appcontext
+def shutdown_session(exception=None):
+    db.session.remove()  # ✅ すべてのリクエストが終わったらセッションを解放！
+
+
 
 #管理者用
 # ✅ 環境変数から secret_key を取得（設定がなければ "your_secret_key_here" を使う）
@@ -526,6 +532,7 @@ def edit_question(id):
 
     # ✅ データベースから該当の問題を取得
     question = db.session.query(Question).filter_by(id=id).first()
+
     if not question:
         print(f"🚨 問題が見つかりません！ ID={id}", file=sys.stderr)
         return jsonify({"error": "編集する問題が見つかりません！"}), 400
@@ -535,6 +542,7 @@ def edit_question(id):
         print(f"✅ `edit_question.html` を表示します！", file=sys.stderr)
         categories = db.session.query(Category).all() or []
         difficulty_levels = db.session.query(DifficultyLevel).all() or []
+
         return render_template('edit_question.html', question=question, categories=categories, difficulty_levels=difficulty_levels)
 
     # ✅ `POST` の場合（データを更新）
@@ -558,13 +566,14 @@ def edit_question(id):
 
             print(f"✅ データを更新します！", file=sys.stderr)
             db.session.commit()
-            db.session.remove()
+
 
             print(f"✅ 「問題を更新しました！」を返します！", file=sys.stderr)
             return jsonify({"message": "問題を更新しました！"}), 200
 
         except Exception as e:
             db.session.rollback()
+
             print(f"🚨 データ更新エラー: {e}", file=sys.stderr)
             return jsonify({"error": f"エラー: {e}"}), 500
 
