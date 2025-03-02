@@ -394,13 +394,17 @@ def view_question(id=None):
     next_id = next_question.Question.id if next_question else None
     prev_id = prev_question.Question.id if prev_question else None
     
-    # ✅ 検索結果の最初の問題（`id` の最小値）を取得
-    first_question = query_filter.order_by(Question.id.asc()).first()
-    first_question_id = first_question.id if first_question else None
+    # ✅ 検索結果の最初・最後の問題の ID を取得
+    first_question = query_filter.with_entities(Question.id).order_by(Question.id.asc()).first()
+    last_question = query_filter.with_entities(Question.id).order_by(Question.id.desc()).first()
 
-    # ✅ 検索結果の最後の問題（`id` の最大値）を取得
-    last_question = query_filter.order_by(Question.id.desc()).first()
-    last_question_id = last_question.id if last_question else None
+    # ✅ `None` だった場合のデフォルト値を設定
+    first_question_id = first_question[0] if first_question else 1
+    last_question_id = last_question[0] if last_question else 1
+
+    # ✅ デバッグ用ログ
+    print(f"🔍 first_question_id: {first_question_id}, last_question_id: {last_question_id}")
+
 
 
     
