@@ -16,7 +16,7 @@ import traceback
 from flask_migrate import Migrate
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.pool import NullPool  
-
+from models import Question, Category, DifficultyLevel 
 
 
 load_dotenv()
@@ -54,7 +54,7 @@ def create_app():
     db.init_app(app)
     migrate = Migrate(app, db)
 
-    from models import Question, Category, DifficultyLevel 
+
 
     # ✅ `app.app_context()` の中で `models.py` を読み込む
     with app.app_context():
