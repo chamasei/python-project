@@ -16,7 +16,9 @@
             <!-- ナビゲーションボタン -->
             <div class="navigation-buttons"id="question-start">
                 {% if prev_index is not none %}
-                <a href="{{ url_for('view_question', id=prev_id, category_id=category_id, difficulty_level_id=difficulty_level_id, q=query) }}" class="prev-button"><i class="fa-solid fa-circle-arrow-left"></i></a>
+                <a href="{{ url_for('view_question', id=prev_id, category_id=category_id, difficulty_level_id=difficulty_level_id, q=query) }}" 
+                class="prev-button" onclick="showMessage(event, '🚀 前の問題はありません。最後の問題に戻ります。')">
+                <i class="fa-solid fa-circle-arrow-left"></i></a>
                 {% else %}
                     <span class="disabled-button">前の問題</span>
                 {% endif %}
@@ -24,11 +26,17 @@
                 <div  id ="question_number"><p>{{ question_number }}/{{ total_questions }}</p></div>
                       
                 {% if next_index is not none %}
-                <a href="{{ url_for('view_question', id=next_id, category_id=category_id, difficulty_level_id=difficulty_level_id,q=query) }}" class="next-button"><i class="fa-solid fa-circle-arrow-right"></i></a>
+                <a href="{{ url_for('view_question', id=next_id, category_id=category_id, difficulty_level_id=difficulty_level_id,q=query) }}" 
+                class="next-button" onclick="showMessage(event, '🚀 次の問題はありません。最初の問題に戻ります。')">
+                <i class="fa-solid fa-circle-arrow-right"></i></a>
 
                 {% else %}
                     <span class="disabled-button">次の問題</span>
                 {% endif %}
+
+                <!-- ✅ 1つのメッセージエリアだけを作る！ -->
+                <p id="message-box" class="hidden-message"></p>
+
             </div>
 
             
@@ -75,10 +83,13 @@
                 
 
         
+
             <!-- ナビゲーションボタン -->
-            <div class="navigation-buttons">
+            <div class="navigation-buttons"id="question-start">
                 {% if prev_index is not none %}
-                <a href="{{ url_for('view_question', id=prev_id, category_id=category_id, difficulty_level_id=difficulty_level_id, q=query) }}" class="prev-button"><i class="fa-solid fa-circle-arrow-left"></i></a>
+                <a href="{{ url_for('view_question', id=prev_id, category_id=category_id, difficulty_level_id=difficulty_level_id, q=query) }}" 
+                class="prev-button" onclick="showMessage(event, '🚀 前の問題はありません。最後の問題に戻ります。')">
+                <i class="fa-solid fa-circle-arrow-left"></i></a>
                 {% else %}
                     <span class="disabled-button">前の問題</span>
                 {% endif %}
@@ -86,11 +97,19 @@
                 <div  id ="question_number"><p>{{ question_number }}/{{ total_questions }}</p></div>
                       
                 {% if next_index is not none %}
-                <a href="{{ url_for('view_question', id=next_id, category_id=category_id, difficulty_level_id=difficulty_level_id,q=query) }}" class="next-button"><i class="fa-solid fa-circle-arrow-right"></i></a>
+                <a href="{{ url_for('view_question', id=next_id, category_id=category_id, difficulty_level_id=difficulty_level_id,q=query) }}" 
+                class="next-button" onclick="showMessage(event, '🚀 次の問題はありません。最初の問題に戻ります。')">
+                <i class="fa-solid fa-circle-arrow-right"></i></a>
+
                 {% else %}
                     <span class="disabled-button">次の問題</span>
                 {% endif %}
+
+                <!-- ✅ 1つのメッセージエリアだけを作る！ -->
+                <p id="message-box" class="hidden-message"></p>
+
             </div>
+
         </main>
 
                 
@@ -177,6 +196,21 @@ function showAnswerAndDescription(answerId, descriptionId) {
         });
     }
 });
+
+<script>
+    function showMessage(event, text) {
+        event.preventDefault();  // ✅ ボタンのデフォルト動作を防ぐ
+
+        const messageElement = document.getElementById("message-box");
+
+        messageElement.textContent = text;
+        messageElement.style.display = "block"; // ✅ メッセージを表示
+        setTimeout(() => {
+            window.location.href = event.target.href;  // ✅ 1.5秒後にページ遷移
+        }, 1500);
+    }
+</script>
+
 
 </script>
 
