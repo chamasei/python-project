@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+{% block content %}
+<div id="spinner" class="spinner"></div>
+        <main >
+            <!-- 🔹 ここにフラッシュメッセージを追加 -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <p class="flash {{ category }}">{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% endwith %}
+
+            <!-- ナビゲーションボタン -->
+            <div class="navigation-buttons"id="question-start">
+                {% if prev_index is not none %}
+                <a href="{{ url_for('view_question', id=prev_id) }}" 
+                    class="prev-button"
+                    onclick="handleNavigation(event, '{{ prev_id }}', '{{ last_question_id }}', '🚀 前の問題はありません。最後の問題を表示します。')">
+                    <i class="fa-solid fa-circle-arrow-left"></i> <span class="btn-text">前の問題</span>
+                    <span class="loading-spinner hidden">🔄</span>
+                </a>
+             
+                {% else %}
+                    <span class="disabled-button">前の問題</span>
+                {% endif %}
+
+                <div  id ="question_number"><p>{{ question_number }}/{{ total_questions }}</p></div>
+                      
+                {% if next_index is not none %}
+                <a href="{{ url_for('view_question', id=next_id) }}" 
+                    class="next-button" id ="nextButton"
+                    onclick="handleNavigation(event, '{{ next_id }}', '{{ first_question_id }}', '🚀 次の問題はありません。最初の問題を表示します。')">
+                    <i class="fa-solid fa-circle-arrow-right"></i> <span class="btn-text">次の問題</span>
+                    <span class="loading-spinner hidden">🔄</span>
+                </a>
+                {% else %}
+                    <span class="disabled-button">次の問題</span>
+                {% endif %}
+
+            </div>
+
+
+                <!-- ✅ 1つのメッセージエリアだけを作る！ -->
+                <p id="message-box" class="hidden-message"></p>
+
+
+            <!-- 問題表示 -->
+            {% if question %}
+                <div class="question-container" >
+                    <div id = "question_info">
+                        <p class ="question_info">ID:{{ question.id}}</p>
+                        <p class ="question_info">カテゴリ:{{ question.category.name}}</p>
+                        
+                    </div>
+                    <div id ="question{{ question['id'] }}" class="question-box" >
+                        <p class="contents_text">問題: {{ question.question | safe }}</p>
+                    </div>
+
+
+        
+                    <!-- コード実行エリア -->
+                    <strong>コードを書いて試してみよう:</strong>
+                    <div id = "code_input_area">
+                        <textarea id="code-editor"></textarea>
+                        <button id = "code_enter_button"onclick="runPythonCode()">実行</button>
+                    </div> 
+                    
+                    <pre id="output"></pre> <!-- 出力を表示するエリア -->
+            
+                        <!-- 解答ボタン -->
+                    <button id="answer-button" onclick="showAnswerAndDescription('answer{{ question.id }}', 'description{{ question.id }}')">
+                        解答を見る
+                    </button>
+                                
+                    <!-- 解答 -->
+                    <div id="answer{{ question['id'] }}" class="answer-box" style="display: none;">
+                        <p class="contents_text">解答: {{ question.answer | safe }}</p>
+                    </div>
+                    
+                    <div id="description{{ question['id'] }}" class="description-box" style="display: none;">
+                        <p class="contents_text">解説: {{ question.description | safe }}</p>
+                    </div>
+                </div>
+            {% else %}
+                <p>該当する問題がありません。</p>
+            {% endif %}
+                
+
+        
+
+            <!-- ナビゲーションボタン -->
+            <div class="navigation-buttons"id="question-start">
+                {% if prev_index is not none %}
+                <a href="{{ url_for('view_question', id=prev_id) }}" 
+                    class="prev-button" id="prevButton"
+                    onclick="handleNavigation(event, '{{ prev_id }}', '{{ last_question_id }}', '🚀 前の問題はありません。最後の問題を表示します。')">
+                    <i class="fa-solid fa-circle-arrow-left"></i> <span class="btn-text">前の問題</span>
+
+                </a>
+             
+                {% else %}
+                    <span class="disabled-button">前の問題</span>
+                {% endif %}
+
+                <div  id ="question_number"><p>{{ question_number }}/{{ total_questions }}</p></div>
+                      
+                {% if next_index is not none %}
+                <a href="{{ url_for('view_question', id=next_id) }}" 
+                    class="next-button"
+                    onclick="handleNavigation(event, '{{ next_id }}', '{{ first_question_id }}', '🚀 次の問題はありません。最初の問題を表示します。')">
+                    <i class="fa-solid fa-circle-arrow-right"></i> <span class="btn-text">次の問題</span>
+                </a>
+                {% else %}
+                    <span class="disabled-button">次の問題</span>
+                {% endif %}
+
+            </div>
+
+
+        </main>
+
+                
+        
+    </div>
+
+
+
+
+
+<script>
+function showAnswerAndDescription(answerId, descriptionId) {
+    // 解答を表示
+    document.getElementById(answerId).style.display = "block";
+    // 解説を表示
+    document.getElementById(descriptionId).style.display = "block";
+}
+
+<!-- コード入力用スクリプト -->
+
+
+<!-- CodeMirror を適用するスクリプト -->
+    // CodeMirror を適用
+    var editor = CodeMirror.fromTextArea(document.getElementById("code-editor"), {
+        mode: "python",
+        theme: "dracula",
+        lineNumbers: true,
+        indentUnit: 4,
+        tabSize: 4,
+        smartIndent: true,
+        matchBrackets: true
+    });
+
+    function runPythonCode() {
+        var code = editor.getValue(); // CodeMirror の内容を取得
+        fetch('/run', {  // Flask のエンドポイント "/run" にコードを送信
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ code: code })  // JSON でコードを送る
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("output").textContent = data.result; // 結果を表示
+        })
+        .catch(error => {
+            console.error("エラー:", error);
+            document.getElementById("output").textContent = "実行エラー";
+        });
+    }
+
+    function handleCategorySubmit() {
+        const form = document.querySelector("form");
+        form.submit();
+        return false; // ✅ 二重送信を防ぐ！
+    }
+    
+
+
+    // ✅ URL から `q=` を削除する関数
+    window.onload = function() {
+        let url = new URL(window.location);
+        if (url.searchParams.has("q") && url.searchParams.get("q") === "") {
+            url.searchParams.delete("q");
+            window.history.replaceState(null, "", url.toString());
+        }
+    };
+
+  
+
+    document.addEventListener("DOMContentLoaded", function() {
+    const targetElement = document.getElementById("question-start");
+
+    if (targetElement) {
+        let offset = window.innerWidth <= 768 ? 0 : 500;  // ✅ スマホとPCでオフセット変更
+        let targetPosition = targetElement.getBoundingClientRect().top + window.scrollY - offset;
+
+        console.log(`📍 スクロール位置: ${targetPosition} (オフセット: ${offset})`);
+
+        window.scrollTo({
+            top: targetPosition,
+            behavior: "smooth"
+        });
+    }
+});
+
+
+function handleNavigation(event, questionId) {
+    event.preventDefault();  // ✅ デフォルトのリンク動作を防ぐ
+    document.getElementById("spinner").style.display = "block";  // ✅ スピナーを表示
+
+    setTimeout(() => {
+        window.location.href = `/question/${questionId}`;  // ✅ 次の or 前の問題へ遷移
+    }, 300);
+}
+
+
+
+
+</script>
+
+
+{% endblock %}

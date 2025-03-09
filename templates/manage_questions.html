@@ -7,9 +7,9 @@
         {% for question in questions %}
         <div class="question-card">
             <p class="question-text">{{ question[1] }}</p>
-            <p><strong>カテゴリ:</strong> {{ question['category_name'] }}</p>
-            <p><strong>難易度:</strong> {{ question['difficulty_name'] }}</p>
-            <p>問題ID:{{ question['id']}}</p>
+            <p><strong>カテゴリ:</strong> {{ question.category_name }}</p>
+            <p><strong>難易度:</strong> {{ question.difficulty_name }}</p>
+            <p>問題ID:{{ question.id }}</p>
             <div class="button-group">
                 <button onclick="deleteQuestion({{ question[0] }})" class="delete-button">削除</button>
                 <button onclick="editQuestion({{ question[0] }})" class="edit-button">編集</button>

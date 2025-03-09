@@ -1,0 +1,193 @@
+<link href="../static/style.css" rel = "stylesheet" />
+<body>
+
+    <header id = "edit_all_header">
+        <div>
+            <label for="jumpTo">問題番号へ移動:</label>
+            <input type="number" id="jumpTo" min="1" max="400">
+            <button id="jumpButton">移動</button>
+        </div>
+    </header>
+
+        <div class="container">
+            <main id = "edit_main">
+                <h2>登録済みの問題一覧</h2>
+
+                {% for question in questions %}
+                <div class="edit-question-container" id="container_{{ question.id }}" style="display: none;">
+                    <div class =edit-question-container_css>
+                        <div class="edit-tools">
+                            <p>ID: {{ question.id }}</p>
+                            <button class ="edit-button" onclick="saveQuestion({{ question.id }})">保存</button>
+                            <button class ="delete-button" onclick="deleteQuestion({{ question.id }})">削除</button>
+                        </div>
+                        <div class ="edit-container">
+                            <textarea class ="question-box" id="edit_question_{{ question.id }}">{{ question.question }}</textarea>
+                            <textarea class ="answer-box" id="edit_answer_{{ question.id }}">{{ question.answer }}</textarea>
+                            <textarea class = "description-box" id="edit_description_{{ question.id }}">{{ question.description }}</textarea>
+                        </div>
+                    </div>    
+                
+                    <div id = "select_box">
+                        <label class="label_select" for="difficulty_level_id">カテゴリを選択:</label>
+                            <select name="category_id" id ="edit_category_menu">
+                                <option value="{{ question[4] }}" selected>{{ question[5] }}</option>
+                                    {% for category in categories %}
+                                        {% if category.id != question[4] %}  <!-- ✅ 既に選択されているものは除外 -->
+                                            <option value="{{ category.id }}">{{ category.name }}</option>
+                                        {% endif %} 
+                                    {% endfor %}                   .
+                            </select>
+                    
+                            <label class="label_select" for="difficulty_level_id">難易度を選択:</label>
+                            <select name="difficulty_level_id" id = "edit_difficulty_level_menu">
+                                <option value="{{ question[6] }}" selected>{{ question[7] }}</option>  <!-- ✅ 現在の難易度を選択済みにする -->
+                                    {% for level in difficulty_levels %}
+                                        {% if level.id != question[6]%} 
+                                        <option value="{{ level.id}}">{{ level.level }}</option>
+                                        {% endif %} 
+                                    {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                {% endfor %}
+
+                <button id="loadMore">次の10問</button>
+            </main>
+        </div>
+
+<script>
+    function deleteQuestion(id) {
+        if (confirm("本当に削除しますか？")) {
+            fetch(`/delete/${id}`, {
+                method: 'POST',
+            })
+            .then(response => {
+                if (response.redirected) {
+                    window.location.href = response.url; // ページをリロード
+                }
+            })
+            .catch(error => {
+                alert("削除に失敗しました。");
+                console.error(error);
+            });
+        }
+    }
+
+
+    function saveQuestion(id) {
+        const question = document.getElementById(`edit_question_${id}`).value;
+        const answer = document.getElementById(`edit_answer_${id}`).value;
+        const description = document.getElementById(`edit_description_${id}`).value;
+        const category_id = document.querySelector('[name="category_id"]').value;
+        const difficulty_level_id = document.querySelector('[name="difficulty_level_id"]').value;
+
+        fetch(`/admin/edit/${id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                question: question,
+                answer: answer,
+                description: description,
+                category_id: category_id,
+                difficulty_level_id: difficulty_level_id,
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);  // ✅ 「更新成功」のメッセージを表示
+
+        // ✅ ページをリロードせずに、HTML のテキストを更新！
+        document.getElementById(`edit_question_${id}`).textContent = question;
+        document.getElementById(`edit_answer_${id}`).textContent = answer;
+        document.getElementById(`edit_description_${id}`).textContent = description;
+
+        // ✅ 更新成功のアニメーション（ハイライトなど）
+        let container = document.getElementById(`container_${id}`);
+        container.style.backgroundColor = "lightgreen";
+        setTimeout(() => container.style.backgroundColor = "", 2000);
+    })
+    .catch(error => {
+        console.error('エラー:', error);
+    });
+
+    }
+ 
+    function editQuestion(id) {
+        // 編集ページに移動
+        window.location.href = `/admin/edit/${id}`;
+    } 
+
+//「次の10問」を表示
+    let visibleCount = 0;
+
+    function showMoreQuestions() {
+        let questions = document.querySelectorAll(".edit-question-container");
+        for (let i = visibleCount; i < visibleCount + 10 && i < questions.length; i++) {
+            questions[i].style.display = "block";  // ✅ 10問ずつ表示
+        }
+        visibleCount += 10;
+
+        // ✅ すべての問題が表示されたらボタンを非表示
+        if (visibleCount >= questions.length) {
+            document.getElementById("loadMore").style.display = "none";
+        }
+    }
+
+    // ✅ ページロード時に最初の10問を表示
+    document.addEventListener("DOMContentLoaded", function () {
+        showMoreQuestions();
+    });
+
+
+
+    // ✅ 次の10問を表示
+    document.getElementById("loadMore").addEventListener("click", showMoreQuestions);
+
+//（ジャンプ＋該当の10問を開く）
+    document.getElementById("jumpButton").addEventListener("click", function () {
+
+        let targetId = document.getElementById("jumpTo").value;
+
+
+        let questions = document.querySelectorAll(".edit-question-container");
+        let targetElement = document.getElementById("container_" + targetId);
+        //console.log("🔍 JavaScript で取得した targetElement:", targetElement);
+
+        if (targetElement) {
+            //console.log("✅ 取得した問題 ID:", targetElement.id);
+
+            // **ジャンプ先の問題の位置を特定**
+            let targetIndex = Array.from(questions).findIndex(q => q.id === "container_" + targetId);
+
+            // **ターゲットが表示されるまで `showMoreQuestions()` を実行**
+            while (visibleCount < targetIndex + 1) {
+                showMoreQuestions();
+            }
+
+            // **表示を確実にする**
+            targetElement.style.display = "block";
+
+            // **スクロール処理**
+            targetElement.scrollIntoView({ behavior: "smooth" });
+
+            // **ハイライト**
+            targetElement.style.backgroundColor = "yellow";
+            setTimeout(() => targetElement.style.backgroundColor = "", 2000);
+        } else {
+            console.log("❌ 該当する問題が見つかりません！");
+        }
+    });
+
+// ✅ Enterキーでも実行できるようにする！
+    document.getElementById("jumpTo").addEventListener("keydown", function (event) {
+        if (event.key === "Enter") {
+            document.getElementById("jumpButton").click();
+        }
+    });
+
+
+</script>
+</body>

@@ -1,15 +1,25 @@
 from flask import Flask, request, session,render_template, redirect, url_for, flash,jsonify
 from markupsafe import Markup
 import subprocess
-import sqlite3
 import logging
 import sys
 import re
 from dotenv import load_dotenv
+from flask_sqlalchemy import SQLAlchemy
 import os
-from functools import wraps  # ✅ これを追加！
+from functools import wraps  
+from sqlalchemy import func
+from sqlalchemy.engine.row import Row
+import markdown
+import psycopg2
+import traceback
+from flask_migrate import Migrate
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.pool import NullPool  
+from models import Question, Category, DifficultyLevel 
 
-load_dotenv()
+
+
 
 # ログ設定
 logging.basicConfig(
@@ -18,12 +28,103 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s"  # フォーマット
 )
 
-app = Flask(__name__)
+db = SQLAlchemy()
+
+# ✅ 環境変数の読み込み
+env_path = os.path.abspath(".env")
+load_dotenv(".env")
+
+# `.env` を強制的にロード
+if not load_dotenv(env_path):
+    print("🚨 `.env` の読み込みに失敗しました！")
+
+
+def create_app():
+    app = Flask(__name__)  # ✅ `Flask` インスタンスを関数内で作成
+
+
+
+    FLASK_ENV = os.getenv("FLASK_ENV", "development")
+    
+    if FLASK_ENV == "production":
+        DATABASE_URL = os.getenv("DATABASE_URL")  # 本番環境のDB
+
+        if DATABASE_URL.startswith("postgres://"):
+            DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+        if "sslmode" not in DATABASE_URL:
+            DATABASE_URL += "?sslmode=require"      
+    else:
+        DATABASE_URL= os.getenv("DATABASE_URL") # ローカルのDB
+        
+    
+    # ✅ PostgreSQL の場合、接続URLの修正
+
+    # ✅ Flask の設定
+    app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+        "poolclass": NullPool  # ✅ 使い終わった接続をすぐに閉じる！
+    }
+
+    # ✅ `SQLAlchemy` と `Flask` の関連付け
+    db.init_app(app)
+    migrate = Migrate(app, db)
+
+
+
+    # ✅ `app.app_context()` の中で `models.py` を読み込む
+    with app.app_context():
+        from models import Question, Category, DifficultyLevel  
+        db.create_all()  # ✅ テーブルを作成！
+
+    @app.teardown_appcontext
+    def shutdown_session(exception=None):
+        db.session.remove()  # ✅ すべてのリクエストが終わったら、確実にセッションを閉じる！
+
+    return app
+
+app = create_app()  # ✅ `create_app()` を使って Flask アプリを作成
+
+from sqlalchemy import text
+@app.route("/debug-db4")
+def debug_db4():
+    try:
+        question = db.session.execute(text("SELECT description FROM public.questions WHERE id=1")).fetchone()
+        if question:
+            processed_description = detect_code_blocks(question[0])  # ✅ コードブロック変換
+            print("🚀 Jinja に渡す直前:", repr(processed_description))  # ✅ Jinja に渡すデータを表示
+            
+            return render_template("test.html", description=processed_description)
+        else:
+            return "❌ データが見つかりません"
+    except Exception as e:
+        return f"🚨 エラー発生: {str(e)}"
+
+
+
+
+
+#dbのセッション管理
+@app.teardown_appcontext
+def shutdown_session(exception=None):
+    db.session.remove()  # ✅ すべてのリクエストが終わったらセッションを解放！
+
+
 
 #管理者用
 # ✅ 環境変数から secret_key を取得（設定がなければ "your_secret_key_here" を使う）
-app.secret_key = os.getenv("FLASK_SECRET_KEY", "your_secret_key_here") 
+app.secret_key = os.getenv("FLASK_SECRET_KEY") 
 ADMIN_PASSWORD = os.getenv("PYTHON_ADMIN_PASSWORD")
+
+def get_db_connection():
+    DATABASE_URL = os.getenv("DATABASE_URL")  # 環境変数から取得
+
+    if not DATABASE_URL:
+        raise ValueError("DATABASE_URL is not set in environment variables")
+
+    conn = psycopg2.connect(DATABASE_URL)  # PostgreSQL に接続
+    return conn
+
 
 #それぞれのページで管理者ログインを要求する
 def admin_required(f):
@@ -70,14 +171,19 @@ def admin_login():
 
 @admin_required
 def manage_questions():
-    conn = get_db_connection()
-    questions = conn.execute('''
+    conn = get_db_connection()  # PostgreSQL に接続
+    cur = conn.cursor()
+
+    cur.execute('''
         SELECT questions.id, questions.question, categories.name AS category_name, difficulty_levels.name AS difficulty_name
         FROM questions
         LEFT JOIN categories ON questions.category_id = categories.id
         LEFT JOIN difficulty_levels ON questions.difficulty_id = difficulty_levels.id
-    ''').fetchall()
+    ''')
+    questions = cur.fetchall()  # 変更: fetchall() をカーソルで取得
+    cur.close()
     conn.close()
+
     return render_template('manage_questions.html', questions=questions)
 
 
@@ -88,24 +194,11 @@ def admin_logout():
     return redirect(url_for('admin_login'))
 
 
-# データベース接続
-def get_db_connection():
-    conn = sqlite3.connect('questions.db')
-    conn.row_factory = sqlite3.Row
-    return conn
-
-
-
-
-
-
-
-
 def detect_code_blocks(description):
     formatted_parts = []
     in_code_block = False
     lines = description.split("\n")
-
+    
         # ✅ コードブロック内の処理
     for line in lines:
         
@@ -130,6 +223,8 @@ def detect_code_blocks(description):
     final_output = re.sub(r"(<pre><code>)\n+", r"\1", final_output)
 
     return final_output
+
+
 
 def format_description(description):
     lines = description.split("\n")
@@ -173,7 +268,8 @@ def format_description(description):
                 formatted_parts.append("<table class='custom-table'>")
                 in_table = True
 
-            formatted_parts.append(f"<tr><td>{clean_line.replace('\t', '</td><td>')}</td></tr>")  # ✅ `<td>` に変換
+            formatted_line = clean_line.replace('\t', '</td><td>')
+            formatted_parts.append(f"<tr><td>{formatted_line}</td></tr>")
             continue
 
         else:  # ✅ **通常のテキスト処理**
@@ -198,188 +294,175 @@ def format_description(description):
 
     return Markup("\n".join(formatted_parts))  # ✅ 最後に `Markup` を適用
 
+@app.route('/')
+def home():
+    print("🔥 home() が呼ばれました！", file=sys.stderr)
+
+    # ✅ カテゴリ・難易度のリストを取得
+    categories = db.session.query(Category).all()
+    difficulty_levels = db.session.query(DifficultyLevel).all()
+
+    return render_template(
+        'top.html',
+        categories=categories,
+        difficulty_levels=difficulty_levels
+    )
 
 
-@app.route('/', methods=['GET'])
 
-def view_questions():
-    print("🔥 view_questions() が呼ばれました！", file=sys.stderr) 
-    conn = get_db_connection()
+@app.route('/question/<int:id>', methods=['GET'])
+@app.route('/questions', methods=['GET'])
+def view_question(id=None):
+    print(f"🔥 view_question() が呼ばれました！ ID={id}", file=sys.stderr)
 
-    # 選択されたカテゴリを取得（デフォルトはすべて）
-    category_id = request.args.get('category_id') 
-    query = request.args.get('q')  # ✅ キーワード検索   
-    difficulty_level_id = request.args.get('difficulty_level_id')
-
-    # ✅ `difficulty_level_id` が `None` の場合を考慮し、`str` のみ `int` に変換！
-    if difficulty_level_id is not None and difficulty_level_id.isdigit():
-        difficulty_level_id = int(difficulty_level_id)
-    else:
-        difficulty_level_id = None  # ✅ `None` を維持する！
+    # ✅ リクエストされた `id` を取得（int型）
+    current_id = id
     
-    
-    # カテゴリ一覧を取得
-    categories = conn.execute("SELECT * FROM categories").fetchall()
-    difficulty_levels = conn.execute("SELECT * FROM difficulty_levels").fetchall()
+    # ✅ フィルタ条件を取得
+    category_id = request.args.get("category_id", default=None, type=int)
+    difficulty_level_id = request.args.get("difficulty_level_id", default=None, type=int)
+    query = request.args.get("q", default=None)
 
-    # ✅ 初回アクセス時に `None` なら適切なデフォルト値を設定
-    if category_id is None:
-        category_id = ""  # ✅ すべてのカテゴリを対象にする
-    if difficulty_level_id is None:
-        difficulty_level_id = ""  # ✅ すべての難易度を対象にする
+    # ✅ カテゴリ・難易度のリストを取得（HTML用）
+    categories = db.session.query(Category).all()
+    difficulty_levels = db.session.query(DifficultyLevel).all()
 
+    # ✅ `query_filter` を作成（ここで全体の問題数と順位を計算）
+    query_filter = (
+        db.session.query(
+            Question,
+            Category.name.label("category_name"),
+            DifficultyLevel.level.label("difficulty_name"),
+            db.func.count().over().label("total_questions"),
+            db.func.rank().over(order_by=Question.id).label("question_number"),
+        )
+        .join(Category, Question.category_id == Category.id)
+        .join(DifficultyLevel, Question.difficulty_id == DifficultyLevel.id)
+    )
 
-    # リクエストされた URL の id を取得する処理
-    current_id = request.args.get('id')
-
-
-    if not current_id:
-        current_id = conn.execute('SELECT MIN(id) FROM questions').fetchone()[0]
-
-
-
-
-    # ✅ `WHERE` 句の条件を動的に組み立てる
-    conditions = []
-    params = []    
-
-    if category_id and category_id.isdigit():
-        conditions.append("category_id = ?")
-        params.append(int(category_id))
     
 
-    if difficulty_level_id :
-        conditions.append("difficulty_id = ?")
-        params.append(int(difficulty_level_id))
-
+    # ✅ フィルタ適用（カテゴリ・難易度・検索キーワード）
+    if category_id:
+        query_filter = query_filter.filter(Question.category_id == category_id)
+    if difficulty_level_id:
+        query_filter = query_filter.filter(Question.difficulty_id == difficulty_level_id)
     if query:
-        conditions.append("(question LIKE ? OR answer LIKE ?)")
-        params.append(f"%{query}%")
-        params.append(f"%{query}%")
+        query_filter = query_filter.filter(Question.question.ilike(f"%{query}%"))
 
+    # ✅ `current_id` が `None` の場合は最初の問題を取得
+    if current_id is None:
+        first_question = query_filter.order_by(Question.id.asc()).first()
+        current_id = first_question.Question.id if first_question else None
 
-    where_clause = " AND ".join(conditions) if conditions else "1=1"  # ✅ 条件がない場合は `1=1`
-
-    if category_id or difficulty_level_id or query:  # ✅ 検索条件が指定された場合
-        first_question = conn.execute(f'''
-            SELECT id FROM questions WHERE {where_clause} ORDER BY id ASC LIMIT 1
-        ''', params).fetchone()
-        
-        #  `id` がない（最初の検索実行時のみ） or `id=1` のときのみ適用！
-        if first_question and (current_id is None or current_id == 1):  
-            current_id = first_question[0]  # ✅ 検索結果の1問目を取得！
-
- 
-    #  フィルタリングされた問題を取得
-    params_for_query = [current_id] + params if "?" in where_clause else [current_id]
-    sql = f"""
-        SELECT questions.*,
-            categories.name AS category_name,
-            difficulty_levels.name AS difficulty_name
-        FROM questions
-        LEFT JOIN categories ON questions.category_id = categories.id
-        LEFT JOIN difficulty_levels ON questions.difficulty_id = difficulty_levels.id
-        WHERE questions.id = ? AND {where_clause} ORDER BY id ASC
-    """
-    question = conn.execute(sql, params_for_query).fetchone()
-
-
-    if question:
-        question = dict(question)
-
-    #  `next_id` の取得
-    sql_next = f"SELECT MIN(id) FROM questions WHERE id > ? AND {where_clause} AND id != ? ORDER BY id ASC"
-
-
-    next_id_row = conn.execute(sql_next, [current_id] + params + [current_id]).fetchone()
-    next_id = next_id_row[0] if next_id_row and next_id_row[0] is not None else None
-
-
-    if question:
-        if 'question' in question and question['question'] is not None:
-            question['question'] = detect_code_blocks(question['question'])
-            question['question'] = format_description(question['question'])
-
-        if 'description' in question and question['description'] is not None:
-            question['description'] = detect_code_blocks(question['description'])
-            question['description'] = format_description(question['description'])
-        if question is None:
-            flash("🚨 検索結果がありません。別のキーワードで試してください。", "warning")
-            return redirect(url_for("index"))  # 🔄 検索ページにリダイレクト
-    else:
-        print("🚨 DEBUG: `question` is None! 検索結果がありません。")
-        
-
-    if question:
-        question = dict(question)  #  `sqlite3.Row` を `dict` に変換
-
-        #  `None` の場合は適切なデフォルト値をセット
-        question['question'] = question['question'] if question['question'] else "（問題なし）"
-        question['answer'] = question['answer'] if question['answer'] else "（答えなし）"
-        question['description'] = question['description'] if question['description'] else "（解説なし）"
-        question['expected_output'] = question['expected_output'] if question['expected_output'] else "（出力例なし）"
-
-        #  `category_id` と `difficulty_id` は `None` のままにする（数値 or None）
-        question['category_id'] = question['category_id'] if question['category_id'] is not None else None
-        question['difficulty_id'] = question['difficulty_id'] if question['difficulty_id'] is not None else None
     
-
-    # 「前の問題」の取得も修正    
-    max_id = conn.execute('SELECT MAX(id) FROM questions').fetchone()[0] # 問題IDの最大値・最小値を取得
+ 
+    # ✅ `total_questions` をサブクエリで取得
+    total_questions_query = db.session.query(db.func.count()).select_from(Question)
 
     if category_id:
-        prev_id = conn.execute('''
-            SELECT MAX(id) FROM questions WHERE id < ? AND category_id = ?
-        ''', (current_id, category_id)).fetchone()
-    else:
-        prev_id = conn.execute('''
-            SELECT MAX(id) FROM questions WHERE id < ?
-        ''', (current_id,)).fetchone()
+        total_questions_query = total_questions_query.filter(Question.category_id == category_id)
+    if difficulty_level_id:
+        total_questions_query = total_questions_query.filter(Question.difficulty_id == difficulty_level_id)
 
-    if prev_id and prev_id[0] is not None:
-        prev_id = prev_id[0]
-    else:
-        if category_id:
-            flash("このカテゴリの最初の問題です。", "info")
-            prev_id = None  # その場にとどまる
-        else:
-            prev_id = max_id  # すべてのカテゴリで前の問題がない場合は最後に戻る
-
-    if category_id or difficulty_level_id or query:
-        total_questions_row = conn.execute(f"SELECT COUNT(*) FROM questions WHERE {where_clause}", params).fetchone()
-    else:
-        total_questions_row = conn.execute("SELECT COUNT(*) FROM questions").fetchone()
-        
-    total_questions = total_questions_row[0] if total_questions_row and total_questions_row[0] is not None else 0
-
-    question_position_row = conn.execute(f"SELECT COUNT(*) FROM questions WHERE id < ? AND {where_clause}", [current_id] + params).fetchone()
-    question_number = question_position_row[0] + 1 if question_position_row else 1
+    total_questions = total_questions_query.scalar() or 1  # ✅ None の場合 1 にする
 
 
-    conn.close()
+
+
+
+    # ✅ `question_number` を取得
+    question_number_query = (
+        db.session.query(db.func.count())
+        .filter(Question.id <= current_id)
+    )
+
+    if category_id:
+        question_number_query = question_number_query.filter(Question.category_id == category_id)
+    if difficulty_level_id:
+        question_number_query = question_number_query.filter(Question.difficulty_id == difficulty_level_id)
+
+    question_number = question_number_query.scalar() or 1  # ✅ None の場合 1 にする
+
+    
+    # ✅ `current_id` に該当する問題を取得
+    question = query_filter.filter(Question.id == current_id).first()
+    
+    # ✅ `question` が取得できない場合はリダイレクト
     if not question:
-        flash("問題が見つかりません。", "error")
-        return redirect(url_for('view_questions'))
+        flash("🚨 検索結果がありません。別のキーワードで試してください。", "warning")
+        return redirect(url_for("view_questions"))
     
+    # ✅ `question` を展開（_mapping を使用）
     
+    question_data = question._mapping["Question"]
+    category_name = question._mapping["category_name"]
+    difficulty_name = question._mapping["difficulty_name"]
     
-    return render_template(
-        'index.html', 
-        questions=[question],
-        categories=categories, 
-        category_id=category_id, 
-        question=question, 
-        current_id=current_id,                 
-        next_id=next_id, 
-        prev_id=prev_id,
-        query = query, 
-        difficulty_levels=difficulty_levels,
-        difficulty_level_id = difficulty_level_id,
-        total_questions = total_questions,
-        question_number = question_number,
+        # ✅ `question_data` の `question` と `description` に `detect_code_blocks()` と `format_description()` を適用
+    if hasattr(question_data, "question") and question_data.question is not None:
+        question_data.question = detect_code_blocks(question_data.question)
+        question_data.question = format_description(question_data.question)
+    
+    if hasattr(question_data, "answer") and question_data.answer is not None:
+        question_data.answer = detect_code_blocks(question_data.answer)
+        question_data.answer = format_description(question_data.answer)
 
+
+    if hasattr(question_data, "description") and question_data.description is not None:
+        question_data.description = detect_code_blocks(question_data.description)
+        question_data.description = format_description(question_data.description)
+
+    
+
+    # ✅ 「次の問題」と「前の問題」を取得
+    next_question = (
+        query_filter.filter(Question.id > current_id)
+        .order_by(Question.id.asc())
+        .first()
     )
     
+    prev_question = (
+        query_filter.filter(Question.id < current_id)
+        .order_by(Question.id.desc())
+        .first()
+    )
+
+    next_id = next_question.Question.id if next_question else None
+    prev_id = prev_question.Question.id if prev_question else None
+    
+    # ✅ 検索結果の最初・最後の問題の ID を取得
+    first_question = query_filter.with_entities(Question.id).order_by(Question.id.asc()).first()
+    last_question = query_filter.with_entities(Question.id).order_by(Question.id.desc()).first()
+
+    # ✅ `None` だった場合のデフォルト値を設定
+    first_question_id = first_question[0] if first_question else 1
+    last_question_id = last_question[0] if last_question else 1
+
+
+
+
+    
+
+    # ✅ 取得したデータをテンプレートに渡す
+    return render_template(
+        'question.html',
+        questions=[question_data],
+        categories=categories,
+        category_id=category_id,
+        question=question_data,
+        current_id=current_id,
+        next_id=next_id,
+        prev_id=prev_id,
+        query=query,
+        difficulty_levels=difficulty_levels,
+        difficulty_level_id=difficulty_level_id,
+        total_questions=total_questions,
+        question_number=question_number,
+        first_question_id=first_question_id,
+        last_question_id = last_question_id
+    )
+
 
 
 
@@ -389,126 +472,221 @@ def view_questions():
 @app.route('/admin/add', methods=['GET', 'POST'])
 @admin_required  # ✅ これを追加！
 def add_question():
-    conn = get_db_connection()
-
-    # カテゴリと難易度のリストを取得
-    categories = conn.execute("SELECT * FROM categories").fetchall()
-    difficulty_levels = conn.execute("SELECT * FROM difficulty_levels").fetchall()
-
     if request.method == 'POST':
-        question = request.form.get('register_question')
-        answer = request.form.get('register_answer')
-        description = request.form.get('register_description') 
-        category_id = request.form.get("category_id")
-        difficulty_id = request.form.get("difficulty_id")
 
-        if question and answer and description and category_id and difficulty_id:
-            conn.execute('INSERT INTO questions (question, answer,description, category_id, difficulty_id) VALUES (?, ?, ?, ?, ?)',
-                          (question, answer,description, category_id, difficulty_id)
-                          )
-            conn.commit()
-            conn.close()
-            flash("問題が登録されました！", "success")
-        else:
-            flash("すべてのフィールドを入力してください。", "error")
 
-        return redirect(url_for('add_question'))
-       
-  
+        question_text = request.form['question']
+        answer = request.form['answer']
+        description = request.form.get('description', '')
+        category_id = request.form.get('category_id', None)
+        difficulty_id = request.form.get('difficulty_id', None)
+
+ 
+        if not question_text or not answer:
+            print("❌ エラー: question または answer が空です！")
+            return "Bad Request: 必須項目が空です", 400  # ここで明示的にエラーを返す
+
+        try:
+            new_question = Question(
+                question=question_text,
+                answer=answer,
+                description=description,
+                category_id=int(category_id) if category_id else None,
+                difficulty_id=int(difficulty_id) if difficulty_id else None
+            )
+
+            db.session.add(new_question)
+            db.session.commit()
+
+
+            return redirect(url_for('manage_questions'))
+
+        except IntegrityError as e:
+            db.session.rollback()  # 💡 エラーが起きたらロールバック
+
+            return jsonify({"error": "データベース制約違反が発生しました！"}), 500
+
+        except Exception as e:
+            db.session.rollback()
+
+            return jsonify({"error": "サーバー内部エラーが発生しました！"}), 500
+
+    categories = db.session.query(Category).all()
+    difficulty_levels = db.session.query(DifficultyLevel).all()
+
     return render_template('add_question.html', categories=categories, difficulty_levels=difficulty_levels)
-
 
 
 # 管理画面（削除ボタン含む）
 @app.route('/admin/manage', methods=['GET', 'POST'])
 @admin_required 
 def manage_questions():
-    conn = get_db_connection()
-    
-    questions = conn.execute('''
-        SELECT questions.id, questions.question, categories.name AS category_name, difficulty_levels.name AS difficulty_name
-        FROM questions
-        LEFT JOIN categories ON questions.category_id = categories.id
-        LEFT JOIN difficulty_levels ON questions.difficulty_id = difficulty_levels.id
-    ''').fetchall()
-    
-    conn.close()
-    return render_template('manage_questions.html', questions=questions,question =questions)
+    questions = (
+        db.session.query(
+            Question.id,
+            Question.question,
+            Category.name.label("category_name"),
+            DifficultyLevel.level.label("difficulty_name"),
+        )
+        .outerjoin(Category, Question.category_id == Category.id)
+        .outerjoin(DifficultyLevel, Question.difficulty_id == DifficultyLevel.id)
+        .order_by(Question.id.asc())  # ✅ `.order_by()` を適切な位置に
+        .all()  # ✅ `.all()` も正しく適用
+    )
 
+    
+    return render_template('manage_questions.html', questions=questions)
 
 # 削除用ルート
-@app.route('/delete/<int:id>', methods=['POST'])
-def delete_question(id):
+@app.route('/admin/delete/<int:question_id>', methods=['POST'])
+@admin_required
+def delete_question(question_id):
     try:
-        conn = get_db_connection()
-        conn.execute('DELETE FROM questions WHERE id = ?', (id,))
-        conn.commit()
-        conn.close()
-        flash("問題が削除されました！", "success")
+        with app.app_context():  # ✅ Flask のアプリコンテキストを設定
+            question = db.session.get(Question, question_id)  # ✅ `query.get()` → `db.session.get()` に変更
+            
+            if not question:
+
+                return jsonify({"error": "編集する問題が見つかりません！"}), 404
+
+            db.session.delete(question)
+            db.session.commit()
+            db.session.remove()  # ✅ セッションを明示的に閉じる
+   
+
+            # ✅ `redirect()` を使って、最新の管理画面にリダイレクト！
+            return redirect(url_for('manage_questions'))
+
     except Exception as e:
-        print(f"Error: {e}")
-        flash("削除中にエラーが発生しました。", "error")
-    return redirect(url_for('manage_questions'))
+        db.session.rollback()
+
+        return jsonify({"error": "削除に失敗しました！"}), 500
+
+
 
 
 # 問題編集用ルート
 @app.route('/admin/edit/<int:id>', methods=['GET', 'POST'])
-@admin_required 
+@admin_required
 def edit_question(id):
-    conn = get_db_connection()
+    # ✅ IDが正しく取得されているか確認
+    try:
+        id = int(id)  # IDが整数であることを保証
 
-    if request.method == 'POST':  # ✅ `POST` の処理！
-        # ✅ `JSON` データを受け取る（form ではなく JSON）
-        data = request.get_json()  # ← ここが重要！
-        
-        question_text = data.get('question', "").strip()  # ✅ `None` にならないように `""` をデフォルト値に
-        answer = data.get('answer', "").strip()
-        description = data.get('description', "").strip()
-        category_id = data.get('category_id')
-        difficulty_level_id = data.get('difficulty_level_id')
+    except ValueError:
+        print(f"🚨 IDが整数ではありません！ ID={id}", file=sys.stderr)
+        return jsonify({"error": "IDが無効です！"}), 400
 
-        # ✅ `category_id` や `difficulty_level_id` を `int` に変換
-        category_id = int(category_id) if category_id and isinstance(category_id, str) and category_id.isdigit() else None
-        difficulty_level_id = int(difficulty_level_id) if difficulty_level_id and isinstance(difficulty_level_id, str) and difficulty_level_id.isdigit() else None
+    # ✅ データベースから該当の問題を取得
+    question = db.session.query(Question).filter_by(id=id).first()
 
-        # ✅ データベースを更新
-        conn.execute("""
-            UPDATE questions 
-            SET question = ?, answer = ?, description = ?, category_id = ?, difficulty_id = ? 
-            WHERE id = ?
-        """, (question_text, answer, description, category_id, difficulty_level_id, id))
+    if not question:
+        print(f"🚨 問題が見つかりません！ ID={id}", file=sys.stderr)
+        return jsonify({"error": "編集する問題が見つかりません！"}), 400
 
-        conn.commit()
-        conn.close()
+    # ✅ `GET` の場合（編集画面を表示）
+    if request.method == 'GET':
+        categories = db.session.query(Category).all() or []
+        difficulty_levels = db.session.query(DifficultyLevel).all() or []
 
-        flash("問題が更新されました！", "success")
-        return jsonify({"message": "更新成功"})  
-    
-    # ✅ `GET` の処理（編集ページを表示）
-    question = conn.execute("""
-        SELECT questions.*, categories.name AS category_name, difficulty_levels.name AS difficulty_name 
-        FROM questions
-        LEFT JOIN categories ON questions.category_id = categories.id
-        LEFT JOIN difficulty_levels ON questions.difficulty_id = difficulty_levels.id
-        WHERE questions.id = ?
-    """, (id,)).fetchone()
-    
-    categories = conn.execute("SELECT * FROM categories").fetchall()
-    difficulty_levels = conn.execute("SELECT * FROM difficulty_levels").fetchall()
-    conn.close()
+        return render_template('edit_question.html', question=question, categories=categories, difficulty_levels=difficulty_levels)
+
+    # ✅ `POST` の場合（データを更新）
+    if request.method == 'POST':
+
+        try:
+            data = request.get_json()
+
+
+            if not data:
+                print(f"🚨 受け取ったデータが `None` です！", file=sys.stderr)
+                return jsonify({"error": "リクエストボディが JSON 形式ではありません！"}), 400
+
+            # ✅ データを更新
+            question.question = data.get("question")
+            question.answer = data.get("answer")
+            question.description = data.get("description", "")
+            question.category_id = int(data.get("category_id", 0)) or None
+            question.difficulty_level_id = int(data.get("difficulty_level_id", 0)) or None
+
+            db.session.commit()
+
+
+            print(f"✅ 「問題を更新しました！」を返します！", file=sys.stderr)
+            return jsonify({"message": "問題を更新しました！"}), 200
+
+        except Exception as e:
+            db.session.rollback()
+
+            print(f"🚨 データ更新エラー: {e}", file=sys.stderr)
+            return jsonify({"error": f"エラー: {e}"}), 500
+
+
+@app.route("/edit_all")
+def show_questions():
+    # ✅ 問題一覧を取得（カテゴリ名・難易度名を含める）
+    questions = db.session.execute(text("""
+        SELECT 
+            q.id, q.question, q.answer, q.description, 
+            q.category_id, c.name AS category_name,
+            q.difficulty_id, d.level AS difficulty_level
+        FROM public.questions q
+        LEFT JOIN public.categories c ON q.category_id = c.id
+        LEFT JOIN public.difficulty_levels d ON q.difficulty_id = d.id
+    """)).fetchall()
+
+    # ✅ カテゴリ一覧を取得
+    categories = db.session.execute(text("SELECT id, name FROM public.categories")).fetchall()
+
+    # ✅ 難易度一覧を取得
+    difficulty_levels = db.session.execute(text("SELECT id, level FROM public.difficulty_levels")).fetchall()
+    return render_template("edit_all.html", questions=questions, categories=categories, difficulty_levels=difficulty_levels)
+
+#edit_allでの保存
+@app.route("/admin/edit/<int:id>", methods=["POST"])
+def update_question(id):
+    data = request.json  # ✅ JavaScript から送られてきたデータを取得
+
+    # ✅ `id` に対応する `question` を取得
+    question = db.session.execute(text("""
+        SELECT * FROM public.questions WHERE id = :id
+    """), {"id": id}).fetchone()
+
+    # ✅ デバッグ: question がちゃんと取得できているか確認
+    print("デバッグ: question = ", question)
 
     if question is None:
-        flash("問題が見つかりません。", "error")
-        return redirect(url_for('manage_questions'))
+        return jsonify({"error": "Question not found"}), 404  # ❌ IDが存在しない場合のエラー処理
 
-    return render_template("edit_question.html", question=question, categories=categories, difficulty_levels=difficulty_levels)
+    # ✅ データをデバッグ表示
+    print("受け取ったデータ:", data)
+
+    # ✅ データベースの `questions` テーブルを更新
+    db.session.execute(text("""
+        UPDATE public.questions
+        SET 
+            question = :question,
+            answer = :answer,
+            description = :description,
+            category_id = :category_id,
+            difficulty_id = :difficulty_level_id
+        WHERE id = :id
+    """), {
+        "question": data["question"],
+        "answer": data["answer"],
+        "description": data["description"],
+        "category_id": data["category_id"],
+        "difficulty_level_id": data["difficulty_level_id"],
+        "id": id
+    })
+
+    db.session.commit()  # ✅ データを確定
+    return jsonify({"message": "更新成功！"})  # ✅ 成功メッセージを返す
+
 
 
 if sys.platform != "win32":
     import resource
-
-
-
 #禁止モジュールのフィルタリング
 FORBIDDEN_KEYWORDS = ["import os", "import sys", "import subprocess", "import multiprocessing"]
 
@@ -552,15 +730,32 @@ def run_code():
 
     return jsonify({"result": output})
 
+@app.route('/disclaimer')
+def disclaimer():
+    # Markdownファイルを読み込む
+    with open("disclaimer.md", "r", encoding="utf-8") as f:
+        md_content = f.read()
+
+    # MarkdownをHTMLに変換
+    html_content = markdown.markdown(md_content)
+
+    return render_template("disclaimer.html", content=Markup(html_content))
+
+
 
 
 
 @app.errorhandler(500)
-def internal_server_error(e):
-    return render_template("500.html"), 500
+def internal_error(error):
+    print(f"🚨 500 Internal Server Error: {error}", file=sys.stderr)
+    traceback.print_exc()  # ✅ 詳細なエラーログを表示！
+    return jsonify({"error": "サーバー内部エラーが発生しました！"}), 500
 
 
 # アプリ起動
 
+DEBUG_MODE = os.environ.get("FLASK_DEBUG", "true").lower() == "true"
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))  # ✅ `PORT` を取得
+    app.run(host="0.0.0.0", port=port, debug=DEBUG_MODE)  # ✅ `FLASK_DEBUG` でデバッグモードを制御！

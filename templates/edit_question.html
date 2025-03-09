@@ -33,43 +33,39 @@
             <form method="POST" action="/admin/edit/{{ question['id'] }}">
                 <!-- 問題編集 -->
                 <div class="question-box">
-                    <textarea id="edit_question" name="edit_question">{{ question['question'] }}</textarea>
+                    <textarea id="edit_question" name="edit_question">{{ question.question }}</textarea>
                 </div>
-                <!-- 期待される出力の編集編集 -->
-                <div class="expected-output">
-                    <label for="edit_expected_output" class="boxtitle">期待される出力:</label>
-                    <textarea id="edit_expected_output" name="edit_expected_output" rows="2"></textarea>
-                </div>
+
                 <!-- 解答の編集 -->
                 <div class="answer-box">
-                    <textarea id="edit_answer" name="edit_answer">{{ question['answer'] }}</textarea>
+                    <textarea id="edit_answer" name="edit_answer">{{ question.answer }}</textarea>
                 </div>
                 <!-- 解説編集 -->
                 <div class="description-box">
                     <label for="register_description">解説:</label>
-                    <textarea id="edit_description" name="edit_description">{{ question['description']}}</textarea>
+                    <textarea id="edit_description" name="edit_description">{{ question.description}}</textarea>
                 </div>
-                <button type="button" onclick="saveQuestion({{ question['id'] }})" class="save-button">保存</button>
+                <button type="button" onclick="saveQuestion({{ question.id }})" class="save-button">保存</button>
 
            
             <a href="/admin/manage" class="link-button">管理ページを見る</a>
 
                 <label for="category_id">カテゴリを選択:</label>
-                <select name="category_id" >
-                    <option value="{{ question['category_id'] }}">{{ question['category_name'] }}</option> <!-- ✅ 現在のカテゴリを表示 -->
+                <select name="category_id" id ="edit_category_menu">
+                    <option value="{{ question.category.id }}">{{ question.category.name }}</option> <!-- ✅ 現在のカテゴリを表示 -->
                         {% for category in categories %}
-                            {% if category['id'] != question['category_id'] %}  <!-- ✅ 既に選択されているものは除外 -->
-                                <option value="{{ category['id'] }}">{{ category['name'] }}</option>
+                            {% if category.id != question.category_id %}  <!-- ✅ 既に選択されているものは除外 -->
+                                <option value="{{ category.id }}">{{ category.name }}</option>
                             {% endif %} 
                         {% endfor %}                   .
                 </select>
 
                 <label for="difficulty_level_id">難易度を選択:</label>
-                <select name="difficulty_level_id">
-                    <option value="{{ question['difficulty_id'] }}">{{ question['difficulty_name']}}</option>
+                <select name="difficulty_level_id" id = "edit_difficulty_level_menu">
+                    <option value="{{question.difficulty.id }}">{{ question.difficulty.level}}</option>
                         {% for level in difficulty_levels %}
-                            {% if level['id'] != question['difficulty_id'] %} 
-                            <option value="{{ level['id'] }}">{{ level['name'] }}</option>
+                            {% if level.id != question.difficulty_id %} 
+                            <option value="{{ level.id}}">{{ level.level }}</option>
                             {% endif %} 
                         {% endfor %}
                 </select>
