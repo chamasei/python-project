@@ -7003,3 +7003,25 @@ NameError: name 'Question' is not defined. Did you mean: 'session'?
 2025-03-10 17:24:28,321 - INFO -  * Debugger PIN: 155-922-880
 2025-03-10 17:24:33,322 - INFO - 127.0.0.1 - - [10/Mar/2025 17:24:33] "GET /question/2 HTTP/1.1" 200 -
 2025-03-10 17:24:33,372 - INFO - 127.0.0.1 - - [10/Mar/2025 17:24:33] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-10 17:28:24,148 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.2.104:5000
+2025-03-10 17:28:24,148 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-10 17:28:24,149 - INFO -  * Restarting with stat
+2025-03-10 17:28:24,651 - WARNING -  * Debugger is active!
+2025-03-10 17:28:24,653 - INFO -  * Debugger PIN: 155-922-880
+2025-03-10 17:28:27,711 - INFO - 127.0.0.1 - - [10/Mar/2025 17:28:27] "GET /question/2 HTTP/1.1" 200 -
+2025-03-10 17:28:27,765 - INFO - 127.0.0.1 - - [10/Mar/2025 17:28:27] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-10 17:28:33,177 - INFO - 127.0.0.1 - - [10/Mar/2025 17:28:33] "GET /question/1 HTTP/1.1" 200 -
+2025-03-10 17:28:33,196 - INFO - 127.0.0.1 - - [10/Mar/2025 17:28:33] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-10 17:28:47,006 - INFO - 127.0.0.1 - - [10/Mar/2025 17:28:47] "GET /question/292 HTTP/1.1" 200 -
+2025-03-10 17:28:47,038 - INFO - 127.0.0.1 - - [10/Mar/2025 17:28:47] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-10 17:31:11,111 - INFO - 127.0.0.1 - - [10/Mar/2025 17:31:11] "GET /question/292 HTTP/1.1" 200 -
+2025-03-10 17:31:11,126 - INFO - 127.0.0.1 - - [10/Mar/2025 17:31:11] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-10 17:31:32,402 - INFO - 127.0.0.1 - - [10/Mar/2025 17:31:32] "GET /question/292 HTTP/1.1" 200 -
+2025-03-10 17:31:32,415 - INFO - 127.0.0.1 - - [10/Mar/2025 17:31:32] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-10 17:32:14,578 - INFO - 127.0.0.1 - - [10/Mar/2025 17:32:14] "GET /question/292 HTTP/1.1" 200 -
+2025-03-10 17:32:14,590 - INFO - 127.0.0.1 - - [10/Mar/2025 17:32:14] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-10 17:32:21,913 - INFO - 127.0.0.1 - - [10/Mar/2025 17:32:21] "GET /question/292 HTTP/1.1" 200 -
+2025-03-10 17:32:21,926 - INFO - 127.0.0.1 - - [10/Mar/2025 17:32:21] "GET /static/style.css HTTP/1.1" 200 -
