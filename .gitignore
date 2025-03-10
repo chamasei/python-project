@@ -4,3 +4,4 @@ database.db.env
 __pycache__/
 *.csv
 .env.production
+question.db
