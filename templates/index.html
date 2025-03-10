@@ -3,6 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Pythonの問題を解いて学べる無料のWebアプリ。初心者から上級者まで対応。">
+    <meta name="keywords" content="Python, プログラミング, 学習, 問題集, コーディング">
+    <meta name="author" content="pythonで遊ぼう">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Python問題集 | 無料で学べる">
+    <!-- OGP (SNSシェア対策) -->
+    <meta property="og:description" content="Pythonの問題を解いて学べる無料のWebアプリ。初心者から上級者まで対応。">
+    <meta property="og:image" content="https://python-project-inzf.onrender.com/static/og-image.jpg">
+    <meta property="og:url" content="https://python-project-inzf.onrender.com/">
+    <meta property="og:type" content="website">
+    <!-- Twitter用の設定 -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Python問題集 | 無料で学べる">
+    <meta name="twitter:description" content="Pythonの問題を解いて学べる無料のWebアプリ。">
+    <meta name="twitter:image" content="https://python-project-inzf.onrender.com/static/og-image.png">
+
+    <meta property="twitter:image:src" content="https://python-project-inzf.onrender.com/static/og-image.png">
+    <meta name="twitter:image" content="https://python-project-inzf.onrender.com/static/og-image.png">
+
+    <meta name="description" content="Python初心者向けの練習問題が無料で解ける問題集サイト。基本から応用まで解説付き。">
+
     <title>Python 問題集</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,30 +43,28 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
+
+    {% if request.path.startswith('/question/') %}
+        <h1>問題詳細ページ</h1>
+    {% else %}
+        <h1>問題一覧ページ</h1>
+    {% endif %}
+
     <header>
         <h1>
             <span class="python">Python</span>で遊ぼう
         </h1>
         
-        <h3>手を動かして学ぶ Python問題集</h3>
+        <h2>手を動かして学ぶ Python問題集</h2>
 
     </header>
 
-    <!-- 🔹 ここにフラッシュメッセージを追加 -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <div class="flash-messages">
-                {% for category, message in messages %}
-                    <p class="flash {{ category }}">{{ message }}</p>
-                {% endfor %}
-            </div>
-        {% endif %}
-    {% endwith %}
+
 
     
     <div class="container">
         <aside>
-            <h2>検索</h2>
+            <p id = "search-title"><strong>検索</strong></p>
             <form method="GET" class = "search" id = "search-form" action="/">
                 <label for="q">キーワードを入力:</label>
                 <input type="text" class="input-box" name="q" id ="q" placeholder="キーワードを入力" value="{{ query if query else '' }}" >
@@ -87,18 +106,29 @@
         
 
         <main >
+            <!-- 🔹 ここにフラッシュメッセージを追加 -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <p class="flash {{ category }}">{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% endwith %}
+
             <!-- ナビゲーションボタン -->
             <div class="navigation-buttons"id="question-start">
                 {% if prev_index is not none %}
-                <a href="{{ url_for('view_questions', id=prev_id, category_id=category_id, difficulty_level_id=difficulty_level_id, q=query) }}#question-start" class="prev-button"><i class="fa-solid fa-circle-arrow-left"></i></a>
+                <a href="{{ url_for('view_questions', id=prev_id, category_id=category_id, difficulty_level_id=difficulty_level_id, q=query) }}" class="prev-button"><i class="fa-solid fa-circle-arrow-left"></i></a>
                 {% else %}
                     <span class="disabled-button">前の問題</span>
                 {% endif %}
 
-                <h2><p>{{ question_number }}/{{ total_questions }}</p></h2>
+                <div  id ="question_number"><p>{{ question_number }}/{{ total_questions }}</p></div>
                       
                 {% if next_index is not none %}
-                <a href="{{ url_for('view_questions', id=next_id, category_id=category_id, difficulty_level_id=difficulty_level_id,q=query) }}#question-start" class="next-button"><i class="fa-solid fa-circle-arrow-right"></i></a>
+                <a href="{{ url_for('view_questions', id=next_id, category_id=category_id, difficulty_level_id=difficulty_level_id,q=query) }}" class="next-button"><i class="fa-solid fa-circle-arrow-right"></i></a>
 
                 {% else %}
                     <span class="disabled-button">次の問題</span>
@@ -115,20 +145,10 @@
                         <p class ="question_info">カテゴリ:{{ question.category_name}}</p>
                     </div>
                     <div class="question-box">
-                        <p class="description-text">問題: {{ question.question | safe }}</p>
+                        <p class="contents_text">問題: {{ question.question | safe }}</p>
                     </div>
 
-                    
-                    <!-- 期待される出力がある場合 -->
-                    {% if questions[0].expected_output %}
-                    <div class="expected-output">
-                        <strong>期待される出力:</strong>
-                        <pre>{{ questions[0].expected_output | default('出力例なし', true) }}</pre>
-                    </div>
-                    {% else %}
-                        <p>出力例なし</p>
-                    {% endif %}
-                
+
 
 
         
@@ -148,11 +168,11 @@
                                 
                     <!-- 解答 -->
                     <div id="answer{{ question['id'] }}" class="answer-box" style="display: none;">
-                        <p class="description-text">解答: {{ question.answer | safe }}</p>
+                        <p class="contents_text">解答: {{ question.answer | safe }}</p>
                     </div>
                     
                     <div id="description{{ question['id'] }}" class="description-box" style="display: none;">
-                        <p class="description-text">解説: {{ question.description | safe }}</p>
+                        <p class="contents_text">解説: {{ question.description | safe }}</p>
                     </div>
                 </div>
             {% else %}
@@ -164,15 +184,15 @@
             <!-- ナビゲーションボタン -->
             <div class="navigation-buttons">
                 {% if prev_index is not none %}
-                <a href="{{ url_for('view_questions', id=prev_id, category_id=category_id, difficulty_level_id=difficulty_level_id, q=query) }}#question-start" class="prev-button"><i class="fa-solid fa-circle-arrow-left"></i></a>
+                <a href="{{ url_for('view_questions', id=prev_id, category_id=category_id, difficulty_level_id=difficulty_level_id, q=query) }}" class="prev-button"><i class="fa-solid fa-circle-arrow-left"></i></a>
                 {% else %}
                     <span class="disabled-button">前の問題</span>
                 {% endif %}
 
-                <h2><p>{{ question_number }}/{{ total_questions }}</p></h2>
+                <div  id ="question_number"><p>{{ question_number }}/{{ total_questions }}</p></div>
                       
                 {% if next_index is not none %}
-                <a href="{{ url_for('view_questions', id=next_id, category_id=category_id, difficulty_level_id=difficulty_level_id,q=query) }}#question-start" class="next-button"><i class="fa-solid fa-circle-arrow-right"></i></a>
+                <a href="{{ url_for('view_questions', id=next_id, category_id=category_id, difficulty_level_id=difficulty_level_id,q=query) }}" class="next-button"><i class="fa-solid fa-circle-arrow-right"></i></a>
                 {% else %}
                     <span class="disabled-button">次の問題</span>
                 {% endif %}
@@ -184,7 +204,9 @@
     </div>
 
 <footer>
-    <p>&copy; 2025 python問題集</p>
+
+    <p>&copy; 2025 pythonで遊ぼう</p>
+    <p><a href="{{ url_for('disclaimer') }}">免責事項</a></p>
     <a href="#top">トップに戻る</a>
 
 </footer>
@@ -239,14 +261,7 @@ function showAnswerAndDescription(answerId, descriptionId) {
         return false; // ✅ 二重送信を防ぐ！
     }
     
-    document.addEventListener("DOMContentLoaded", function() {
-        let nextButton = document.getElementById("nextButton");
-        if (nextButton) {
-            console.log("次の問題ボタンの href (更新前):", nextButton.href);
-            nextButton.href = "{{ url_for('view_questions', id=next_id, category_id=category_id, q=query) }}";
-            console.log("次の問題ボタンの href (更新後):", nextButton.href);
-        }
-    });
+
 
     // ✅ URL から `q=` を削除する関数
     window.onload = function() {
@@ -267,8 +282,23 @@ function showAnswerAndDescription(answerId, descriptionId) {
         }
         window.location.href = "{{ url_for('view_questions') }}";  // ✅ URLをリロード
     }
+    
 
+    document.addEventListener("DOMContentLoaded", function() {
+    const targetElement = document.getElementById("question-start");
 
+    if (targetElement) {
+        let offset = window.innerWidth <= 768 ? 0 : 500;  // ✅ スマホとPCでオフセット変更
+        let targetPosition = targetElement.getBoundingClientRect().top + window.scrollY - offset;
+
+        console.log(`📍 スクロール位置: ${targetPosition} (オフセット: ${offset})`);
+
+        window.scrollTo({
+            top: targetPosition,
+            behavior: "smooth"
+        });
+    }
+});
 
 </script>
 

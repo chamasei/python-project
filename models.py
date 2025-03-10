@@ -10,7 +10,6 @@ class Question(db.Model):
     description = db.Column(db.Text, nullable=True)
     category_id = db.Column(db.Integer, db.ForeignKey("categories.id"), nullable=True)
     difficulty_id = db.Column(db.Integer, db.ForeignKey("difficulty_levels.id"), nullable=True)
-    expected_output = db.Column(db.Text, nullable=True)
 
     __table_args__ = {"extend_existing": True}
 

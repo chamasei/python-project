@@ -1,18 +1,24 @@
 from flask import Flask, request, session,render_template, redirect, url_for, flash,jsonify
 from markupsafe import Markup
 import subprocess
-import sqlite3
 import logging
 import sys
 import re
 from dotenv import load_dotenv
 from flask_sqlalchemy import SQLAlchemy
 import os
-from functools import wraps  # ✅ これを追加！
+from functools import wraps  
 from sqlalchemy import func
 from sqlalchemy.engine.row import Row
+import markdown
+import psycopg2
+import traceback
+from flask_migrate import Migrate
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.pool import NullPool  
+from models import Question, Category, DifficultyLevel 
 
-load_dotenv()
+
 
 # ログ設定
 logging.basicConfig(
@@ -21,22 +27,103 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s"  # フォーマット
 )
 
-app = Flask(__name__)  # ✅ ここで `Flask` を作成！
+db = SQLAlchemy()
 
-app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL", "postgresql://localhost:5432/default_db")
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+# ✅ 環境変数の読み込み
+env_path = os.path.abspath(".env")
+load_dotenv(".env")
 
-db = SQLAlchemy(app)  # ✅ `app` に `db` をバインド！
+# `.env` を強制的にロード
+if not load_dotenv(env_path):
+    print("🚨 `.env` の読み込みに失敗しました！")
 
-with app.app_context():
-    from models import Question, Category, DifficultyLevel  # ✅ `app.app_context()` の中で `models.py` を `import`
-    db.create_all()  # ✅ テーブルを作成！
+
+def create_app():
+    app = Flask(__name__)  # ✅ `Flask` インスタンスを関数内で作成
+
+
+
+    FLASK_ENV = os.getenv("FLASK_ENV", "development")
+    
+    if FLASK_ENV == "production":
+        DATABASE_URL = os.getenv("DATABASE_URL")  # 本番環境のDB
+
+        if DATABASE_URL.startswith("postgres://"):
+            DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+        if "sslmode" not in DATABASE_URL:
+            DATABASE_URL += "?sslmode=require"      
+    else:
+        DATABASE_URL= os.getenv("DATABASE_URL") # ローカルのDB
+        
+    
+    # ✅ PostgreSQL の場合、接続URLの修正
+
+    # ✅ Flask の設定
+    app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+        "poolclass": NullPool  # ✅ 使い終わった接続をすぐに閉じる！
+    }
+
+    # ✅ `SQLAlchemy` と `Flask` の関連付け
+    db.init_app(app)
+    migrate = Migrate(app, db)
+
+
+
+    # ✅ `app.app_context()` の中で `models.py` を読み込む
+    with app.app_context():
+        from models import Question, Category, DifficultyLevel  
+        db.create_all()  # ✅ テーブルを作成！
+
+    @app.teardown_appcontext
+    def shutdown_session(exception=None):
+        db.session.remove()  # ✅ すべてのリクエストが終わったら、確実にセッションを閉じる！
+
+    return app
+
+app = create_app()  # ✅ `create_app()` を使って Flask アプリを作成
+
+from sqlalchemy import text
+@app.route("/debug-db4")
+def debug_db4():
+    try:
+        question = db.session.execute(text("SELECT description FROM public.questions WHERE id=1")).fetchone()
+        if question:
+            processed_description = detect_code_blocks(question[0])  # ✅ コードブロック変換
+            print("🚀 Jinja に渡す直前:", repr(processed_description))  # ✅ Jinja に渡すデータを表示
+            
+            return render_template("test.html", description=processed_description)
+        else:
+            return "❌ データが見つかりません"
+    except Exception as e:
+        return f"🚨 エラー発生: {str(e)}"
+
+
+
+
+
+#dbのセッション管理
+@app.teardown_appcontext
+def shutdown_session(exception=None):
+    db.session.remove()  # ✅ すべてのリクエストが終わったらセッションを解放！
+
 
 
 #管理者用
 # ✅ 環境変数から secret_key を取得（設定がなければ "your_secret_key_here" を使う）
 app.secret_key = os.getenv("FLASK_SECRET_KEY") 
 ADMIN_PASSWORD = os.getenv("PYTHON_ADMIN_PASSWORD")
+
+def get_db_connection():
+    DATABASE_URL = os.getenv("DATABASE_URL")  # 環境変数から取得
+
+    if not DATABASE_URL:
+        raise ValueError("DATABASE_URL is not set in environment variables")
+
+    conn = psycopg2.connect(DATABASE_URL)  # PostgreSQL に接続
+    return conn
+
 
 #それぞれのページで管理者ログインを要求する
 def admin_required(f):
@@ -83,14 +170,19 @@ def admin_login():
 
 @admin_required
 def manage_questions():
-    conn = get_db_connection()
-    questions = conn.execute('''
+    conn = get_db_connection()  # PostgreSQL に接続
+    cur = conn.cursor()
+
+    cur.execute('''
         SELECT questions.id, questions.question, categories.name AS category_name, difficulty_levels.name AS difficulty_name
         FROM questions
         LEFT JOIN categories ON questions.category_id = categories.id
         LEFT JOIN difficulty_levels ON questions.difficulty_id = difficulty_levels.id
-    ''').fetchall()
+    ''')
+    questions = cur.fetchall()  # 変更: fetchall() をカーソルで取得
+    cur.close()
     conn.close()
+
     return render_template('manage_questions.html', questions=questions)
 
 
@@ -105,7 +197,7 @@ def detect_code_blocks(description):
     formatted_parts = []
     in_code_block = False
     lines = description.split("\n")
-
+    
         # ✅ コードブロック内の処理
     for line in lines:
         
@@ -130,6 +222,8 @@ def detect_code_blocks(description):
     final_output = re.sub(r"(<pre><code>)\n+", r"\1", final_output)
 
     return final_output
+
+
 
 def format_description(description):
     lines = description.split("\n")
@@ -199,14 +293,32 @@ def format_description(description):
 
     return Markup("\n".join(formatted_parts))  # ✅ 最後に `Markup` を適用
 
+@app.route('/')
+def home():
+    print("🔥 home() が呼ばれました！", file=sys.stderr)
+
+    # ✅ カテゴリ・難易度のリストを取得
+    categories = db.session.query(Category).all()
+    difficulty_levels = db.session.query(DifficultyLevel).all()
+
+    return render_template(
+        'top.html',
+        categories=categories,
+        difficulty_levels=difficulty_levels
+    )
+
+    # ✅ カテゴリ・難易度のリストを取得
+    categories = db.session.query(Category).all()
+    difficulty_levels = db.session.query(DifficultyLevel).all()
 
 
-@app.route('/', methods=['GET'])
-def view_questions():
-    print("🔥 view_questions() が呼ばれました！", file=sys.stderr)
+@app.route('/question/<int:id>', methods=['GET'])
+@app.route('/questions', methods=['GET'])
+def view_question(id=None):
+    print(f"🔥 view_question() が呼ばれました！ ID={id}", file=sys.stderr)
 
     # ✅ リクエストされた `id` を取得（int型）
-    current_id = request.args.get('id', type=int)
+    current_id = id
     
     # ✅ フィルタ条件を取得
     category_id = request.args.get("category_id", default=None, type=int)
@@ -288,16 +400,22 @@ def view_questions():
     question_data = question._mapping["Question"]
     category_name = question._mapping["category_name"]
     difficulty_name = question._mapping["difficulty_name"]
-
+    
         # ✅ `question_data` の `question` と `description` に `detect_code_blocks()` と `format_description()` を適用
     if hasattr(question_data, "question") and question_data.question is not None:
         question_data.question = detect_code_blocks(question_data.question)
         question_data.question = format_description(question_data.question)
+    
+    if hasattr(question_data, "answer") and question_data.answer is not None:
+        question_data.answer = detect_code_blocks(question_data.answer)
+        question_data.answer = format_description(question_data.answer)
+
 
     if hasattr(question_data, "description") and question_data.description is not None:
         question_data.description = detect_code_blocks(question_data.description)
         question_data.description = format_description(question_data.description)
 
+    
 
     # ✅ 「次の問題」と「前の問題」を取得
     next_question = (
@@ -305,32 +423,32 @@ def view_questions():
         .order_by(Question.id.asc())
         .first()
     )
+    
     prev_question = (
         query_filter.filter(Question.id < current_id)
         .order_by(Question.id.desc())
         .first()
     )
-    
+
     next_id = next_question.Question.id if next_question else None
     prev_id = prev_question.Question.id if prev_question else None
+    
+    # ✅ 検索結果の最初・最後の問題の ID を取得
+    first_question = query_filter.with_entities(Question.id).order_by(Question.id.asc()).first()
+    last_question = query_filter.with_entities(Question.id).order_by(Question.id.desc()).first()
 
-    # ✅ `next_id` が `None` の場合は最初の問題に戻す
-    if next_id is None:
-        flash("🚀 次の問題はありません。最初の問題に戻ります。", "info")
-        first_question = query_filter.order_by(Question.id.asc()).first()
-        next_id = first_question.Question.id if first_question else None
+    # ✅ `None` だった場合のデフォルト値を設定
+    first_question_id = first_question[0] if first_question else 1
+    last_question_id = last_question[0] if last_question else 1
 
-    # ✅ `prev_id` が `None` の場合は最後の問題にする
-    if prev_id is None:
-        flash("🚀 前の問題はありません。最後の問題に戻ります。", "info")
-        last_question = query_filter.order_by(Question.id.desc()).first()
-        prev_id = last_question.Question.id if last_question else None
+
+
 
     
 
     # ✅ 取得したデータをテンプレートに渡す
     return render_template(
-        'index.html',
+        'question.html',
         questions=[question_data],
         categories=categories,
         category_id=category_id,
@@ -343,7 +461,10 @@ def view_questions():
         difficulty_level_id=difficulty_level_id,
         total_questions=total_questions,
         question_number=question_number,
+        first_question_id=first_question_id,
+        last_question_id = last_question_id
     )
+
 
 
 
@@ -354,25 +475,40 @@ def view_questions():
 @admin_required  # ✅ これを追加！
 def add_question():
     if request.method == 'POST':
+
+
         question_text = request.form['question']
         answer = request.form['answer']
         description = request.form.get('description', '')
         category_id = request.form.get('category_id', None)
         difficulty_id = request.form.get('difficulty_id', None)
 
-        new_question = Question(
-            question=question_text,
-            answer=answer,
-            description=description,
-            category_id=category_id if category_id else None,
-            difficulty_id=difficulty_id if difficulty_id else None
-        )
+ 
+        if not question_text or not answer:
+            print("❌ エラー: question または answer が空です！")
+            return "Bad Request: 必須項目が空です", 400  # ここで明示的にエラーを返す
 
-        db.session.add(new_question)
-        db.session.commit()
+        try:
+            new_question = Question(
+                question=question_text,
+                answer=answer,
+                description=description,
+                category_id=int(category_id) if category_id else None,
+                difficulty_id=int(difficulty_id) if difficulty_id else None
+            )
 
-        flash('問題を追加しました！', 'success')
-        return redirect(url_for('manage_questions'))
+            db.session.add(new_question)
+            db.session.commit()
+
+            return redirect(url_for('manage_questions'))
+
+        except IntegrityError as e:
+            db.session.rollback()  # 💡 エラーが起きたらロールバック
+            return jsonify({"error": "データベース制約違反が発生しました！"}), 500
+
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({"error": "サーバー内部エラーが発生しました！"}), 500
 
     categories = db.session.query(Category).all()
     difficulty_levels = db.session.query(DifficultyLevel).all()
@@ -384,60 +520,165 @@ def add_question():
 @app.route('/admin/manage', methods=['GET', 'POST'])
 @admin_required 
 def manage_questions():
-    questions = db.session.query(
-        Question.id,
-        Question.question,
-        Category.name.label("category_name"),
-        DifficultyLevel.level.label("difficulty_name")
-    ).outerjoin(Category, Question.category_id == Category.id
-    ).outerjoin(DifficultyLevel, Question.difficulty_id == DifficultyLevel.id
-    ).all()
+    questions = (
+        db.session.query(
+            Question.id,
+            Question.question,
+            Category.name.label("category_name"),
+            DifficultyLevel.level.label("difficulty_name"),
+        )
+        .outerjoin(Category, Question.category_id == Category.id)
+        .outerjoin(DifficultyLevel, Question.difficulty_id == DifficultyLevel.id)
+        .order_by(Question.id.asc())  # ✅ `.order_by()` を適切な位置に
+        .all()  # ✅ `.all()` も正しく適用
+    )
+
     
     return render_template('manage_questions.html', questions=questions)
 
 # 削除用ルート
-@app.route('/delete/<int:id>', methods=['POST'])
-@admin_required 
-def delete_question(id):
-    question = db.session.get(Question, id)  # ✅ `id` に該当するデータを取得
+@app.route('/admin/delete/<int:question_id>', methods=['POST'])
+@admin_required
+def delete_question(question_id):
+    try:
+        with app.app_context():  # ✅ Flask のアプリコンテキストを設定
+            question = db.session.get(Question, question_id)  # ✅ `query.get()` → `db.session.get()` に変更
+            
+            if not question:
+                return jsonify({"error": "編集する問題が見つかりません！"}), 404
 
-    if question:
-        db.session.delete(question)  # ✅ 削除
-        db.session.commit()  # ✅ 確定
-        flash('問題を削除しました！', 'success')
-    else:
-        flash('削除する問題が見つかりません！', 'error')
+            db.session.delete(question)
+            db.session.commit()
+            db.session.remove()  # ✅ セッションを明示的に閉じる
+   
 
-    return redirect(url_for('manage_questions'))
+            # ✅ `redirect()` を使って、最新の管理画面にリダイレクト！
+            return redirect(url_for('manage_questions'))
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": "削除に失敗しました！"}), 500
+
 
 
 
 # 問題編集用ルート
 @app.route('/admin/edit/<int:id>', methods=['GET', 'POST'])
-@admin_required 
+@admin_required
 def edit_question(id):
-    question = db.session.get(Question, id)  # ✅ `id` に該当するデータを取得
+    # ✅ IDが正しく取得されているか確認
+    try:
+        id = int(id)  # IDが整数であることを保証
+
+    except ValueError:
+        print(f"🚨 IDが整数ではありません！ ID={id}", file=sys.stderr)
+        return jsonify({"error": "IDが無効です！"}), 400
+
+    # ✅ データベースから該当の問題を取得
+    question = db.session.query(Question).filter_by(id=id).first()
 
     if not question:
-        flash('編集する問題が見つかりません！', 'error')
-        return redirect(url_for('manage_questions'))
+        print(f"🚨 問題が見つかりません！ ID={id}", file=sys.stderr)
+        return jsonify({"error": "編集する問題が見つかりません！"}), 400
 
+    # ✅ `GET` の場合（編集画面を表示）
+    if request.method == 'GET':
+        categories = db.session.query(Category).all() or []
+        difficulty_levels = db.session.query(DifficultyLevel).all() or []
+
+        return render_template('edit_question.html', question=question, categories=categories, difficulty_levels=difficulty_levels)
+
+    # ✅ `POST` の場合（データを更新）
     if request.method == 'POST':
-        question.question = request.form['question']
-        question.answer = request.form['answer']
-        question.description = request.form.get('description', '')
-        question.category_id = request.form.get('category_id', None)
-        question.difficulty_id = request.form.get('difficulty_id', None)
 
-        db.session.commit()  # ✅ 更新を確定
+        try:
+            data = request.get_json()
 
-        flash('問題を更新しました！', 'success')
-        return redirect(url_for('manage_questions'))
 
-    categories = db.session.query(Category).all()
-    difficulty_levels = db.session.query(DifficultyLevel).all()
+            if not data:
+                print(f"🚨 受け取ったデータが `None` です！", file=sys.stderr)
+                return jsonify({"error": "リクエストボディが JSON 形式ではありません！"}), 400
 
-    return render_template('edit_question.html', question=question, categories=categories, difficulty_levels=difficulty_levels)
+            # ✅ データを更新
+            question.question = data.get("question")
+            question.answer = data.get("answer")
+            question.description = data.get("description", "")
+            question.category_id = int(data.get("category_id", 0)) or None
+            question.difficulty_level_id = int(data.get("difficulty_level_id", 0)) or None
+
+            db.session.commit()
+
+
+            print(f"✅ 「問題を更新しました！」を返します！", file=sys.stderr)
+            return jsonify({"message": "問題を更新しました！"}), 200
+
+        except Exception as e:
+            db.session.rollback()
+
+            print(f"🚨 データ更新エラー: {e}", file=sys.stderr)
+            return jsonify({"error": f"エラー: {e}"}), 500
+
+
+@app.route("/edit_all")
+def show_questions():
+    # ✅ 問題一覧を取得（カテゴリ名・難易度名を含める）
+    questions = db.session.execute(text("""
+        SELECT 
+            q.id, q.question, q.answer, q.description, 
+            q.category_id, c.name AS category_name,
+            q.difficulty_id, d.level AS difficulty_level
+        FROM public.questions q
+        LEFT JOIN public.categories c ON q.category_id = c.id
+        LEFT JOIN public.difficulty_levels d ON q.difficulty_id = d.id
+    """)).fetchall()
+
+    # ✅ カテゴリ一覧を取得
+    categories = db.session.execute(text("SELECT id, name FROM public.categories")).fetchall()
+
+    # ✅ 難易度一覧を取得
+    difficulty_levels = db.session.execute(text("SELECT id, level FROM public.difficulty_levels")).fetchall()
+    return render_template("edit_all.html", questions=questions, categories=categories, difficulty_levels=difficulty_levels)
+
+#edit_allでの保存
+@app.route("/admin/edit/<int:id>", methods=["POST"])
+def update_question(id):
+    data = request.json  # ✅ JavaScript から送られてきたデータを取得
+
+    # ✅ `id` に対応する `question` を取得
+    question = db.session.execute(text("""
+        SELECT * FROM public.questions WHERE id = :id
+    """), {"id": id}).fetchone()
+
+    # ✅ デバッグ: question がちゃんと取得できているか確認
+    print("デバッグ: question = ", question)
+
+    if question is None:
+        return jsonify({"error": "Question not found"}), 404  # ❌ IDが存在しない場合のエラー処理
+
+    # ✅ データをデバッグ表示
+    print("受け取ったデータ:", data)
+
+    # ✅ データベースの `questions` テーブルを更新
+    db.session.execute(text("""
+        UPDATE public.questions
+        SET 
+            question = :question,
+            answer = :answer,
+            description = :description,
+            category_id = :category_id,
+            difficulty_id = :difficulty_level_id
+        WHERE id = :id
+    """), {
+        "question": data["question"],
+        "answer": data["answer"],
+        "description": data["description"],
+        "category_id": data["category_id"],
+        "difficulty_level_id": data["difficulty_level_id"],
+        "id": id
+    })
+
+    db.session.commit()  # ✅ データを確定
+    return jsonify({"message": "更新成功！"})  # ✅ 成功メッセージを返す
 
 
 
@@ -486,12 +727,26 @@ def run_code():
 
     return jsonify({"result": output})
 
+@app.route('/disclaimer')
+def disclaimer():
+    # Markdownファイルを読み込む
+    with open("disclaimer.md", "r", encoding="utf-8") as f:
+        md_content = f.read()
+
+    # MarkdownをHTMLに変換
+    html_content = markdown.markdown(md_content)
+
+    return render_template("disclaimer.html", content=Markup(html_content))
+
+
 
 
 
 @app.errorhandler(500)
-def internal_server_error(e):
-    return render_template("500.html"), 500
+def internal_error(error):
+    print(f"🚨 500 Internal Server Error: {error}", file=sys.stderr)
+    traceback.print_exc()  # ✅ 詳細なエラーログを表示！
+    return jsonify({"error": "サーバー内部エラーが発生しました！"}), 500
 
 
 # アプリ起動

@@ -30,7 +30,7 @@
             })
             .then(response => {
                 if (response.redirected) {
-                    window.location.href = response.url; // ページをリロード
+                    window.location.href = `/admin/edit/${id}`; // ページをリロード
                 }
             })
             .catch(error => {

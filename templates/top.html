@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+
+
+{% block content %}
+
+<div id ="intro">
+<p>
+    プログラムって、コンピューター言語って言われるだけあって、まるで英語と数学を足して2で割ったような別の国の言葉・・・。
+    
+</p>
+<p>  けれども、言語であれば、赤ん坊でも習得できるのだから、とにかく沢山触れてみよう、
+    そう思いながら、pythonの学習と同時に実践かねて作ったのがこのサイトです。
+</p>
+<p>  
+    このサイトが、同じように学ぶ方々に少しでも役立つなら幸いです。
+</p>
+
+</div>
+
+<a href="{{ url_for('view_question', id=1) }}" class="start-button">最初の問題を解く</a>
+
+<h3>収録問題のカテゴリ一覧</h3>
+
+<div id = "category_description"><ul>
+    <li><strong>データ型と変数</strong> - 数値・文字列・リスト・辞書など</li>
+    <li><strong>制御構造（条件分岐・ループ）</strong> - if文、for文、while文の使い方</li>
+    <li><strong>関数</strong> - def文、引数、戻り値、lambda式</li>
+    <li><strong>クラスとオブジェクト指向</strong> - クラスの作成、継承、カプセル化</li>
+    <li><strong>モジュールとライブラリ</strong> - importの使い方、自作モジュール</li>
+    <li><strong>ファイル操作</strong> - ファイルの読み書き（open, read, write）</li>
+    <li><strong>エラー処理</strong> - try-except, 例外の種類と対策</li>
+    <li><strong>標準ライブラリ</strong> - datetime, math, random などの便利機能</li>
+    <li><strong>外部ライブラリ</strong> - NumPy, pandas などの活用</li>
+</ul></div>
+{% endblock %}

@@ -21,25 +21,22 @@
     
     <div class="container">
         <aside>
-            <p> 問題を登録する</p>
-            <button id="registerButton" type="submit">登録</button>
+
             <p> 問題を削除する</p>
-            <button id="deleteButton">削除</button>
 
-
+            <form method="POST" action="{{ url_for('delete_question', question_id=question.id) }}">
+                <button type="submit" class="delete-button">削除</button>
+            </form>
+            
         </aside>
 
         <main>
-            <form method="POST" action="/admin/edit/{{ question['id'] }}">
+            <form method="POST" action="{{ url_for('edit_question', id=question.id) }}">
                 <!-- 問題編集 -->
                 <div class="question-box">
                     <textarea id="edit_question" name="edit_question">{{ question.question }}</textarea>
                 </div>
-                <!-- 期待される出力の編集編集 -->
-                <div class="expected-output">
-                    <label for="edit_expected_output" class="boxtitle">期待される出力:</label>
-                    <textarea id="edit_expected_output" name="edit_expected_output" rows="2"></textarea>
-                </div>
+
                 <!-- 解答の編集 -->
                 <div class="answer-box">
                     <textarea id="edit_answer" name="edit_answer">{{ question.answer }}</textarea>
@@ -55,8 +52,8 @@
             <a href="/admin/manage" class="link-button">管理ページを見る</a>
 
                 <label for="category_id">カテゴリを選択:</label>
-                <select name="category_id" >
-                    <option value="{{ question.category_id }}">{{ question.category_name }}</option> <!-- ✅ 現在のカテゴリを表示 -->
+                <select name="category_id" id ="edit_category_menu">
+                    <option value="{{ question.category.id }}">{{ question.category.name }}</option> <!-- ✅ 現在のカテゴリを表示 -->
                         {% for category in categories %}
                             {% if category.id != question.category_id %}  <!-- ✅ 既に選択されているものは除外 -->
                                 <option value="{{ category.id }}">{{ category.name }}</option>
@@ -65,11 +62,11 @@
                 </select>
 
                 <label for="difficulty_level_id">難易度を選択:</label>
-                <select name="difficulty_level_id">
-                    <option value="{{ question.difficulty_id }}">{{ question.difficulty_name}}</option>
+                <select name="difficulty_level_id" id = "edit_difficulty_level_menu">
+                    <option value="{{question.difficulty.id }}">{{ question.difficulty.level}}</option>
                         {% for level in difficulty_levels %}
                             {% if level.id != question.difficulty_id %} 
-                            <option value="{{ level.id }}">{{ level.name }}</option>
+                            <option value="{{ level.id}}">{{ level.level }}</option>
                             {% endif %} 
                         {% endfor %}
                 </select>
@@ -87,38 +84,46 @@
 
     <script>
         function saveQuestion(id) {
-        const question = document.getElementById('edit_question').value;
-        const answer = document.getElementById('edit_answer').value;
-        const description = document.getElementById('edit_description').value;
-        const category_id = document.querySelector('[name="category_id"]').value;
-        const difficulty_level_id = document.querySelector('[name="difficulty_level_id"]').value;
+            const question = document.getElementById('edit_question').value;
+            const answer = document.getElementById('edit_answer').value;
+            const description = document.getElementById('edit_description').value;
+            const category_id = document.querySelector('[name="category_id"]').value;
+            const difficulty_level_id = document.querySelector('[name="difficulty_level_id"]').value;
+        
+            fetch(`/admin/edit/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json', // ✅ JSON で送信する！
+                },
+                body: JSON.stringify({
+                    question: question,
+                    answer: answer,
+                    description: description,
+                    category_id: category_id,
+                    difficulty_level_id: difficulty_level_id,
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    alert("✅ " + data.message);  // ✅ 成功メッセージを表示
+                    window.location.href = "/admin/manage";  // ✅ 変数名を `id` に修正！
+                } else {
+                    alert("⚠️ エラー: " + data.error);  // ✅ エラーメッセージを表示
+                }     
+            })
+            .catch(error => {
+                console.error('🚨 エラー:', error);
+            });
+        }
+        function confirmDelete() {
+            return confirm("本当に削除しますか？");  // ✅ 削除前に確認を表示！
+        }
 
-        fetch(`/admin/edit/${id}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json', // ✅ JSON で送信する！
-            },
-            body: JSON.stringify({
-                question: question,
-                answer: answer,
-                description: description,
-                category_id: category_id,
-                difficulty_level_id: difficulty_level_id,
-            }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            alert(data.message);  // ✅ 「更新成功」のメッセージを表示
-            window.location.href = '/admin/manage'; // ✅ 更新後に管理ページへリダイレクト
-        })
-        .catch(error => {
-            console.error('エラー:', error);
-        });
-    }
+        </script>
+        
 
 
-
-    </script>
     
 </body>
 
