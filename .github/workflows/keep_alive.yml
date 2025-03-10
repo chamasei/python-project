@@ -1,0 +1,13 @@
+name: Keep Render App Alive
+
+on:
+  schedule:
+    - cron: "*/1 * * * *"  # 1分ごとに実行
+  workflow_dispatch:  # これを追加（手動実行を可能にする）
+  
+jobs:
+  keep_alive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send request to Render
+        run: curl -s https://python-project-inzf.onrender.com > /dev/null

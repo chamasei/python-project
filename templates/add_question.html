@@ -33,29 +33,23 @@
 
         <main>
             <h2>問題を登録</h2>
-            <form method="POST" action="/admin/add">
+            <form method="POST" action="{{ url_for('add_question') }}">
                 <!-- 問題入力 -->
                 <div class="question-box">
                     <label for="register_question" class="boxtitle">問題:</label>
-                    <textarea id="register_question" name="register_question" rows="4"></textarea>
-                </div>
-
-                <!-- 期待される出力 -->
-                <div class="expected-output">
-                    <label for="register_expected_output" class="boxtitle">期待される出力:</label>
-                    <textarea id="register_expected_output" name="register_expected_output" rows="2"></textarea>
+                    <textarea id="register_question" name="question" rows="4"></textarea>
                 </div>
         
                 <!-- 解答入力 -->
                 <div class="answer-box">
                     <label for="register_answer" class="boxtitle">答え:</label>
-                    <textarea id="register_answer" name="register_answer" rows="2"></textarea>
+                    <textarea id="register_answer" name="answer" rows="2"></textarea>
                 </div>
         
                 <!-- 解説入力 -->
                 <div class="description-box">
                     <label for="register_description" class="boxtitle">解説:</label>
-                    <textarea id="register_description" name="register_description" rows="4"></textarea>
+                    <textarea id="register_description" name="description" rows="4"></textarea>
                 </div>
         
 

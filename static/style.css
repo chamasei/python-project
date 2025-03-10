@@ -164,6 +164,7 @@ aside{
     display: flex;
     flex-direction:column;
     align-items:center;
+<<<<<<< HEAD
 
 }
 
@@ -171,6 +172,11 @@ aside{
     margin-top: 70px;
 }
 
+=======
+    padding: 15px;
+}
+
+>>>>>>> 3067e4683c7739890a5f775f42f53a354c575b93
 .input-box{
     width: 90%;
     height: 35px;
@@ -222,6 +228,7 @@ main{
     display: none;
 }
 
+<<<<<<< HEAD
 .spinner {
     position: fixed;  /* ✅ 画面全体に対して固定配置 */
     top: 50%;
@@ -236,15 +243,26 @@ main{
     display: none;  /* ✅ 最初は非表示 */
     z-index: 9999;  /* ✅ すべての要素より前面に */
 }
+=======
+.loading-spinner {
+    margin-left: 8px;
+    font-size: 16px;
+    animation: spin 1s linear infinite;
+}
+
+>>>>>>> 3067e4683c7739890a5f775f42f53a354c575b93
 /* 🔄 スピナーを回転させるアニメーション */
 @keyframes spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
 }
 
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> 3067e4683c7739890a5f775f42f53a354c575b93
 ul {
     font-size: 14px;
 }
@@ -572,6 +590,7 @@ aside button:hover, #saveButton:hover {
     overflow: auto;
 }
 
+<<<<<<< HEAD
 .question-box {
     height:300px;
     line-height:26px;
@@ -594,6 +613,13 @@ aside button:hover, #saveButton:hover {
     margin: 0;
 }
 
+=======
+#question_number{
+    text-align:center;
+    margin: 0;
+}
+
+>>>>>>> 3067e4683c7739890a5f775f42f53a354c575b93
 #question_number p{
     font-size: 20px !important;
     line-height: 100%;
@@ -602,7 +628,10 @@ aside button:hover, #saveButton:hover {
     font-size: 16px;
 
 }
+<<<<<<< HEAD
 /*
+=======
+>>>>>>> 3067e4683c7739890a5f775f42f53a354c575b93
 .expected-output {
     margin: 10px 0px 20px 0px;
     padding: 5px 10px 0px 10px;
@@ -613,10 +642,13 @@ aside button:hover, #saveButton:hover {
 
 }
 
+<<<<<<< HEAD
 */
 
 
 
+=======
+>>>>>>> 3067e4683c7739890a5f775f42f53a354c575b93
 #code_input_area{
     display: flex;
     flex-direction:column;

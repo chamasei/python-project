@@ -20,7 +20,6 @@ from models import Question, Category, DifficultyLevel
 
 
 
-
 # ログ設定
 logging.basicConfig(
     filename="execution.log",         # ログファイル名
@@ -308,6 +307,9 @@ def home():
         difficulty_levels=difficulty_levels
     )
 
+    # ✅ カテゴリ・難易度のリストを取得
+    categories = db.session.query(Category).all()
+    difficulty_levels = db.session.query(DifficultyLevel).all()
 
 
 @app.route('/question/<int:id>', methods=['GET'])
@@ -498,17 +500,14 @@ def add_question():
             db.session.add(new_question)
             db.session.commit()
 
-
             return redirect(url_for('manage_questions'))
 
         except IntegrityError as e:
             db.session.rollback()  # 💡 エラーが起きたらロールバック
-
             return jsonify({"error": "データベース制約違反が発生しました！"}), 500
 
         except Exception as e:
             db.session.rollback()
-
             return jsonify({"error": "サーバー内部エラーが発生しました！"}), 500
 
     categories = db.session.query(Category).all()
@@ -546,7 +545,6 @@ def delete_question(question_id):
             question = db.session.get(Question, question_id)  # ✅ `query.get()` → `db.session.get()` に変更
             
             if not question:
-
                 return jsonify({"error": "編集する問題が見つかりません！"}), 404
 
             db.session.delete(question)
@@ -559,7 +557,6 @@ def delete_question(question_id):
 
     except Exception as e:
         db.session.rollback()
-
         return jsonify({"error": "削除に失敗しました！"}), 500
 
 
