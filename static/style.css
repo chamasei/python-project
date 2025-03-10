@@ -167,6 +167,16 @@ aside{
 
 }
 
+#search_id_container{
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#searchById{
+    height: 30px;
+}
 #edit_main{
     margin-top: 70px;
 }

@@ -96,7 +96,11 @@
                 <button type="reset" name = "clear-search" onclick="resetSearch()" class="clear-button">クリア</button>
             </form>
 
-            
+            <div id = "search_id_container">
+                <label for="jumpTo">問題番号へ移動:</label>
+                <input type="number" id="searchById" min="1" max="400">
+                <button id="searchByIdBtn">移動</button>
+            </div>
         </aside>
 
 
@@ -116,5 +120,32 @@
     <a href="#top">トップに戻る</a>
 
 </footer>
+<script>
 
+function searchById() {
+    const id = document.getElementById("searchById").value;
+    if (id) {
+        console.log("遷移するURL:", `/question/${id}`);
+        setTimeout(() => {
+            window.location.href = `/question/${id}`;
+        }, 100); // 100ミリ秒待ってから遷移
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    // ボタンのIDが正しいか確認！
+    const searchBtn = document.getElementById("searchByIdBtn");
+
+    if (searchBtn) {
+        searchBtn.addEventListener("click", function() {
+            searchById();
+        });
+        console.log("🔍 ボタンのイベントリスナーが追加されました！");
+    } else {
+        console.log("⚠️ 検索ボタンが見つかりません！");
+    }
+});
+
+
+</script>
 </body>
