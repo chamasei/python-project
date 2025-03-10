@@ -491,13 +491,17 @@ pre {
 #answer-button{
 
     margin: 20px auto; /* 上下: 20px, 左右: autoで中央寄せ */
-    background-color: #989898;
+    background-color: #72b5a5;
     color: white;
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
     text-align: center;
+}
+
+#answer-button:hover{
+    background-color: #0056b3;
 }
 #saveButton:hover {
     background-color: #c1dfc2; /* ホバー時の背景色 */
