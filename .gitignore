@@ -1,3 +1,6 @@
 .env
 # SQLite データベースを除外
 database.db.env
+__pycache__/
+*.csv
+.env.production
