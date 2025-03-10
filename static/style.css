@@ -54,7 +54,7 @@ h2{
 
 p{
     font-size:14px;
-    line-height: 26px;
+    line-height: 30px;
     margin:0px !important;
     min-height: 1.8em; /* 最低限の高さを確保 */
 }
@@ -566,14 +566,14 @@ aside button:hover, #saveButton:hover {
     padding: 15px;
     margin-bottom: 10px;
     border-radius: 8px;
-    line-height: 26px;
+    line-height: 28px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.5);
     width: 100%;
     overflow: auto;
 }
 
 .question-box {
-    height:300px;
+    height:auto;
     line-height:26px;
     display: block;
 }
@@ -586,7 +586,7 @@ aside button:hover, #saveButton:hover {
 
 .description-box {
     margin-top: 10px;
-    height:300px;
+    height:auto;
 }
 
 #question_number{
