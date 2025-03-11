@@ -7,54 +7,17 @@
 </head>
 
 <body>
-    <a href="{{ url_for('admin_logout') }}">ログアウト</a>
-    <main>
+    <header>
+        <h1>Play with Python 管理画面</h1>
+        <a href="{{ url_for('admin_logout') }}">ログアウト</a>
+    </header>
+        <main>
+            <p><a href="/admin/add">新規問題を登録</a></p>
+            <p><a href="/admin/edit">登録済みの問題を個別に編集</a></p>
+            <p><a href="/admin/edit_all">登録済みの問題の全てを編集</a></p>
+            
 
-        <h2>登録済みの問題一覧</h2>
-        <div class="question-list">
-            {% for question in questions %}
-            <div class="question-card">
-                <p class="question-text">{{ question[1] }}</p>
-                <p><strong>カテゴリ:</strong> {{ question.category_name }}</p>
-                <p><strong>難易度:</strong> {{ question.difficulty_name }}</p>
-                <p>問題ID:{{ question.id }}</p>
-                <div class="button-group">
-                    <button onclick="deleteQuestion({{ question[0] }})" class="delete-button">削除</button>
-                    <button onclick="editQuestion({{ question[0] }})" class="edit-button">編集</button>
-                </div>
-            </div>
-            {% endfor %}
-            <a href="/admin/add" class="link-button">問題を登録する</a>
-        </div>
-        
+        </main>
 
-    </main>
-
-    <script>
-        function deleteQuestion(id) {
-            if (confirm("本当に削除しますか？")) {
-                fetch(`/delete/${id}`, {
-                    method: 'POST',
-                })
-                .then(response => {
-                    if (response.redirected) {
-                        window.location.href = `/admin/edit/${id}`; // ページをリロード
-                    }
-                })
-                .catch(error => {
-                    alert("削除に失敗しました。");
-                    console.error(error);
-                });
-            }
-        }
-
-
-        function editQuestion(id) {
-            // 編集ページに移動
-            window.location.href = `/admin/edit/${id}`;
-        }
-
-    
-    </script>
 </body>
 </html>

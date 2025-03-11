@@ -7025,3 +7025,356 @@ NameError: name 'Question' is not defined. Did you mean: 'session'?
 2025-03-10 17:32:14,590 - INFO - 127.0.0.1 - - [10/Mar/2025 17:32:14] "GET /static/style.css HTTP/1.1" 200 -
 2025-03-10 17:32:21,913 - INFO - 127.0.0.1 - - [10/Mar/2025 17:32:21] "GET /question/292 HTTP/1.1" 200 -
 2025-03-10 17:32:21,926 - INFO - 127.0.0.1 - - [10/Mar/2025 17:32:21] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-10 17:48:33,271 - INFO - 127.0.0.1 - - [10/Mar/2025 17:48:33] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-10 17:49:40,900 - INFO - 127.0.0.1 - - [10/Mar/2025 17:49:40] "GET /question/292 HTTP/1.1" 200 -
+2025-03-10 17:49:40,922 - INFO - 127.0.0.1 - - [10/Mar/2025 17:49:40] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-10 17:50:52,978 - INFO - 127.0.0.1 - - [10/Mar/2025 17:50:52] "GET /question/292 HTTP/1.1" 200 -
+2025-03-10 17:50:52,996 - INFO - 127.0.0.1 - - [10/Mar/2025 17:50:52] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-10 17:51:10,491 - INFO - 127.0.0.1 - - [10/Mar/2025 17:51:10] "GET /question/293 HTTP/1.1" 200 -
+2025-03-10 17:51:10,512 - INFO - 127.0.0.1 - - [10/Mar/2025 17:51:10] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-10 17:51:12,790 - INFO - 127.0.0.1 - - [10/Mar/2025 17:51:12] "GET /question/294 HTTP/1.1" 200 -
+2025-03-10 17:51:12,814 - INFO - 127.0.0.1 - - [10/Mar/2025 17:51:12] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-10 18:14:51,339 - INFO - 192.168.2.104 - - [10/Mar/2025 18:14:51] "GET / HTTP/1.1" 200 -
+2025-03-10 18:15:16,546 - INFO - 192.168.2.104 - - [10/Mar/2025 18:15:16] "[31m[1mGET / HTTP/1.1[0m" 400 -
+2025-03-10 18:23:51,408 - INFO - 127.0.0.1 - - [10/Mar/2025 18:23:51] "GET /admin/manage HTTP/1.1" 200 -
+2025-03-10 18:23:51,441 - INFO - 127.0.0.1 - - [10/Mar/2025 18:23:51] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-10 18:32:14,713 - INFO - 127.0.0.1 - - [10/Mar/2025 18:32:14] "GET /question/294 HTTP/1.1" 200 -
+2025-03-10 18:32:14,728 - INFO - 127.0.0.1 - - [10/Mar/2025 18:32:14] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 10:48:13,849 - INFO - 127.0.0.1 - - [11/Mar/2025 10:48:13] "POST /run HTTP/1.1" 200 -
+2025-03-11 10:57:45,068 - INFO - 127.0.0.1 - - [11/Mar/2025 10:57:45] "GET / HTTP/1.1" 200 -
+2025-03-11 10:57:45,075 - INFO - 127.0.0.1 - - [11/Mar/2025 10:57:45] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 10:58:03,323 - INFO - 127.0.0.1 - - [11/Mar/2025 10:58:03] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 10:58:08,496 - INFO - 127.0.0.1 - - [11/Mar/2025 10:58:08] "[32mPOST /admin/login HTTP/1.1[0m" 302 -
+2025-03-11 10:58:08,542 - INFO - 127.0.0.1 - - [11/Mar/2025 10:58:08] "GET /admin/manage HTTP/1.1" 200 -
+2025-03-11 10:58:08,571 - INFO - 127.0.0.1 - - [11/Mar/2025 10:58:08] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 10:58:37,310 - INFO - 127.0.0.1 - - [11/Mar/2025 10:58:37] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 10:59:17,043 - INFO - 127.0.0.1 - - [11/Mar/2025 10:59:17] "[32mPOST /admin/login HTTP/1.1[0m" 302 -
+2025-03-11 10:59:17,096 - INFO - 127.0.0.1 - - [11/Mar/2025 10:59:17] "GET /admin/manage HTTP/1.1" 200 -
+2025-03-11 10:59:17,124 - INFO - 127.0.0.1 - - [11/Mar/2025 10:59:17] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 10:59:39,658 - INFO - 127.0.0.1 - - [11/Mar/2025 10:59:39] "[33mGET /admin/edit_all HTTP/1.1[0m" 404 -
+2025-03-11 11:01:27,170 - INFO - 127.0.0.1 - - [11/Mar/2025 11:01:27] "[33mGET /admin/edit_all HTTP/1.1[0m" 404 -
+2025-03-11 11:01:30,379 - INFO - 127.0.0.1 - - [11/Mar/2025 11:01:30] "[33mGET /admin/edit_all HTTP/1.1[0m" 404 -
+2025-03-11 11:03:35,935 - INFO - 127.0.0.1 - - [11/Mar/2025 11:03:35] "[33mGET /admin/edit_all/ HTTP/1.1[0m" 404 -
+2025-03-11 11:03:46,340 - INFO - 127.0.0.1 - - [11/Mar/2025 11:03:46] "GET /edit_all HTTP/1.1" 200 -
+2025-03-11 11:03:46,351 - INFO - 127.0.0.1 - - [11/Mar/2025 11:03:46] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 11:05:07,596 - INFO - 127.0.0.1 - - [11/Mar/2025 11:05:07] "GET / HTTP/1.1" 200 -
+2025-03-11 11:05:07,603 - INFO - 127.0.0.1 - - [11/Mar/2025 11:05:07] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 11:05:17,252 - INFO - 127.0.0.1 - - [11/Mar/2025 11:05:17] "[33mGET /admin/edit_all HTTP/1.1[0m" 404 -
+2025-03-11 11:05:24,851 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.2.104:5000
+2025-03-11 11:05:24,851 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-11 11:05:24,855 - INFO -  * Restarting with stat
+2025-03-11 11:05:25,363 - WARNING -  * Debugger is active!
+2025-03-11 11:05:25,364 - INFO -  * Debugger PIN: 155-922-880
+2025-03-11 11:05:32,571 - INFO - 127.0.0.1 - - [11/Mar/2025 11:05:32] "[33mGET /admin/edit_all HTTP/1.1[0m" 404 -
+2025-03-11 11:05:36,891 - INFO - 127.0.0.1 - - [11/Mar/2025 11:05:36] "[33mGET /admin/edit_all HTTP/1.1[0m" 404 -
+2025-03-11 11:06:58,058 - INFO - 127.0.0.1 - - [11/Mar/2025 11:06:58] "[33mGET /admin/edit_all HTTP/1.1[0m" 404 -
+2025-03-11 11:16:44,707 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.2.104:5000
+2025-03-11 11:16:44,707 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-11 11:16:44,708 - INFO -  * Restarting with stat
+2025-03-11 11:16:45,224 - WARNING -  * Debugger is active!
+2025-03-11 11:16:45,225 - INFO -  * Debugger PIN: 155-922-880
+2025-03-11 11:16:49,917 - INFO - 127.0.0.1 - - [11/Mar/2025 11:16:49] "GET /admin/edit_all HTTP/1.1" 200 -
+2025-03-11 11:16:49,964 - INFO - 127.0.0.1 - - [11/Mar/2025 11:16:49] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 11:21:26,279 - INFO - 127.0.0.1 - - [11/Mar/2025 11:21:26] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 11:21:28,538 - INFO - 127.0.0.1 - - [11/Mar/2025 11:21:28] "[32mPOST /admin/login HTTP/1.1[0m" 302 -
+2025-03-11 11:21:28,595 - INFO - 127.0.0.1 - - [11/Mar/2025 11:21:28] "GET /admin/manage HTTP/1.1" 200 -
+2025-03-11 11:21:28,621 - INFO - 127.0.0.1 - - [11/Mar/2025 11:21:28] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 11:21:30,839 - INFO - 127.0.0.1 - - [11/Mar/2025 11:21:30] "[32mGET /admin/logout HTTP/1.1[0m" 302 -
+2025-03-11 11:21:30,848 - INFO - 127.0.0.1 - - [11/Mar/2025 11:21:30] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 11:21:40,124 - INFO - 127.0.0.1 - - [11/Mar/2025 11:21:40] "[32mGET /admin/edit_all HTTP/1.1[0m" 302 -
+2025-03-11 11:21:40,129 - INFO - 127.0.0.1 - - [11/Mar/2025 11:21:40] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 11:38:01,796 - INFO -  * Detected change in 'E:\\Users\\Documents\\study\\python_web\\app.py', reloading
+2025-03-11 11:38:01,878 - INFO -  * Restarting with stat
+2025-03-11 11:38:02,440 - WARNING -  * Debugger is active!
+2025-03-11 11:38:02,441 - INFO -  * Debugger PIN: 155-922-880
+2025-03-11 11:53:11,525 - INFO - 127.0.0.1 - - [11/Mar/2025 11:53:11] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 11:55:03,358 - INFO - 127.0.0.1 - - [11/Mar/2025 11:55:03] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 11:55:17,259 - INFO - 127.0.0.1 - - [11/Mar/2025 11:55:17] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 11:55:43,794 - INFO - 127.0.0.1 - - [11/Mar/2025 11:55:43] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 11:56:00,283 - INFO - 127.0.0.1 - - [11/Mar/2025 11:56:00] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 11:56:01,121 - INFO - 127.0.0.1 - - [11/Mar/2025 11:56:01] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 11:56:58,104 - INFO - 127.0.0.1 - - [11/Mar/2025 11:56:58] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 11:58:45,423 - INFO - 127.0.0.1 - - [11/Mar/2025 11:58:45] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 11:59:11,878 - INFO - 127.0.0.1 - - [11/Mar/2025 11:59:11] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 12:01:39,348 - INFO - 127.0.0.1 - - [11/Mar/2025 12:01:39] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 12:02:56,542 - INFO - 127.0.0.1 - - [11/Mar/2025 12:02:56] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 12:03:55,454 - INFO - 127.0.0.1 - - [11/Mar/2025 12:03:55] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 12:03:55,513 - INFO - 127.0.0.1 - - [11/Mar/2025 12:03:55] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:04:16,439 - INFO - 127.0.0.1 - - [11/Mar/2025 12:04:16] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 12:04:16,461 - INFO - 127.0.0.1 - - [11/Mar/2025 12:04:16] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:04:34,492 - INFO - 127.0.0.1 - - [11/Mar/2025 12:04:34] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 12:04:34,510 - INFO - 127.0.0.1 - - [11/Mar/2025 12:04:34] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:05:48,317 - INFO - 127.0.0.1 - - [11/Mar/2025 12:05:48] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 12:05:48,336 - INFO - 127.0.0.1 - - [11/Mar/2025 12:05:48] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:07:12,583 - INFO - 127.0.0.1 - - [11/Mar/2025 12:07:12] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 12:07:12,602 - INFO - 127.0.0.1 - - [11/Mar/2025 12:07:12] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:07:41,507 - INFO - 127.0.0.1 - - [11/Mar/2025 12:07:41] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 12:07:41,522 - INFO - 127.0.0.1 - - [11/Mar/2025 12:07:41] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:08:09,927 - INFO - 127.0.0.1 - - [11/Mar/2025 12:08:09] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 12:08:09,942 - INFO - 127.0.0.1 - - [11/Mar/2025 12:08:09] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:08:54,246 - INFO - 127.0.0.1 - - [11/Mar/2025 12:08:54] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 12:08:54,264 - INFO - 127.0.0.1 - - [11/Mar/2025 12:08:54] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:09:29,991 - INFO - 127.0.0.1 - - [11/Mar/2025 12:09:29] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 12:09:30,010 - INFO - 127.0.0.1 - - [11/Mar/2025 12:09:30] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:09:35,899 - INFO - 127.0.0.1 - - [11/Mar/2025 12:09:35] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 12:09:35,916 - INFO - 127.0.0.1 - - [11/Mar/2025 12:09:35] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 12:09:52,624 - INFO - 127.0.0.1 - - [11/Mar/2025 12:09:52] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 12:09:52,643 - INFO - 127.0.0.1 - - [11/Mar/2025 12:09:52] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:10:02,097 - INFO - 127.0.0.1 - - [11/Mar/2025 12:10:02] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 12:10:02,116 - INFO - 127.0.0.1 - - [11/Mar/2025 12:10:02] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:10:24,610 - INFO - 127.0.0.1 - - [11/Mar/2025 12:10:24] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 12:10:24,626 - INFO - 127.0.0.1 - - [11/Mar/2025 12:10:24] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:10:32,332 - INFO - 127.0.0.1 - - [11/Mar/2025 12:10:32] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 12:10:32,351 - INFO - 127.0.0.1 - - [11/Mar/2025 12:10:32] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:12:37,514 - INFO - 127.0.0.1 - - [11/Mar/2025 12:12:37] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 12:12:37,538 - INFO - 127.0.0.1 - - [11/Mar/2025 12:12:37] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:13:28,971 - INFO - 127.0.0.1 - - [11/Mar/2025 12:13:28] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 12:13:28,987 - INFO - 127.0.0.1 - - [11/Mar/2025 12:13:28] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:15:28,164 - INFO - 127.0.0.1 - - [11/Mar/2025 12:15:28] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 12:15:28,183 - INFO - 127.0.0.1 - - [11/Mar/2025 12:15:28] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:15:47,067 - INFO - 127.0.0.1 - - [11/Mar/2025 12:15:47] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 12:15:47,084 - INFO - 127.0.0.1 - - [11/Mar/2025 12:15:47] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 12:16:32,022 - INFO - 127.0.0.1 - - [11/Mar/2025 12:16:32] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 12:16:32,039 - INFO - 127.0.0.1 - - [11/Mar/2025 12:16:32] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:16:40,934 - INFO - 127.0.0.1 - - [11/Mar/2025 12:16:40] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 12:16:40,952 - INFO - 127.0.0.1 - - [11/Mar/2025 12:16:40] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:18:44,603 - INFO - 127.0.0.1 - - [11/Mar/2025 12:18:44] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 12:18:44,624 - INFO - 127.0.0.1 - - [11/Mar/2025 12:18:44] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 12:20:19,868 - INFO - 127.0.0.1 - - [11/Mar/2025 12:20:19] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 12:20:19,885 - INFO - 127.0.0.1 - - [11/Mar/2025 12:20:19] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:20:35,484 - INFO - 127.0.0.1 - - [11/Mar/2025 12:20:35] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 12:20:35,500 - INFO - 127.0.0.1 - - [11/Mar/2025 12:20:35] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:20:53,881 - INFO - 127.0.0.1 - - [11/Mar/2025 12:20:53] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 12:20:53,897 - INFO - 127.0.0.1 - - [11/Mar/2025 12:20:53] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:20:59,725 - INFO - 127.0.0.1 - - [11/Mar/2025 12:20:59] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 12:20:59,744 - INFO - 127.0.0.1 - - [11/Mar/2025 12:20:59] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:22:01,883 - INFO - 127.0.0.1 - - [11/Mar/2025 12:22:01] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 12:22:01,902 - INFO - 127.0.0.1 - - [11/Mar/2025 12:22:01] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:23:38,165 - INFO - 127.0.0.1 - - [11/Mar/2025 12:23:38] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 12:23:38,188 - INFO - 127.0.0.1 - - [11/Mar/2025 12:23:38] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:23:43,146 - INFO - 127.0.0.1 - - [11/Mar/2025 12:23:43] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 12:23:43,185 - INFO - 127.0.0.1 - - [11/Mar/2025 12:23:43] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 12:23:45,665 - INFO - 127.0.0.1 - - [11/Mar/2025 12:23:45] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 12:23:45,699 - INFO - 127.0.0.1 - - [11/Mar/2025 12:23:45] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 12:23:48,173 - INFO - 127.0.0.1 - - [11/Mar/2025 12:23:48] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 12:23:48,198 - INFO - 127.0.0.1 - - [11/Mar/2025 12:23:48] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 12:24:45,006 - INFO - 127.0.0.1 - - [11/Mar/2025 12:24:45] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 12:24:45,028 - INFO - 127.0.0.1 - - [11/Mar/2025 12:24:45] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:26:10,101 - INFO - 127.0.0.1 - - [11/Mar/2025 12:26:10] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 12:26:10,120 - INFO - 127.0.0.1 - - [11/Mar/2025 12:26:10] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:26:11,277 - INFO - 127.0.0.1 - - [11/Mar/2025 12:26:11] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 12:26:11,297 - INFO - 127.0.0.1 - - [11/Mar/2025 12:26:11] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 12:26:37,766 - INFO - 127.0.0.1 - - [11/Mar/2025 12:26:37] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 12:26:37,789 - INFO - 127.0.0.1 - - [11/Mar/2025 12:26:37] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 12:28:16,007 - INFO - 127.0.0.1 - - [11/Mar/2025 12:28:16] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 12:28:16,028 - INFO - 127.0.0.1 - - [11/Mar/2025 12:28:16] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:29:04,551 - INFO - 127.0.0.1 - - [11/Mar/2025 12:29:04] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 12:29:04,570 - INFO - 127.0.0.1 - - [11/Mar/2025 12:29:04] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:29:39,324 - INFO - 127.0.0.1 - - [11/Mar/2025 12:29:39] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 12:29:39,346 - INFO - 127.0.0.1 - - [11/Mar/2025 12:29:39] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 12:29:51,691 - INFO - 127.0.0.1 - - [11/Mar/2025 12:29:51] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 12:29:51,711 - INFO - 127.0.0.1 - - [11/Mar/2025 12:29:51] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:32:54,319 - INFO - 127.0.0.1 - - [11/Mar/2025 12:32:54] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 12:32:54,339 - INFO - 127.0.0.1 - - [11/Mar/2025 12:32:54] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:33:31,908 - INFO - 127.0.0.1 - - [11/Mar/2025 12:33:31] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 12:33:31,924 - INFO - 127.0.0.1 - - [11/Mar/2025 12:33:31] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:34:59,709 - INFO - 127.0.0.1 - - [11/Mar/2025 12:34:59] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 12:34:59,724 - INFO - 127.0.0.1 - - [11/Mar/2025 12:34:59] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:35:26,042 - INFO - 127.0.0.1 - - [11/Mar/2025 12:35:26] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 12:35:26,060 - INFO - 127.0.0.1 - - [11/Mar/2025 12:35:26] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:37:21,293 - INFO - 127.0.0.1 - - [11/Mar/2025 12:37:21] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 12:37:21,317 - INFO - 127.0.0.1 - - [11/Mar/2025 12:37:21] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:38:38,722 - INFO - 127.0.0.1 - - [11/Mar/2025 12:38:38] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 12:38:38,746 - INFO - 127.0.0.1 - - [11/Mar/2025 12:38:38] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:39:09,106 - INFO - 127.0.0.1 - - [11/Mar/2025 12:39:09] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 12:39:09,124 - INFO - 127.0.0.1 - - [11/Mar/2025 12:39:09] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:41:44,130 - INFO - 127.0.0.1 - - [11/Mar/2025 12:41:44] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 12:41:44,150 - INFO - 127.0.0.1 - - [11/Mar/2025 12:41:44] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:43:40,581 - INFO - 127.0.0.1 - - [11/Mar/2025 12:43:40] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 12:43:40,596 - INFO - 127.0.0.1 - - [11/Mar/2025 12:43:40] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:44:28,558 - INFO - 127.0.0.1 - - [11/Mar/2025 12:44:28] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 12:44:28,573 - INFO - 127.0.0.1 - - [11/Mar/2025 12:44:28] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:44:52,386 - INFO - 127.0.0.1 - - [11/Mar/2025 12:44:52] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 12:44:52,404 - INFO - 127.0.0.1 - - [11/Mar/2025 12:44:52] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:48:32,527 - INFO - 127.0.0.1 - - [11/Mar/2025 12:48:32] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 12:48:32,545 - INFO - 127.0.0.1 - - [11/Mar/2025 12:48:32] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:48:48,074 - INFO - 127.0.0.1 - - [11/Mar/2025 12:48:48] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 12:48:48,091 - INFO - 127.0.0.1 - - [11/Mar/2025 12:48:48] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:49:08,441 - INFO - 127.0.0.1 - - [11/Mar/2025 12:49:08] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 12:49:08,469 - INFO - 127.0.0.1 - - [11/Mar/2025 12:49:08] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:51:13,777 - INFO - 127.0.0.1 - - [11/Mar/2025 12:51:13] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 12:51:13,803 - INFO - 127.0.0.1 - - [11/Mar/2025 12:51:13] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:52:43,417 - INFO - 127.0.0.1 - - [11/Mar/2025 12:52:43] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 12:52:43,442 - INFO - 127.0.0.1 - - [11/Mar/2025 12:52:43] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:53:41,574 - INFO - 127.0.0.1 - - [11/Mar/2025 12:53:41] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 12:53:41,589 - INFO - 127.0.0.1 - - [11/Mar/2025 12:53:41] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:54:02,057 - INFO - 127.0.0.1 - - [11/Mar/2025 12:54:02] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 12:54:02,073 - INFO - 127.0.0.1 - - [11/Mar/2025 12:54:02] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 12:54:50,339 - INFO - 127.0.0.1 - - [11/Mar/2025 12:54:50] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 12:54:50,357 - INFO - 127.0.0.1 - - [11/Mar/2025 12:54:50] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:54:51,712 - INFO - 127.0.0.1 - - [11/Mar/2025 12:54:51] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 12:54:51,729 - INFO - 127.0.0.1 - - [11/Mar/2025 12:54:51] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 12:55:09,457 - INFO - 127.0.0.1 - - [11/Mar/2025 12:55:09] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 12:55:09,474 - INFO - 127.0.0.1 - - [11/Mar/2025 12:55:09] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 12:55:11,939 - INFO - 127.0.0.1 - - [11/Mar/2025 12:55:11] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 12:55:43,376 - INFO - 127.0.0.1 - - [11/Mar/2025 12:55:43] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 12:55:43,403 - INFO - 127.0.0.1 - - [11/Mar/2025 12:55:43] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 12:56:09,246 - INFO - 127.0.0.1 - - [11/Mar/2025 12:56:09] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 12:56:52,990 - INFO - 127.0.0.1 - - [11/Mar/2025 12:56:52] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 12:56:53,009 - INFO - 127.0.0.1 - - [11/Mar/2025 12:56:53] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 12:57:22,657 - INFO - 127.0.0.1 - - [11/Mar/2025 12:57:22] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 12:57:22,675 - INFO - 127.0.0.1 - - [11/Mar/2025 12:57:22] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 12:57:58,498 - INFO - 127.0.0.1 - - [11/Mar/2025 12:57:58] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 12:57:58,517 - INFO - 127.0.0.1 - - [11/Mar/2025 12:57:58] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 13:02:51,847 - INFO - 127.0.0.1 - - [11/Mar/2025 13:02:51] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:02:51,866 - INFO - 127.0.0.1 - - [11/Mar/2025 13:02:51] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 13:03:01,330 - INFO - 127.0.0.1 - - [11/Mar/2025 13:03:01] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:03:01,355 - INFO - 127.0.0.1 - - [11/Mar/2025 13:03:01] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 13:04:35,580 - INFO - 127.0.0.1 - - [11/Mar/2025 13:04:35] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:04:35,600 - INFO - 127.0.0.1 - - [11/Mar/2025 13:04:35] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 13:04:47,082 - INFO - 127.0.0.1 - - [11/Mar/2025 13:04:47] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:04:47,105 - INFO - 127.0.0.1 - - [11/Mar/2025 13:04:47] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 13:05:06,238 - INFO - 127.0.0.1 - - [11/Mar/2025 13:05:06] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:05:06,257 - INFO - 127.0.0.1 - - [11/Mar/2025 13:05:06] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 13:05:20,881 - INFO - 127.0.0.1 - - [11/Mar/2025 13:05:20] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:05:20,891 - INFO - 127.0.0.1 - - [11/Mar/2025 13:05:20] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 13:05:24,160 - INFO - 127.0.0.1 - - [11/Mar/2025 13:05:24] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:05:24,176 - INFO - 127.0.0.1 - - [11/Mar/2025 13:05:24] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 13:05:46,084 - INFO - 127.0.0.1 - - [11/Mar/2025 13:05:46] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:05:46,101 - INFO - 127.0.0.1 - - [11/Mar/2025 13:05:46] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 13:06:02,336 - INFO - 127.0.0.1 - - [11/Mar/2025 13:06:02] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:06:02,357 - INFO - 127.0.0.1 - - [11/Mar/2025 13:06:02] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 13:06:09,026 - INFO - 127.0.0.1 - - [11/Mar/2025 13:06:09] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 13:06:33,146 - INFO - 127.0.0.1 - - [11/Mar/2025 13:06:33] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:06:33,171 - INFO - 127.0.0.1 - - [11/Mar/2025 13:06:33] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 13:07:00,769 - INFO - 127.0.0.1 - - [11/Mar/2025 13:07:00] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:07:00,793 - INFO - 127.0.0.1 - - [11/Mar/2025 13:07:00] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 13:07:28,073 - INFO - 127.0.0.1 - - [11/Mar/2025 13:07:28] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:07:28,095 - INFO - 127.0.0.1 - - [11/Mar/2025 13:07:28] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 13:09:25,453 - INFO - 127.0.0.1 - - [11/Mar/2025 13:09:25] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:09:25,477 - INFO - 127.0.0.1 - - [11/Mar/2025 13:09:25] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 13:09:29,165 - INFO - 127.0.0.1 - - [11/Mar/2025 13:09:29] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:09:29,186 - INFO - 127.0.0.1 - - [11/Mar/2025 13:09:29] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 13:10:36,642 - INFO - 127.0.0.1 - - [11/Mar/2025 13:10:36] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:10:36,657 - INFO - 127.0.0.1 - - [11/Mar/2025 13:10:36] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 13:10:53,782 - INFO - 127.0.0.1 - - [11/Mar/2025 13:10:53] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:10:53,799 - INFO - 127.0.0.1 - - [11/Mar/2025 13:10:53] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 13:11:08,602 - INFO - 127.0.0.1 - - [11/Mar/2025 13:11:08] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:11:08,616 - INFO - 127.0.0.1 - - [11/Mar/2025 13:11:08] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 13:11:24,041 - INFO - 127.0.0.1 - - [11/Mar/2025 13:11:24] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:11:24,058 - INFO - 127.0.0.1 - - [11/Mar/2025 13:11:24] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 13:23:13,150 - INFO - 127.0.0.1 - - [11/Mar/2025 13:23:13] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:23:13,178 - INFO - 127.0.0.1 - - [11/Mar/2025 13:23:13] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 13:23:15,008 - INFO - 127.0.0.1 - - [11/Mar/2025 13:23:15] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:23:15,048 - INFO - 127.0.0.1 - - [11/Mar/2025 13:23:15] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 13:23:16,019 - INFO - 127.0.0.1 - - [11/Mar/2025 13:23:16] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:23:16,048 - INFO - 127.0.0.1 - - [11/Mar/2025 13:23:16] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 13:23:18,650 - INFO - 127.0.0.1 - - [11/Mar/2025 13:23:18] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:23:18,688 - INFO - 127.0.0.1 - - [11/Mar/2025 13:23:18] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 13:23:21,083 - INFO - 127.0.0.1 - - [11/Mar/2025 13:23:21] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:23:21,104 - INFO - 127.0.0.1 - - [11/Mar/2025 13:23:21] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 13:23:22,435 - INFO - 127.0.0.1 - - [11/Mar/2025 13:23:22] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:23:22,456 - INFO - 127.0.0.1 - - [11/Mar/2025 13:23:22] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 13:23:23,355 - INFO - 127.0.0.1 - - [11/Mar/2025 13:23:23] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:23:23,375 - INFO - 127.0.0.1 - - [11/Mar/2025 13:23:23] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 13:23:24,427 - INFO - 127.0.0.1 - - [11/Mar/2025 13:23:24] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:23:24,456 - INFO - 127.0.0.1 - - [11/Mar/2025 13:23:24] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 13:23:25,403 - INFO - 127.0.0.1 - - [11/Mar/2025 13:23:25] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:23:25,426 - INFO - 127.0.0.1 - - [11/Mar/2025 13:23:25] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 13:23:34,595 - INFO - 127.0.0.1 - - [11/Mar/2025 13:23:34] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:23:34,626 - INFO - 127.0.0.1 - - [11/Mar/2025 13:23:34] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 13:23:39,099 - INFO - 127.0.0.1 - - [11/Mar/2025 13:23:39] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:23:39,118 - INFO - 127.0.0.1 - - [11/Mar/2025 13:23:39] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 13:23:51,578 - INFO - 127.0.0.1 - - [11/Mar/2025 13:23:51] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:23:51,622 - INFO - 127.0.0.1 - - [11/Mar/2025 13:23:51] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 13:23:58,899 - INFO - 127.0.0.1 - - [11/Mar/2025 13:23:58] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:23:58,920 - INFO - 127.0.0.1 - - [11/Mar/2025 13:23:58] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 13:24:00,387 - INFO - 127.0.0.1 - - [11/Mar/2025 13:24:00] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:24:00,415 - INFO - 127.0.0.1 - - [11/Mar/2025 13:24:00] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 13:24:08,891 - INFO - 127.0.0.1 - - [11/Mar/2025 13:24:08] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:24:08,914 - INFO - 127.0.0.1 - - [11/Mar/2025 13:24:08] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 13:24:18,586 - INFO - 127.0.0.1 - - [11/Mar/2025 13:24:18] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:24:18,621 - INFO - 127.0.0.1 - - [11/Mar/2025 13:24:18] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 13:29:36,705 - INFO - 127.0.0.1 - - [11/Mar/2025 13:29:36] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:29:36,727 - INFO - 127.0.0.1 - - [11/Mar/2025 13:29:36] "GET /static/style.css HTTP/1.1" 200 -
+2025-03-11 13:29:37,636 - INFO - 127.0.0.1 - - [11/Mar/2025 13:29:37] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:29:37,656 - INFO - 127.0.0.1 - - [11/Mar/2025 13:29:37] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 13:29:49,412 - INFO - 127.0.0.1 - - [11/Mar/2025 13:29:49] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:29:49,438 - INFO - 127.0.0.1 - - [11/Mar/2025 13:29:49] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 13:29:50,730 - INFO - 127.0.0.1 - - [11/Mar/2025 13:29:50] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:29:50,759 - INFO - 127.0.0.1 - - [11/Mar/2025 13:29:50] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 13:29:51,730 - INFO - 127.0.0.1 - - [11/Mar/2025 13:29:51] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:29:51,754 - INFO - 127.0.0.1 - - [11/Mar/2025 13:29:51] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 13:30:24,481 - INFO -  * Detected change in 'E:\\Users\\Documents\\study\\python_web\\app.py', reloading
+2025-03-11 13:30:24,577 - INFO -  * Restarting with stat
+2025-03-11 13:30:25,183 - WARNING -  * Debugger is active!
+2025-03-11 13:30:25,184 - INFO -  * Debugger PIN: 155-922-880
+2025-03-11 13:31:53,943 - INFO -  * Detected change in 'E:\\Users\\Documents\\study\\python_web\\app.py', reloading
+2025-03-11 13:31:54,024 - INFO -  * Restarting with stat
+2025-03-11 13:31:54,548 - WARNING -  * Debugger is active!
+2025-03-11 13:31:54,549 - INFO -  * Debugger PIN: 155-922-880
+2025-03-11 13:31:55,598 - INFO -  * Detected change in 'E:\\Users\\Documents\\study\\python_web\\app.py', reloading
+2025-03-11 13:31:55,681 - INFO -  * Restarting with stat
+2025-03-11 13:31:56,186 - WARNING -  * Debugger is active!
+2025-03-11 13:31:56,188 - INFO -  * Debugger PIN: 155-922-880
+2025-03-11 13:32:10,480 - INFO -  * Detected change in 'E:\\Users\\Documents\\study\\python_web\\app.py', reloading
+2025-03-11 13:32:10,564 - INFO -  * Restarting with stat
+2025-03-11 13:32:11,077 - WARNING -  * Debugger is active!
+2025-03-11 13:32:11,078 - INFO -  * Debugger PIN: 155-922-880
+2025-03-11 13:32:50,937 - INFO -  * Detected change in 'E:\\Users\\Documents\\study\\python_web\\app.py', reloading
+2025-03-11 13:32:51,022 - INFO -  * Restarting with stat
+2025-03-11 13:33:15,043 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.2.104:5000
+2025-03-11 13:33:15,043 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-11 13:33:15,044 - INFO -  * Restarting with stat
+2025-03-11 13:33:15,576 - WARNING -  * Debugger is active!
+2025-03-11 13:33:15,577 - INFO -  * Debugger PIN: 155-922-880
+2025-03-11 13:33:18,415 - INFO - 127.0.0.1 - - [11/Mar/2025 13:33:18] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:33:18,473 - INFO - 127.0.0.1 - - [11/Mar/2025 13:33:18] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 13:33:22,917 - INFO - 127.0.0.1 - - [11/Mar/2025 13:33:22] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:33:22,955 - INFO - 127.0.0.1 - - [11/Mar/2025 13:33:22] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 13:33:37,722 - INFO - 127.0.0.1 - - [11/Mar/2025 13:33:37] "GET /admin/login HTTP/1.1" 200 -
+2025-03-11 13:33:37,760 - INFO - 127.0.0.1 - - [11/Mar/2025 13:33:37] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 13:33:40,917 - INFO - 127.0.0.1 - - [11/Mar/2025 13:33:40] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:33:40,948 - INFO - 127.0.0.1 - - [11/Mar/2025 13:33:40] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 13:34:15,888 - INFO -  * Detected change in 'E:\\Users\\Documents\\study\\python_web\\app.py', reloading
+2025-03-11 13:34:15,963 - INFO -  * Restarting with stat
+2025-03-11 13:34:16,477 - WARNING -  * Debugger is active!
+2025-03-11 13:34:16,478 - INFO -  * Debugger PIN: 155-922-880
+2025-03-11 13:34:17,530 - INFO -  * Detected change in 'E:\\Users\\Documents\\study\\python_web\\app.py', reloading
+2025-03-11 13:34:17,606 - INFO -  * Restarting with stat
+2025-03-11 13:34:18,124 - WARNING -  * Debugger is active!
+2025-03-11 13:34:18,126 - INFO -  * Debugger PIN: 155-922-880
+2025-03-11 13:34:20,204 - INFO -  * Detected change in 'E:\\Users\\Documents\\study\\python_web\\app.py', reloading
+2025-03-11 13:34:20,281 - INFO -  * Restarting with stat
+2025-03-11 13:34:20,798 - WARNING -  * Debugger is active!
+2025-03-11 13:34:20,800 - INFO -  * Debugger PIN: 155-922-880
+2025-03-11 13:34:25,921 - INFO -  * Detected change in 'E:\\Users\\Documents\\study\\python_web\\app.py', reloading
+2025-03-11 13:34:26,002 - INFO -  * Restarting with stat
+2025-03-11 13:34:26,698 - WARNING -  * Debugger is active!
+2025-03-11 13:34:26,699 - INFO -  * Debugger PIN: 155-922-880
+2025-03-11 13:34:26,723 - INFO - 127.0.0.1 - - [11/Mar/2025 13:34:26] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:34:26,776 - INFO - 127.0.0.1 - - [11/Mar/2025 13:34:26] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 13:34:28,539 - INFO - 127.0.0.1 - - [11/Mar/2025 13:34:28] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:34:28,564 - INFO - 127.0.0.1 - - [11/Mar/2025 13:34:28] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 13:36:13,122 - INFO - 127.0.0.1 - - [11/Mar/2025 13:36:13] "GET /admin/login?password=1129pq HTTP/1.1" 200 -
+2025-03-11 13:36:13,142 - INFO - 127.0.0.1 - - [11/Mar/2025 13:36:13] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 13:36:15,119 - INFO - 127.0.0.1 - - [11/Mar/2025 13:36:15] "[32mPOST /admin/login?password=1129pq HTTP/1.1[0m" 302 -
+2025-03-11 13:36:15,177 - INFO - 127.0.0.1 - - [11/Mar/2025 13:36:15] "GET /admin/manage HTTP/1.1" 200 -
+2025-03-11 13:36:15,212 - INFO - 127.0.0.1 - - [11/Mar/2025 13:36:15] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-11 13:36:25,098 - INFO -  * Detected change in 'E:\\Users\\Documents\\study\\python_web\\app.py', reloading
+2025-03-11 13:36:25,193 - INFO -  * Restarting with stat
+2025-03-11 13:36:25,745 - WARNING -  * Debugger is active!
+2025-03-11 13:36:25,746 - INFO -  * Debugger PIN: 155-922-880
+2025-03-11 13:36:28,846 - INFO -  * Detected change in 'E:\\Users\\Documents\\study\\python_web\\app.py', reloading
+2025-03-11 13:36:28,934 - INFO -  * Restarting with stat
+2025-03-11 13:36:29,452 - WARNING -  * Debugger is active!
+2025-03-11 13:36:29,453 - INFO -  * Debugger PIN: 155-922-880

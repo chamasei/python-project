@@ -148,6 +148,7 @@ def restrict_admin_routes():
 #管理者ログインのルート
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
+
     if request.method == 'POST':
         password = request.form.get('password')
 
@@ -160,6 +161,7 @@ def admin_login():
 
         if password == stored_password:
             session['admin_logged_in'] = True
+            session.permanent = False
             return redirect(url_for('manage_questions'))
         else:
             flash("⚠️ パスワードが違います。", "error")
@@ -619,7 +621,8 @@ def edit_question(id):
             return jsonify({"error": f"エラー: {e}"}), 500
 
 
-@app.route("/edit_all")
+@app.route("/admin/edit_all")
+@admin_required
 def show_questions():
     # ✅ 問題一覧を取得（カテゴリ名・難易度名を含める）
     questions = db.session.execute(text("""
